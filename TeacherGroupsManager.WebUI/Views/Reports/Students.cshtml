@@ -1,0 +1,5 @@
+@model IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>
+@{ ViewData["Title"] = "تقرير الطلاب"; }
+<div class="panel"><table class="table"><thead><tr><th>الطالب</th><th>السنة الدراسية</th><th>المجموعة</th><th>الجوال</th></tr></thead><tbody>
+@foreach (var item in Model){<tr><td>@item.FullName</td><td>@item.AcademicYearName</td><td>@item.GroupName</td><td>@item.Mobile</td></tr>}
+</tbody></table></div>

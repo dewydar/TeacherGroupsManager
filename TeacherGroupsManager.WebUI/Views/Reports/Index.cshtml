@@ -1,0 +1,9 @@
+@{ ViewData["Title"] = "التقارير"; }
+<div class="row g-3">
+    <div class="col-md-4"><a class="card-stat" asp-action="Students"><div class="stat-title">تقرير الطلاب</div><div class="mt-2">عرض الطلاب حسب السنة والمجموعة</div></a></div>
+    <div class="col-md-4"><a class="card-stat" asp-controller="Groups" asp-action="Index"><div class="stat-title">تقرير المجموعات</div><div class="mt-2">عرض المجموعات النشطة وأنواعها</div></a></div>
+    <div class="col-md-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">تقرير المدفوعات الشهرية</div><div class="mt-2">عرض المدفوع وغير المدفوع</div></a></div>
+    <div class="col-md-4"><a class="card-stat" asp-action="Payments" asp-route-status="Unpaid"><div class="stat-title">تقرير الطلاب غير المدفوعين</div><div class="mt-2">متابعة المتبقيات الشهرية</div></a></div>
+    <div class="col-md-4"><a class="card-stat" asp-action="Lessons"><div class="stat-title">تقرير الدروس</div><div class="mt-2">عرض الدروس حسب المجموعة والشهر</div></a></div>
+    <div class="col-md-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">تقرير إيرادات المدرس</div><div class="mt-2">ملخص التحصيل والمتبقي</div></a></div>
+</div>

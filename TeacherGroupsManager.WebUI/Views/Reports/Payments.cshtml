@@ -1,0 +1,6 @@
+@using TeacherGroupsManager.Shared.Extensions
+@model IReadOnlyList<TeacherGroupsManager.Dtos.MonthlyPaymentDto>
+@{ ViewData["Title"] = "تقرير المدفوعات الشهرية"; }
+<div class="panel"><table class="table"><thead><tr><th>الطالب</th><th>المجموعة</th><th>الشهر</th><th>السنة</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead><tbody>
+@foreach (var item in Model){<tr><td>@item.StudentName</td><td>@item.GroupName</td><td>@item.Month</td><td>@item.Year</td><td>@item.PaidAmount.ToString("N2")</td><td>@item.RemainingAmount.ToString("N2")</td><td>@item.PaymentStatus.ToArabic()</td></tr>}
+</tbody></table></div>

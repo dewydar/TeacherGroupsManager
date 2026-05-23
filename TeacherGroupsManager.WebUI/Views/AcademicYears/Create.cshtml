@@ -1,0 +1,10 @@
+@model TeacherGroupsManager.Dtos.CreateAcademicYearDto
+@{ ViewData["Title"] = "إضافة سنة دراسية"; }
+<form method="post" class="panel">
+    <div class="mb-3"><label class="form-label">الاسم</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">تاريخ البداية</label><input class="form-control" type="date" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" /></div>
+        <div class="col-md-6"><label class="form-label">تاريخ النهاية</label><input class="form-control" type="date" name="EndDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" /></div>
+    </div>
+    <button class="btn btn-primary mt-3">حفظ</button>
+</form>

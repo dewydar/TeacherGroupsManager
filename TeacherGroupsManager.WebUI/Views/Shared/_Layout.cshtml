@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - إدارة مجموعات المدرس</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">إدارة مجموعات المدرس</div>
+            <nav class="nav flex-column gap-1">
+                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">لوحة التحكم</a>
+                <a class="nav-link" asp-controller="Roles" asp-action="Index">إدارة الأدوار</a>
+                <a class="nav-link" asp-controller="Employees" asp-action="Index">إدارة الموظفين</a>
+                <a class="nav-link" asp-controller="AcademicYears" asp-action="Index">السنوات الدراسية</a>
+                <a class="nav-link" asp-controller="Groups" asp-action="Index">المجموعات</a>
+                <a class="nav-link" asp-controller="Students" asp-action="Index">الطلاب</a>
+                <a class="nav-link" asp-controller="Lessons" asp-action="Index">الدروس</a>
+                <a class="nav-link" asp-controller="Payments" asp-action="Index">المدفوعات الشهرية</a>
+                <a class="nav-link" asp-controller="Reports" asp-action="Index">التقارير</a>
+                <a class="nav-link" asp-controller="Account" asp-action="Logout">تسجيل الخروج</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <header class="topbar">
+                <div>
+                    <div class="breadcrumb-ar">الرئيسية / @ViewData["Title"]</div>
+                    <h1>@ViewData["Title"]</h1>
+                </div>
+            </header>
+            @if (TempData["Success"] is not null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] is not null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

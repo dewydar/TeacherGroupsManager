@@ -1,0 +1,19 @@
+@using TeacherGroupsManager.Shared.Extensions
+@model TeacherGroupsManager.Dtos.GroupDto?
+@{ ViewData["Title"] = "تفاصيل المجموعة"; }
+@if (Model is null)
+{
+    <div class="alert alert-info">لا توجد بيانات لهذه المجموعة.</div>
+}
+else
+{
+    <div class="panel">
+        <h2 class="h5">@Model.Name</h2>
+        <dl class="row">
+            <dt class="col-sm-3">السنة الدراسية</dt><dd class="col-sm-9">@Model.AcademicYearName</dd>
+            <dt class="col-sm-3">نوع المجموعة</dt><dd class="col-sm-9">@Model.GroupType.ToArabic()</dd>
+            <dt class="col-sm-3">الموعد</dt><dd class="col-sm-9">@Model.DayOfWeek.DayToArabic() من @Model.StartTime إلى @Model.EndTime</dd>
+            <dt class="col-sm-3">سعر الدرس</dt><dd class="col-sm-9">@Model.DefaultLessonPrice.ToString("N2")</dd>
+        </dl>
+    </div>
+}

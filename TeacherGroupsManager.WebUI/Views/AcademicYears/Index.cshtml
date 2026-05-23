@@ -1,0 +1,6 @@
+@model IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>
+@{ ViewData["Title"] = "السنوات الدراسية"; }
+<p><a class="btn btn-primary" asp-action="Create">إضافة سنة دراسية</a></p>
+<div class="panel"><table class="table"><thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th></tr></thead><tbody>
+@foreach (var item in Model){<tr><td>@item.Name</td><td>@item.StartDate</td><td>@item.EndDate</td><td>@(item.IsActive ? "نشطة" : "غير نشطة")</td></tr>}
+</tbody></table></div>

@@ -1,0 +1,23 @@
+@model IReadOnlyList<TeacherGroupsManager.Dtos.RoleDto>
+@{
+    ViewData["Title"] = "إدارة الأدوار";
+}
+<p><a class="btn btn-primary" asp-action="Create">إضافة دور</a></p>
+<div class="panel">
+<table class="table">
+    <thead><tr><th>الاسم</th><th>الاسم العربي</th><th>الحالة</th></tr></thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr><td>@item.Name</td><td>@item.ArabicName</td><td>@(item.IsActive ? "نشط" : "غير نشط")</td></tr>
+    }
+    </tbody>
+</table>
+<h2 class="h5 mt-4">الصلاحيات</h2>
+<div class="row">
+@foreach (var permission in (IReadOnlyList<TeacherGroupsManager.Dtos.PermissionDto>)ViewBag.Permissions)
+{
+    <div class="col-md-4 mb-2">@permission.ArabicName <span class="text-muted">(@permission.Code)</span></div>
+}
+</div>
+</div>

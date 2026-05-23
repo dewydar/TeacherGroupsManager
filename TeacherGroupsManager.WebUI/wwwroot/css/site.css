@@ -1,0 +1,22 @@
+html { font-size: 15px; }
+body { margin: 0; background: #f5f7fb; color: #172033; font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+.app-shell { min-height: 100vh; display: grid; grid-template-columns: 270px 1fr; }
+.sidebar { background: #17324d; color: #fff; padding: 22px 16px; }
+.brand { font-size: 1.15rem; font-weight: 700; margin-bottom: 22px; }
+.sidebar .nav-link { color: #dce8f5; border-radius: 8px; padding: 10px 12px; }
+.sidebar .nav-link:hover { background: #244967; color: #fff; }
+.content { padding: 24px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.topbar h1 { font-size: 1.55rem; margin: 4px 0 0; }
+.breadcrumb-ar { color: #65758b; font-size: .9rem; }
+.card-stat { display: block; text-decoration: none; color: inherit; background: #fff; border: 1px solid #e4e9f1; border-radius: 8px; padding: 18px; min-height: 120px; }
+.card-stat:hover { border-color: #5a8dee; box-shadow: 0 8px 24px rgba(23,50,77,.08); }
+.stat-title { color: #667085; }
+.stat-value { font-size: 1.7rem; font-weight: 800; margin-top: 10px; }
+.panel { background: #fff; border: 1px solid #e4e9f1; border-radius: 8px; padding: 18px; }
+.table { background: #fff; }
+.form-control, .form-select, .btn { border-radius: 8px; }
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+}

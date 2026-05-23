@@ -1,0 +1,6 @@
+@model IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>
+@{ ViewData["Title"] = "الطلاب"; }
+<p><a class="btn btn-primary" asp-action="Create">إضافة طالب</a></p>
+<div class="panel"><table class="table"><thead><tr><th>الاسم</th><th>الجوال</th><th>ولي الأمر</th><th>السنة الدراسية</th><th>المجموعة</th><th>الحالة</th></tr></thead><tbody>
+@foreach (var item in Model){<tr><td>@item.FullName</td><td>@item.Mobile</td><td>@item.ParentMobile</td><td>@item.AcademicYearName</td><td>@item.GroupName</td><td>@(item.IsActive ? "نشط" : "غير نشط")</td></tr>}
+</tbody></table></div>

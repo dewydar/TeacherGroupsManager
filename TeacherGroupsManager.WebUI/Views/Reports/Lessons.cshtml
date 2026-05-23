@@ -1,0 +1,6 @@
+@using TeacherGroupsManager.Shared.Extensions
+@model IReadOnlyList<TeacherGroupsManager.Dtos.LessonDto>
+@{ ViewData["Title"] = "تقرير الدروس"; }
+<div class="panel"><table class="table"><thead><tr><th>الدرس</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th></tr></thead><tbody>
+@foreach (var item in Model){<tr><td>@item.Title</td><td>@item.GroupName</td><td>@item.LessonType.ToArabic()</td><td>@item.LessonDate.ToString("yyyy/MM/dd")</td><td>@item.Price.ToString("N2")</td></tr>}
+</tbody></table></div>

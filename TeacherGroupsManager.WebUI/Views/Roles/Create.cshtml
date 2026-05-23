@@ -1,0 +1,7 @@
+@model TeacherGroupsManager.Dtos.RoleDto
+@{ ViewData["Title"] = "إضافة دور"; }
+<form method="post" class="panel">
+    <div class="mb-3"><label class="form-label">اسم الدور بالإنجليزية</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+    <div class="mb-3"><label class="form-label">اسم الدور بالعربية</label><input class="form-control" name="ArabicName" value="@Model.ArabicName" /></div>
+    <button class="btn btn-primary">حفظ</button>
+</form>

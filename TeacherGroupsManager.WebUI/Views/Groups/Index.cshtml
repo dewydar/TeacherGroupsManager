@@ -1,0 +1,10 @@
+@using TeacherGroupsManager.Shared.Extensions
+@model IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>
+@{ ViewData["Title"] = "المجموعات"; }
+<p><a class="btn btn-primary" asp-action="Create">إضافة مجموعة</a></p>
+<div class="panel"><table class="table"><thead><tr><th>الاسم</th><th>السنة الدراسية</th><th>النوع</th><th>اليوم</th><th>الوقت</th><th>سعر الدرس</th><th></th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr><td>@item.Name</td><td>@item.AcademicYearName</td><td>@item.GroupType.ToArabic()</td><td>@item.DayOfWeek.DayToArabic()</td><td>@item.StartTime - @item.EndTime</td><td>@item.DefaultLessonPrice.ToString("N2")</td><td><a asp-action="Details" asp-route-id="@item.Id">تفاصيل</a></td></tr>
+}
+</tbody></table></div>
