@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
-using TeacherGroupsManager.WebUI.Security;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
@@ -32,7 +31,7 @@ public class AccountController(IAuthService authService) : Controller
             new(ClaimTypes.Name, result.Data.FullName),
             new(ClaimTypes.Role, result.Data.RoleName)
         };
-        claims.AddRange(PermissionPolicy.ForRole(result.Data.RoleName).Select(x => new Claim("Permission", x)));
+        claims.AddRange(result.Data.Permissions.Select(x => new Claim("Permission", x)));
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)), new AuthenticationProperties { IsPersistent = dto.RememberMe });
         return RedirectToAction("Index", "Dashboard");

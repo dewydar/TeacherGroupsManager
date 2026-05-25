@@ -9,6 +9,15 @@
         <div class="col-md-3 text-md-end"><a class="btn btn-primary" asp-action="Create">إضافة مدفوعة</a></div>
     </div>
 </form>
-<div class="panel"><table class="table"><thead><tr><th>الطالب</th><th>المجموعة</th><th>الشهر</th><th>السنة</th><th>المطلوب</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.StudentName</td><td>@item.GroupName</td><td>@item.Month</td><td>@item.Year</td><td>@item.RequiredAmount.ToString("N2")</td><td>@item.PaidAmount.ToString("N2")</td><td>@item.RemainingAmount.ToString("N2")</td><td>@item.PaymentStatus.ToArabic()</td></tr>}
+<div class="panel"><table class="table align-middle"><thead><tr><th>الطالب</th><th>المجموعة</th><th>الشهر</th><th>السنة</th><th>المطلوب</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th></th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.StudentName</td><td>@item.GroupName</td><td>@item.Month</td><td>@item.Year</td><td>@item.RequiredAmount.ToString("N2")</td><td>@item.PaidAmount.ToString("N2")</td><td>@item.RemainingAmount.ToString("N2")</td><td>@item.PaymentStatus.ToArabic()</td>
+        <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
+        </td>
+    </tr>
+}
 </tbody></table></div>

@@ -2,6 +2,15 @@
 @model IReadOnlyList<TeacherGroupsManager.Dtos.LessonDto>
 @{ ViewData["Title"] = "الدروس"; }
 <p><a class="btn btn-primary" asp-action="Create">إضافة درس</a></p>
-<div class="panel"><table class="table"><thead><tr><th>العنوان</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th><th>الشهر</th><th>السنة</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.Title</td><td>@item.GroupName</td><td>@item.LessonType.ToArabic()</td><td>@item.LessonDate.ToString("yyyy/MM/dd")</td><td>@item.Price.ToString("N2")</td><td>@item.Month</td><td>@item.Year</td></tr>}
+<div class="panel"><table class="table align-middle"><thead><tr><th>العنوان</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th><th>الشهر</th><th>السنة</th><th></th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Title</td><td>@item.GroupName</td><td>@item.LessonType.ToArabic()</td><td>@item.LessonDate.ToString("yyyy/MM/dd")</td><td>@item.Price.ToString("N2")</td><td>@item.Month</td><td>@item.Year</td>
+        <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
+        </td>
+    </tr>
+}
 </tbody></table></div>

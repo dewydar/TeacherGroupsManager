@@ -11,6 +11,7 @@ namespace TeacherGroupsManager.WebUI.Controllers;
 public class LessonsController(ILessonService service, IGroupService groupService) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken) => View(await service.GetAllAsync(cancellationToken));
+
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
@@ -28,6 +29,35 @@ public class LessonsController(ILessonService service, IGroupService groupServic
         }
         var result = await service.CreateAsync(dto, cancellationToken);
         TempData["Success"] = result.Message;
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+    {
+        var lesson = await service.GetByIdAsync(id, cancellationToken);
+        if (lesson is null) return NotFound();
+        ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+        return View(new EditLessonDto(lesson.Id, lesson.Title, lesson.Description, lesson.GroupId, lesson.LessonType, lesson.LessonDate, lesson.Price, lesson.IsMonthlyPaymentRequired, lesson.Month, lesson.Year, lesson.CreatedByEmployeeId, []));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditLessonDto dto, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
+        var result = await service.UpdateAsync(dto, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var result = await service.DeleteAsync(id, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 }

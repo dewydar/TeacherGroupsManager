@@ -34,7 +34,12 @@ public interface IUnitOfWork
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 
-public class UnitOfWork(TeacherGroupsDbContext context) : IUnitOfWork
+public interface ICurrentUserContext
+{
+    int? EmployeeId { get; }
+}
+
+public class UnitOfWork(TeacherGroupsDbContext context, ICurrentUserContext? currentUserContext = null) : IUnitOfWork
 {
     private readonly Dictionary<Type, object> _repositories = [];
 
@@ -52,11 +57,21 @@ public class UnitOfWork(TeacherGroupsDbContext context) : IUnitOfWork
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        foreach (var entry in context.ChangeTracker.Entries<AuditableEntity>())
+        var now = DateTime.UtcNow;
+        var employeeId = currentUserContext?.EmployeeId;
+
+        foreach (var entry in context.ChangeTracker.Entries<IAuditableEntity>())
         {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt ??= now;
+                entry.Entity.CreatedByEmployeeId ??= employeeId;
+            }
+
             if (entry.State == EntityState.Modified)
             {
-                entry.Entity.UpdatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = now;
+                entry.Entity.UpdatedByEmployeeId = employeeId;
             }
         }
 

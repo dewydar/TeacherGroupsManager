@@ -1,0 +1,10 @@
+@model TeacherGroupsManager.Dtos.RoleDto
+@{ ViewData["Title"] = "تعديل دور"; }
+<form method="post" class="panel">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="mb-3"><label class="form-label">اسم الدور بالإنجليزية</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+    <div class="mb-3"><label class="form-label">اسم الدور بالعربية</label><input class="form-control" name="ArabicName" value="@Model.ArabicName" /></div>
+    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /><label class="form-check-label">نشط</label></div>
+    <button class="btn btn-primary">حفظ</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">رجوع</a>
+</form>

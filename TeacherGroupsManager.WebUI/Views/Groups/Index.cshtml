@@ -2,9 +2,16 @@
 @model IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>
 @{ ViewData["Title"] = "المجموعات"; }
 <p><a class="btn btn-primary" asp-action="Create">إضافة مجموعة</a></p>
-<div class="panel"><table class="table"><thead><tr><th>الاسم</th><th>السنة الدراسية</th><th>النوع</th><th>اليوم</th><th>الوقت</th><th>سعر الدرس</th><th></th></tr></thead><tbody>
+<div class="panel"><table class="table align-middle"><thead><tr><th>الاسم</th><th>السنة الدراسية</th><th>النوع</th><th>اليوم</th><th>الوقت</th><th>سعر الدرس</th><th></th></tr></thead><tbody>
 @foreach (var item in Model)
 {
-    <tr><td>@item.Name</td><td>@item.AcademicYearName</td><td>@item.GroupType.ToArabic()</td><td>@item.DayOfWeek.DayToArabic()</td><td>@item.StartTime - @item.EndTime</td><td>@item.DefaultLessonPrice.ToString("N2")</td><td><a asp-action="Details" asp-route-id="@item.Id">تفاصيل</a></td></tr>
+    <tr>
+        <td>@item.Name</td><td>@item.AcademicYearName</td><td>@item.GroupType.ToArabic()</td><td>@item.DayOfWeek.DayToArabic()</td><td>@item.StartTime - @item.EndTime</td><td>@item.DefaultLessonPrice.ToString("N2")</td>
+        <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
+        </td>
+    </tr>
 }
 </tbody></table></div>

@@ -10,6 +10,7 @@ namespace TeacherGroupsManager.WebUI.Controllers;
 public class StudentsController(IStudentService service, IAcademicYearService academicYearService, IGroupService groupService) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken) => View(await service.GetAllAsync(cancellationToken));
+
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         await FillLookups(cancellationToken);
@@ -26,6 +27,35 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
         }
         var result = await service.CreateAsync(dto, cancellationToken);
         TempData["Success"] = result.Message;
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+    {
+        var student = await service.GetByIdAsync(id, cancellationToken);
+        if (student is null) return NotFound();
+        await FillLookups(cancellationToken);
+        return View(new EditStudentDto(student.Id, student.FullName, student.Mobile, student.ParentMobile, student.AcademicYearId, student.GroupId, student.Notes, student.IsActive));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditStudentDto dto, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            await FillLookups(cancellationToken);
+            return View(dto);
+        }
+        var result = await service.UpdateAsync(dto, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var result = await service.DeleteAsync(id, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 

@@ -1,0 +1,58 @@
+name: Publish WebUI to local IIS
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  PROJECT_PATH: TeacherGroupsManager.WebUI/TeacherGroupsManager.WebUI.csproj
+  PUBLISH_DIR: artifacts/publish
+  IIS_SITE_NAME: TeacherGroupsManager
+  IIS_APP_POOL: TeacherGroupsManager
+  IIS_HOST_NAME: www.TGM.com
+  IIS_SITE_PATH: C:\inetpub\wwwroot\TGM
+
+jobs:
+  publish-to-iis:
+    name: Build, test, publish, deploy to IIS
+    runs-on:
+      - self-hosted
+      - windows
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+
+      - name: Publish WebUI
+        run: dotnet publish $env:PROJECT_PATH --configuration Release --no-build --output $env:PUBLISH_DIR
+
+      - name: Deploy to IIS
+        shell: powershell
+        run: >
+          ./scripts/Deploy-IIS.ps1
+          -SiteName "${{ env.IIS_SITE_NAME }}"
+          -HostName "${{ env.IIS_HOST_NAME }}"
+          -PublishPath "${{ env.PUBLISH_DIR }}"
+          -SitePath "${{ env.IIS_SITE_PATH }}"
+          -AppPoolName "${{ env.IIS_APP_POOL }}"
+          -CertificateThumbprint "${{ secrets.TGM_IIS_CERT_THUMBPRINT }}"
+          -CreateSelfSignedCertificate
+          -UpdateHostsFile

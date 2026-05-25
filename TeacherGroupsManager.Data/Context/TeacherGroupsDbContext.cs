@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TeacherGroupsManager.Core.Common;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
@@ -30,6 +31,21 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RemainingAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Employee>().HasIndex(x => x.Username).IsUnique();
 
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(x => typeof(IAuditableEntity).IsAssignableFrom(x.ClrType)))
+        {
+            modelBuilder.Entity(entityType.ClrType)
+                .HasOne(typeof(Employee), nameof(IAuditableEntity.CreatedByEmployee))
+                .WithMany()
+                .HasForeignKey(nameof(IAuditableEntity.CreatedByEmployeeId))
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity(entityType.ClrType)
+                .HasOne(typeof(Employee), nameof(IAuditableEntity.UpdatedByEmployee))
+                .WithMany()
+                .HasForeignKey(nameof(IAuditableEntity.UpdatedByEmployeeId))
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
         modelBuilder.Entity<Group>()
             .HasOne(x => x.Teacher)
             .WithMany()
@@ -40,6 +56,42 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
             .HasOne(x => x.AssistantTeacher)
             .WithMany()
             .HasForeignKey(x => x.AssistantTeacherId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Student>()
+            .HasOne(x => x.AcademicYear)
+            .WithMany()
+            .HasForeignKey(x => x.AcademicYearId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Student>()
+            .HasOne(x => x.Group)
+            .WithMany(x => x.Students)
+            .HasForeignKey(x => x.GroupId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Lesson>()
+            .HasOne(x => x.Group)
+            .WithMany(x => x.Lessons)
+            .HasForeignKey(x => x.GroupId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MonthlyPayment>()
+            .HasOne(x => x.Student)
+            .WithMany(x => x.MonthlyPayments)
+            .HasForeignKey(x => x.StudentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MonthlyPayment>()
+            .HasOne(x => x.Group)
+            .WithMany()
+            .HasForeignKey(x => x.GroupId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MonthlyPayment>()
+            .HasOne(x => x.AcademicYear)
+            .WithMany()
+            .HasForeignKey(x => x.AcademicYearId)
             .OnDelete(DeleteBehavior.Restrict);
 
         Seed(modelBuilder);

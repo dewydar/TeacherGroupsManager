@@ -1,0 +1,16 @@
+@model TeacherGroupsManager.Dtos.EditStudentDto
+@{ ViewData["Title"] = "تعديل طالب"; }
+<form method="post" class="panel">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">اسم الطالب</label><input class="form-control" name="FullName" value="@Model.FullName" /></div>
+        <div class="col-md-6"><label class="form-label">جوال الطالب</label><input class="form-control" name="Mobile" value="@Model.Mobile" /></div>
+        <div class="col-md-6"><label class="form-label">جوال ولي الأمر</label><input class="form-control" name="ParentMobile" value="@Model.ParentMobile" /></div>
+        <div class="col-md-6"><label class="form-label">السنة الدراسية</label><select class="form-select" name="AcademicYearId"><option value="">اختر السنة الدراسية</option>@foreach (var year in (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears){<option value="@year.Id" selected="@(year.Id == Model.AcademicYearId)">@year.Name</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">المجموعة</label><select class="form-select" name="GroupId"><option value="">اختر المجموعة</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
+        <div class="col-md-6"><label class="form-check mt-4"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> نشط</label></div>
+        <div class="col-12"><label class="form-label">ملاحظات</label><textarea class="form-control" name="Notes">@Model.Notes</textarea></div>
+    </div>
+    <button class="btn btn-primary mt-3">حفظ</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">رجوع</a>
+</form>

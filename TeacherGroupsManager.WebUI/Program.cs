@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Data.Context;
 using TeacherGroupsManager.Services;
+using TeacherGroupsManager.WebUI.Infrastructure;
 using TeacherGroupsManager.WebUI.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddDbContext<TeacherGroupsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<TeacherGroupsManager.Data.Repositories.ICurrentUserContext, CurrentUserContext>();
 builder.Services.AddTeacherGroupsServices();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -35,6 +38,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+
+await app.InitializeDatabaseAsync();
 
 var culture = new CultureInfo(AppConstants.ArabicCulture);
 app.UseRequestLocalization(new RequestLocalizationOptions

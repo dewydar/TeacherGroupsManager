@@ -12,15 +12,15 @@
         <aside class="sidebar">
             <div class="brand">إدارة مجموعات المدرس</div>
             <nav class="nav flex-column gap-1">
-                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">لوحة التحكم</a>
-                <a class="nav-link" asp-controller="Roles" asp-action="Index">إدارة الأدوار</a>
-                <a class="nav-link" asp-controller="Employees" asp-action="Index">إدارة الموظفين</a>
-                <a class="nav-link" asp-controller="AcademicYears" asp-action="Index">السنوات الدراسية</a>
-                <a class="nav-link" asp-controller="Groups" asp-action="Index">المجموعات</a>
-                <a class="nav-link" asp-controller="Students" asp-action="Index">الطلاب</a>
-                <a class="nav-link" asp-controller="Lessons" asp-action="Index">الدروس</a>
-                <a class="nav-link" asp-controller="Payments" asp-action="Index">المدفوعات الشهرية</a>
-                <a class="nav-link" asp-controller="Reports" asp-action="Index">التقارير</a>
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.DashboardView)) { <a class="nav-link" asp-controller="Dashboard" asp-action="Index">لوحة التحكم</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.RolesManage)) { <a class="nav-link" asp-controller="Roles" asp-action="Index">إدارة الأدوار</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.EmployeesManage)) { <a class="nav-link" asp-controller="Employees" asp-action="Index">إدارة الموظفين</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.AcademicYearsManage)) { <a class="nav-link" asp-controller="AcademicYears" asp-action="Index">السنوات الدراسية</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.GroupsManage)) { <a class="nav-link" asp-controller="Groups" asp-action="Index">المجموعات</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.StudentsManage)) { <a class="nav-link" asp-controller="Students" asp-action="Index">الطلاب</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.LessonsManage)) { <a class="nav-link" asp-controller="Lessons" asp-action="Index">الدروس</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.PaymentsManage)) { <a class="nav-link" asp-controller="Payments" asp-action="Index">المدفوعات الشهرية</a> }
+                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.ReportsView)) { <a class="nav-link" asp-controller="Reports" asp-action="Index">التقارير</a> }
                 <a class="nav-link" asp-controller="Account" asp-action="Logout">تسجيل الخروج</a>
             </nav>
         </aside>

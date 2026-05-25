@@ -1,6 +1,15 @@
 @model IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>
 @{ ViewData["Title"] = "السنوات الدراسية"; }
 <p><a class="btn btn-primary" asp-action="Create">إضافة سنة دراسية</a></p>
-<div class="panel"><table class="table"><thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.Name</td><td>@item.StartDate</td><td>@item.EndDate</td><td>@(item.IsActive ? "نشطة" : "غير نشطة")</td></tr>}
+<div class="panel"><table class="table align-middle"><thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th></th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Name</td><td>@item.StartDate</td><td>@item.EndDate</td><td>@(item.IsActive ? "نشطة" : "غير نشطة")</td>
+        <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
+        </td>
+    </tr>
+}
 </tbody></table></div>

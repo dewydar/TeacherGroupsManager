@@ -35,4 +35,33 @@ public class PaymentsController(IPaymentService service, IStudentService student
         TempData["Success"] = result.Message;
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+    {
+        var payment = await service.GetByIdAsync(id, cancellationToken);
+        if (payment is null) return NotFound();
+        ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+        return View(new EditMonthlyPaymentDto(payment.Id, payment.StudentId, payment.GroupId, payment.AcademicYearId, payment.Month, payment.Year, payment.RequiredAmount, payment.PaidAmount, payment.PaymentStatus, payment.PaymentDate, payment.Notes, null));
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditMonthlyPaymentDto dto, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
+        var result = await service.UpdateAsync(dto, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var result = await service.DeleteAsync(id, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        return RedirectToAction(nameof(Index));
+    }
 }
