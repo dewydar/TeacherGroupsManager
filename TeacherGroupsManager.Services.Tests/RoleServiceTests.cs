@@ -7,6 +7,18 @@ namespace TeacherGroupsManager.Services.Tests;
 public class RoleServiceTests : TestBase
 {
     [Fact]
+    public async Task CreateAsync_Fails_When_Role_Name_Already_Exists_With_Different_Case_Or_Spaces()
+    {
+        var (context, mapper) = CreateContext();
+        var service = new RoleService(new UnitOfWork(context), mapper);
+
+        var result = await service.CreateAsync(new TeacherGroupsManager.Dtos.RoleDto(0, " admin ", "New Admin Name", true));
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(3, await context.Roles.CountAsync());
+    }
+
+    [Fact]
     public async Task UpdatePermissionsAsync_Updates_Role_Permissions()
     {
         var (context, mapper) = CreateContext();

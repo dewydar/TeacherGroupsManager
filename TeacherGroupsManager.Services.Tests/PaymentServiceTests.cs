@@ -38,6 +38,22 @@ public class PaymentServiceTests : TestBase
     }
 
     [Fact]
+    public async Task CreateAsync_Fails_When_Student_Month_And_Year_Already_Exist()
+    {
+        var (context, mapper) = CreateContext();
+        context.Students.Add(new Student { Id = 10, FullName = "Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
+        await context.SaveChangesAsync();
+        var service = new PaymentService(new UnitOfWork(context), mapper);
+
+        var first = await service.CreateAsync(new CreateMonthlyPaymentDto(10, 1, 1, 5, 2026, 300, 100, PaymentStatus.PartiallyPaid, DateTime.Today, null, null));
+        var duplicate = await service.CreateAsync(new CreateMonthlyPaymentDto(10, 1, 1, 5, 2026, 300, 300, PaymentStatus.Paid, DateTime.Today, null, null));
+
+        Assert.True(first.Succeeded);
+        Assert.False(duplicate.Succeeded);
+        Assert.Single(context.MonthlyPayments);
+    }
+
+    [Fact]
     public async Task UpdateAsync_Recalculates_Remaining_And_Status()
     {
         var (context, mapper) = CreateContext();

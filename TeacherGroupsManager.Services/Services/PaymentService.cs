@@ -26,6 +26,10 @@ public class PaymentService(IUnitOfWork unitOfWork, IMapper mapper) : IPaymentSe
     {
         var validation = await ValidateReferencesAsync(dto.StudentId, dto.GroupId, dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        if (await unitOfWork.Repository<MonthlyPayment>().AnyAsync(x => x.StudentId == dto.StudentId && x.Month == dto.Month && x.Year == dto.Year, cancellationToken))
+        {
+            return OperationResult.Failure("المدفوعة موجودة من قبل لهذا الشهر");
+        }
 
         var remaining = Math.Max(0, dto.RequiredAmount - dto.PaidAmount);
         var status = dto.PaidAmount <= 0 ? PaymentStatus.Unpaid : remaining == 0 ? PaymentStatus.Paid : PaymentStatus.PartiallyPaid;
@@ -41,7 +45,7 @@ public class PaymentService(IUnitOfWork unitOfWork, IMapper mapper) : IPaymentSe
             RemainingAmount = remaining,
             PaymentStatus = status,
             PaymentDate = dto.PaymentDate,
-            Notes = dto.Notes,
+            Notes = dto.Notes?.Trim(),
             CreatedByEmployeeId = dto.CreatedByEmployeeId
         }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -54,6 +58,10 @@ public class PaymentService(IUnitOfWork unitOfWork, IMapper mapper) : IPaymentSe
         if (payment is null) return OperationResult.Failure("المدفوعة غير موجودة");
         var validation = await ValidateReferencesAsync(dto.StudentId, dto.GroupId, dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        if (await unitOfWork.Repository<MonthlyPayment>().AnyAsync(x => x.Id != dto.Id && x.StudentId == dto.StudentId && x.Month == dto.Month && x.Year == dto.Year, cancellationToken))
+        {
+            return OperationResult.Failure("المدفوعة موجودة من قبل لهذا الشهر");
+        }
 
         var remaining = Math.Max(0, dto.RequiredAmount - dto.PaidAmount);
         payment.StudentId = dto.StudentId;
@@ -66,7 +74,7 @@ public class PaymentService(IUnitOfWork unitOfWork, IMapper mapper) : IPaymentSe
         payment.RemainingAmount = remaining;
         payment.PaymentStatus = dto.PaidAmount <= 0 ? PaymentStatus.Unpaid : remaining == 0 ? PaymentStatus.Paid : PaymentStatus.PartiallyPaid;
         payment.PaymentDate = dto.PaymentDate;
-        payment.Notes = dto.Notes;
+        payment.Notes = dto.Notes?.Trim();
         payment.CreatedByEmployeeId = dto.CreatedByEmployeeId;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم تعديل المدفوعة بنجاح");

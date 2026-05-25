@@ -20,14 +20,16 @@ public class GroupService(IUnitOfWork unitOfWork, IMapper mapper) : IGroupServic
     {
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.TeacherId, dto.AssistantTeacherId, cancellationToken);
         if (!validation.Succeeded) return validation;
-        if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Name == dto.Name, cancellationToken))
+        var name = dto.Name.Trim();
+        var normalizedName = name.ToLower();
+        if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
             return OperationResult.Failure("المجموعة موجودة من قبل");
         }
 
         await unitOfWork.Repository<Group>().AddAsync(new Group
         {
-            Name = dto.Name,
+            Name = name,
             AcademicYearId = dto.AcademicYearId,
             GroupType = dto.GroupType,
             TeacherId = dto.TeacherId,
@@ -48,12 +50,14 @@ public class GroupService(IUnitOfWork unitOfWork, IMapper mapper) : IGroupServic
         if (group is null) return OperationResult.Failure("المجموعة غير موجودة");
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.TeacherId, dto.AssistantTeacherId, cancellationToken);
         if (!validation.Succeeded) return validation;
-        if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Name == dto.Name && x.Id != dto.Id, cancellationToken))
+        var name = dto.Name.Trim();
+        var normalizedName = name.ToLower();
+        if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Id != dto.Id && x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
             return OperationResult.Failure("المجموعة موجودة من قبل");
         }
 
-        group.Name = dto.Name;
+        group.Name = name;
         group.AcademicYearId = dto.AcademicYearId;
         group.GroupType = dto.GroupType;
         group.TeacherId = dto.TeacherId;

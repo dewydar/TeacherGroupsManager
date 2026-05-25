@@ -27,9 +27,18 @@ public class LessonsController(ILessonService service, IGroupService groupServic
             ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.GroupId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر المجموعة");
+            ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData["Success"] = result.Message;
-        return RedirectToAction(nameof(Index));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+        return View(dto);
     }
 
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
@@ -48,9 +57,18 @@ public class LessonsController(ILessonService service, IGroupService groupServic
             ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.GroupId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر المجموعة");
+            ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await service.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+        return View(dto);
     }
 
     [HttpPost, ValidateAntiForgeryToken]

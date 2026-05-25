@@ -50,4 +50,18 @@ public class EmployeeServiceTests : TestBase
         Assert.False(result.Succeeded);
         Assert.Empty(context.Employees);
     }
+
+    [Fact]
+    public async Task CreateAsync_Fails_When_Username_Already_Exists_With_Different_Case_Or_Spaces()
+    {
+        var (context, mapper) = CreateContext();
+        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher());
+
+        var first = await service.CreateAsync(new CreateEmployeeDto("User One", "1", null, "employee", "Password123", 2));
+        var duplicate = await service.CreateAsync(new CreateEmployeeDto("User Two", "2", null, " EMPLOYEE ", "Password123", 2));
+
+        Assert.True(first.Succeeded);
+        Assert.False(duplicate.Succeeded);
+        Assert.Single(context.Employees);
+    }
 }

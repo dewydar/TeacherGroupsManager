@@ -32,6 +32,34 @@ public class StudentServiceTests : TestBase
     }
 
     [Fact]
+    public async Task CreateAsync_Fails_When_Student_Mobile_Already_Exists()
+    {
+        var (context, mapper) = CreateContext();
+        var service = new StudentService(new UnitOfWork(context), mapper);
+
+        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
+        var duplicate = await service.CreateAsync(new CreateStudentDto("Different Student", "01000000000", null, 1, 1, null));
+
+        Assert.True(first.Succeeded);
+        Assert.False(duplicate.Succeeded);
+        Assert.Single(context.Students);
+    }
+
+    [Fact]
+    public async Task CreateAsync_Fails_When_Student_Name_Already_Exists_In_Same_Group()
+    {
+        var (context, mapper) = CreateContext();
+        var service = new StudentService(new UnitOfWork(context), mapper);
+
+        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
+        var duplicate = await service.CreateAsync(new CreateStudentDto(" ahmed mohamed ", "01000000001", null, 1, 1, null));
+
+        Assert.True(first.Succeeded);
+        Assert.False(duplicate.Succeeded);
+        Assert.Single(context.Students);
+    }
+
+    [Fact]
     public async Task UpdateAsync_Stamps_Audit_Fields()
     {
         var (context, mapper) = CreateContext();

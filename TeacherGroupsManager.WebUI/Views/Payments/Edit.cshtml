@@ -1,9 +1,10 @@
 @model TeacherGroupsManager.Dtos.EditMonthlyPaymentDto
 @{ ViewData["Title"] = "تعديل مدفوعة شهرية"; }
 <form method="post" class="panel">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">الطالب</label><select class="form-select" name="StudentId"><option value="">اختر الطالب</option>@foreach (var student in (IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>)ViewBag.Students){<option value="@student.Id" data-group="@student.GroupId" data-year="@student.AcademicYearId" selected="@(student.Id == Model.StudentId)">@student.FullName - @student.GroupName</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">الطالب</label><select class="form-select" name="StudentId"><option value="0">اختر الطالب</option>@foreach (var student in (IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>)ViewBag.Students){<option value="@student.Id" data-group="@student.GroupId" data-year="@student.AcademicYearId" selected="@(student.Id == Model.StudentId)">@student.FullName - @student.GroupName</option>}</select></div>
         <div class="col-md-3"><label class="form-label">الشهر</label><input class="form-control" type="number" name="Month" value="@Model.Month" /></div>
         <div class="col-md-3"><label class="form-label">السنة</label><input class="form-control" type="number" name="Year" value="@Model.Year" /></div>
         <div class="col-md-4"><label class="form-label">المبلغ المطلوب</label><input class="form-control" type="number" step="0.01" name="RequiredAmount" value="@Model.RequiredAmount" /></div>
@@ -20,8 +21,8 @@
 <script>
 document.querySelector('[name="StudentId"]').addEventListener('change', function () {
     const option = this.options[this.selectedIndex];
-    document.getElementById('GroupId').value = option.dataset.group || '';
-    document.getElementById('AcademicYearId').value = option.dataset.year || '';
+    document.getElementById('GroupId').value = option.dataset.group || '0';
+    document.getElementById('AcademicYearId').value = option.dataset.year || '0';
 });
 </script>
 }

@@ -18,8 +18,9 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
     {
         if (!ModelState.IsValid) return View(dto);
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData["Success"] = result.Message;
-        return RedirectToAction(nameof(Index));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
@@ -34,6 +35,7 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
         if (!ModelState.IsValid) return View(dto);
         var result = await service.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
         return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 

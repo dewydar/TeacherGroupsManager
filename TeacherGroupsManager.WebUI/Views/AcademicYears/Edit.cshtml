@@ -1,6 +1,7 @@
 @model TeacherGroupsManager.Dtos.EditAcademicYearDto
 @{ ViewData["Title"] = "تعديل سنة دراسية"; }
 <form method="post" class="panel">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="mb-3"><label class="form-label">الاسم</label><input class="form-control" name="Name" value="@Model.Name" /></div>
     <div class="row g-3">

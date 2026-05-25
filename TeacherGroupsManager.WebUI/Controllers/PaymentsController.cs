@@ -31,9 +31,19 @@ public class PaymentsController(IPaymentService service, IStudentService student
             ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب");
+        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب مرة أخرى لتحديد المجموعة والسنة الدراسية");
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData["Success"] = result.Message;
-        return RedirectToAction(nameof(Index));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+        return View(dto);
     }
 
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
@@ -52,9 +62,19 @@ public class PaymentsController(IPaymentService service, IStudentService student
             ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب");
+        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب مرة أخرى لتحديد المجموعة والسنة الدراسية");
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await service.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ViewBag.Students = await studentService.GetAllAsync(cancellationToken);
+        return View(dto);
     }
 
     [HttpPost, ValidateAntiForgeryToken]

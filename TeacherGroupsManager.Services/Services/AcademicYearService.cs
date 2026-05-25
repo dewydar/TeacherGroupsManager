@@ -18,12 +18,14 @@ public class AcademicYearService(IUnitOfWork unitOfWork, IMapper mapper) : IAcad
 
     public async Task<OperationResult> CreateAsync(CreateAcademicYearDto dto, CancellationToken cancellationToken = default)
     {
-        if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Name == dto.Name, cancellationToken))
+        var name = dto.Name.Trim();
+        var normalizedName = name.ToLower();
+        if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
             return OperationResult.Failure("السنة الدراسية موجودة من قبل");
         }
 
-        await unitOfWork.Repository<AcademicYear>().AddAsync(new AcademicYear { Name = dto.Name, StartDate = dto.StartDate, EndDate = dto.EndDate, IsActive = dto.IsActive }, cancellationToken);
+        await unitOfWork.Repository<AcademicYear>().AddAsync(new AcademicYear { Name = name, StartDate = dto.StartDate, EndDate = dto.EndDate, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم حفظ السنة الدراسية بنجاح");
     }
@@ -32,12 +34,14 @@ public class AcademicYearService(IUnitOfWork unitOfWork, IMapper mapper) : IAcad
     {
         var year = await unitOfWork.Repository<AcademicYear>().GetByIdAsync(dto.Id, cancellationToken);
         if (year is null) return OperationResult.Failure("السنة الدراسية غير موجودة");
-        if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Name == dto.Name && x.Id != dto.Id, cancellationToken))
+        var name = dto.Name.Trim();
+        var normalizedName = name.ToLower();
+        if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id != dto.Id && x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
             return OperationResult.Failure("السنة الدراسية موجودة من قبل");
         }
 
-        year.Name = dto.Name;
+        year.Name = name;
         year.StartDate = dto.StartDate;
         year.EndDate = dto.EndDate;
         year.IsActive = dto.IsActive;

@@ -21,8 +21,15 @@ public class LessonService(IUnitOfWork unitOfWork, IMapper mapper) : ILessonServ
     {
         var validation = await ValidateReferencesAsync(dto.GroupId, dto.LessonType, dto.StudentIds, cancellationToken);
         if (!validation.Succeeded) return validation;
+        var title = dto.Title.Trim();
+        var normalizedTitle = title.ToLower();
+        var lessonDate = dto.LessonDate.Date;
+        if (await unitOfWork.Repository<Lesson>().AnyAsync(x => x.GroupId == dto.GroupId && x.LessonDate.Date == lessonDate && x.Title.Trim().ToLower() == normalizedTitle, cancellationToken))
+        {
+            return OperationResult.Failure("الدرس موجود من قبل");
+        }
 
-        var lesson = new Lesson { Title = dto.Title, Description = dto.Description, GroupId = dto.GroupId, LessonType = dto.LessonType, LessonDate = dto.LessonDate, Price = dto.Price, IsMonthlyPaymentRequired = dto.IsMonthlyPaymentRequired, Month = dto.Month, Year = dto.Year, CreatedByEmployeeId = dto.CreatedByEmployeeId };
+        var lesson = new Lesson { Title = title, Description = dto.Description?.Trim(), GroupId = dto.GroupId, LessonType = dto.LessonType, LessonDate = dto.LessonDate, Price = dto.Price, IsMonthlyPaymentRequired = dto.IsMonthlyPaymentRequired, Month = dto.Month, Year = dto.Year, CreatedByEmployeeId = dto.CreatedByEmployeeId };
         await SetLessonStudentsAsync(lesson, dto.LessonType, dto.GroupId, dto.StudentIds, cancellationToken);
         await unitOfWork.Repository<Lesson>().AddAsync(lesson, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -35,9 +42,16 @@ public class LessonService(IUnitOfWork unitOfWork, IMapper mapper) : ILessonServ
         if (lesson is null) return OperationResult.Failure("الدرس غير موجود");
         var validation = await ValidateReferencesAsync(dto.GroupId, dto.LessonType, dto.StudentIds, cancellationToken);
         if (!validation.Succeeded) return validation;
+        var title = dto.Title.Trim();
+        var normalizedTitle = title.ToLower();
+        var lessonDate = dto.LessonDate.Date;
+        if (await unitOfWork.Repository<Lesson>().AnyAsync(x => x.Id != dto.Id && x.GroupId == dto.GroupId && x.LessonDate.Date == lessonDate && x.Title.Trim().ToLower() == normalizedTitle, cancellationToken))
+        {
+            return OperationResult.Failure("الدرس موجود من قبل");
+        }
 
-        lesson.Title = dto.Title;
-        lesson.Description = dto.Description;
+        lesson.Title = title;
+        lesson.Description = dto.Description?.Trim();
         lesson.GroupId = dto.GroupId;
         lesson.LessonType = dto.LessonType;
         lesson.LessonDate = dto.LessonDate;

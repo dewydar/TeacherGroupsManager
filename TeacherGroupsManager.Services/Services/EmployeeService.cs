@@ -19,22 +19,31 @@ public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHa
 
     public async Task<OperationResult> CreateAsync(CreateEmployeeDto dto, CancellationToken cancellationToken = default)
     {
+        var username = dto.Username.Trim();
+        var mobile = dto.Mobile.Trim();
+        var normalizedUsername = username.ToLower();
+
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
             return OperationResult.Failure("الدور غير موجود");
         }
 
-        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Username == dto.Username, cancellationToken))
+        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Username.Trim().ToLower() == normalizedUsername, cancellationToken))
         {
             return OperationResult.Failure("اسم المستخدم مستخدم من قبل");
         }
 
+        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Mobile.Trim() == mobile, cancellationToken))
+        {
+            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+        }
+
         await unitOfWork.Repository<Employee>().AddAsync(new Employee
         {
-            FullName = dto.FullName,
-            Mobile = dto.Mobile,
-            Email = dto.Email,
-            Username = dto.Username,
+            FullName = dto.FullName.Trim(),
+            Mobile = mobile,
+            Email = dto.Email?.Trim(),
+            Username = username,
             PasswordHash = passwordHasher.Hash(dto.Password),
             RoleId = dto.RoleId,
             IsActive = dto.IsActive
@@ -48,19 +57,27 @@ public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHa
     {
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(dto.Id, cancellationToken);
         if (employee is null) return OperationResult.Failure("الموظف غير موجود");
+        var username = dto.Username.Trim();
+        var mobile = dto.Mobile.Trim();
+        var normalizedUsername = username.ToLower();
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
             return OperationResult.Failure("الدور غير موجود");
         }
-        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Username == dto.Username && x.Id != dto.Id, cancellationToken))
+        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id != dto.Id && x.Username.Trim().ToLower() == normalizedUsername, cancellationToken))
         {
             return OperationResult.Failure("اسم المستخدم مستخدم من قبل");
         }
 
-        employee.FullName = dto.FullName;
-        employee.Mobile = dto.Mobile;
-        employee.Email = dto.Email;
-        employee.Username = dto.Username;
+        if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id != dto.Id && x.Mobile.Trim() == mobile, cancellationToken))
+        {
+            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+        }
+
+        employee.FullName = dto.FullName.Trim();
+        employee.Mobile = mobile;
+        employee.Email = dto.Email?.Trim();
+        employee.Username = username;
         employee.RoleId = dto.RoleId;
         employee.IsActive = dto.IsActive;
         if (!string.IsNullOrWhiteSpace(dto.Password))

@@ -36,4 +36,19 @@ public class LessonServiceTests : TestBase
         Assert.False(result.Succeeded);
         Assert.Empty(context.Lessons);
     }
+
+    [Fact]
+    public async Task CreateAsync_Fails_When_Lesson_Title_Group_And_Date_Already_Exist()
+    {
+        var (context, mapper) = CreateContext();
+        var service = new LessonService(new UnitOfWork(context), mapper);
+        var lessonDate = DateTime.Today;
+
+        var first = await service.CreateAsync(new CreateLessonDto("Unit 1", null, 1, LessonType.Group, lessonDate, 150, true, lessonDate.Month, lessonDate.Year, null, []));
+        var duplicate = await service.CreateAsync(new CreateLessonDto(" unit 1 ", null, 1, LessonType.Group, lessonDate.AddHours(2), 150, true, lessonDate.Month, lessonDate.Year, null, []));
+
+        Assert.True(first.Succeeded);
+        Assert.False(duplicate.Succeeded);
+        Assert.Single(context.Lessons);
+    }
 }

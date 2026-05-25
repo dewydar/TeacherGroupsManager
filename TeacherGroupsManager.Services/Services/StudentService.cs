@@ -20,8 +20,19 @@ public class StudentService(IUnitOfWork unitOfWork, IMapper mapper) : IStudentSe
     {
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        var fullName = dto.FullName.Trim();
+        var mobile = dto.Mobile.Trim();
+        var normalizedFullName = fullName.ToLower();
+        if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Mobile.Trim() == mobile, cancellationToken))
+        {
+            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+        }
+        if (await unitOfWork.Repository<Student>().AnyAsync(x => x.GroupId == dto.GroupId && x.FullName.Trim().ToLower() == normalizedFullName, cancellationToken))
+        {
+            return OperationResult.Failure("الطالب موجود من قبل");
+        }
 
-        await unitOfWork.Repository<Student>().AddAsync(new Student { FullName = dto.FullName, Mobile = dto.Mobile, ParentMobile = dto.ParentMobile, AcademicYearId = dto.AcademicYearId, GroupId = dto.GroupId, Notes = dto.Notes, IsActive = dto.IsActive }, cancellationToken);
+        await unitOfWork.Repository<Student>().AddAsync(new Student { FullName = fullName, Mobile = mobile, ParentMobile = dto.ParentMobile?.Trim(), AcademicYearId = dto.AcademicYearId, GroupId = dto.GroupId, Notes = dto.Notes?.Trim(), IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم حفظ الطالب بنجاح");
     }
@@ -32,13 +43,24 @@ public class StudentService(IUnitOfWork unitOfWork, IMapper mapper) : IStudentSe
         if (student is null) return OperationResult.Failure("الطالب غير موجود");
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        var fullName = dto.FullName.Trim();
+        var mobile = dto.Mobile.Trim();
+        var normalizedFullName = fullName.ToLower();
+        if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Id != dto.Id && x.Mobile.Trim() == mobile, cancellationToken))
+        {
+            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+        }
+        if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Id != dto.Id && x.GroupId == dto.GroupId && x.FullName.Trim().ToLower() == normalizedFullName, cancellationToken))
+        {
+            return OperationResult.Failure("الطالب موجود من قبل");
+        }
 
-        student.FullName = dto.FullName;
-        student.Mobile = dto.Mobile;
-        student.ParentMobile = dto.ParentMobile;
+        student.FullName = fullName;
+        student.Mobile = mobile;
+        student.ParentMobile = dto.ParentMobile?.Trim();
         student.AcademicYearId = dto.AcademicYearId;
         student.GroupId = dto.GroupId;
-        student.Notes = dto.Notes;
+        student.Notes = dto.Notes?.Trim();
         student.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم تعديل الطالب بنجاح");

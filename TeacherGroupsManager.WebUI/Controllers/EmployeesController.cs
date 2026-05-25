@@ -26,9 +26,18 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
             ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.RoleId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر الدور");
+            ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await employeeService.CreateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
+        return View(dto);
     }
 
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
@@ -48,9 +57,16 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
             ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
             return View(dto);
         }
+        if (dto.RoleId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر الدور");
+            ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
+            return View(dto);
+        }
         var result = await employeeService.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
         ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
         return View(dto);
     }

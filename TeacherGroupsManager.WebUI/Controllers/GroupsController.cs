@@ -32,9 +32,18 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
             await FillLookups(cancellationToken);
             return View(dto);
         }
+        if (dto.AcademicYearId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر السنة الدراسية");
+            await FillLookups(cancellationToken);
+            return View(dto);
+        }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData["Success"] = result.Message;
-        return RedirectToAction(nameof(Index));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        await FillLookups(cancellationToken);
+        return View(dto);
     }
 
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
@@ -53,9 +62,18 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
             await FillLookups(cancellationToken);
             return View(dto);
         }
+        if (dto.AcademicYearId <= 0)
+        {
+            ModelState.AddModelError(string.Empty, "اختر السنة الدراسية");
+            await FillLookups(cancellationToken);
+            return View(dto);
+        }
         var result = await service.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        await FillLookups(cancellationToken);
+        return View(dto);
     }
 
     [HttpPost, ValidateAntiForgeryToken]

@@ -18,12 +18,18 @@ public class RoleService(IUnitOfWork unitOfWork, IMapper mapper) : IRoleService
 
     public async Task<OperationResult> CreateAsync(RoleDto dto, CancellationToken cancellationToken = default)
     {
-        if (await unitOfWork.Repository<Role>().AnyAsync(x => x.Name == dto.Name, cancellationToken))
+        var name = dto.Name.Trim();
+        var arabicName = dto.ArabicName.Trim();
+        var normalizedName = name.ToLower();
+        var normalizedArabicName = arabicName.ToLower();
+        if (await unitOfWork.Repository<Role>().AnyAsync(x =>
+            x.Name.Trim().ToLower() == normalizedName ||
+            x.ArabicName.Trim().ToLower() == normalizedArabicName, cancellationToken))
         {
             return OperationResult.Failure("الدور موجود من قبل");
         }
 
-        await unitOfWork.Repository<Role>().AddAsync(new Role { Name = dto.Name, ArabicName = dto.ArabicName, IsActive = dto.IsActive }, cancellationToken);
+        await unitOfWork.Repository<Role>().AddAsync(new Role { Name = name, ArabicName = arabicName, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم حفظ الدور بنجاح");
     }
@@ -32,13 +38,20 @@ public class RoleService(IUnitOfWork unitOfWork, IMapper mapper) : IRoleService
     {
         var role = await unitOfWork.Repository<Role>().GetByIdAsync(dto.Id, cancellationToken);
         if (role is null) return OperationResult.Failure("الدور غير موجود");
-        if (await unitOfWork.Repository<Role>().AnyAsync(x => x.Name == dto.Name && x.Id != dto.Id, cancellationToken))
+        var name = dto.Name.Trim();
+        var arabicName = dto.ArabicName.Trim();
+        var normalizedName = name.ToLower();
+        var normalizedArabicName = arabicName.ToLower();
+        if (await unitOfWork.Repository<Role>().AnyAsync(x =>
+            x.Id != dto.Id &&
+            (x.Name.Trim().ToLower() == normalizedName ||
+             x.ArabicName.Trim().ToLower() == normalizedArabicName), cancellationToken))
         {
             return OperationResult.Failure("الدور موجود من قبل");
         }
 
-        role.Name = dto.Name;
-        role.ArabicName = dto.ArabicName;
+        role.Name = name;
+        role.ArabicName = arabicName;
         role.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم تعديل الدور بنجاح");
