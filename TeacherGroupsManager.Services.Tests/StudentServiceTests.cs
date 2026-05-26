@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Services;
@@ -26,6 +27,26 @@ public class StudentServiceTests : TestBase
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateStudentDto("Missing Group", "01000000000", null, 1, 999, null));
+
+        Assert.False(result.Succeeded);
+        Assert.Empty(context.Students);
+    }
+
+    [Fact]
+    public async Task CreateAsync_Fails_When_Group_Does_Not_Belong_To_Academic_Year()
+    {
+        var (context, mapper) = CreateContext();
+        context.AcademicYears.Add(new AcademicYear
+        {
+            Id = 500,
+            Name = "Other Year",
+            StartDate = new DateOnly(2027, 9, 1),
+            EndDate = new DateOnly(2028, 6, 30)
+        });
+        await context.SaveChangesAsync();
+        var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
+
+        var result = await service.CreateAsync(new CreateStudentDto("Wrong Group", "01000000000", null, 500, 1, null));
 
         Assert.False(result.Succeeded);
         Assert.Empty(context.Students);

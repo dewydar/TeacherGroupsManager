@@ -15,6 +15,14 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
     public async Task<IReadOnlyList<GroupDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await GroupsQuery().OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime).ToListAsync(cancellationToken));
 
+    public async Task<IReadOnlyList<GroupDto>> GetByAcademicYearAsync(int academicYearId, CancellationToken cancellationToken = default) =>
+        mapper.Map(await GroupsQuery()
+            .AsNoTracking()
+            .Where(x => x.AcademicYearId == academicYearId)
+            .OrderBy(x => x.DayOfWeek)
+            .ThenBy(x => x.StartTime)
+            .ToListAsync(cancellationToken));
+
     public async Task<GroupDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await GroupsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } group ? mapper.Map(group) : null;
 

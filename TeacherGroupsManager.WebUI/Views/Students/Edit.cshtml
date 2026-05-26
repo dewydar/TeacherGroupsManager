@@ -7,8 +7,8 @@
         <div class="col-md-6"><label class="form-label">@L["StudentName"]</label><input class="form-control" name="FullName" value="@Model.FullName" /></div>
         <div class="col-md-6"><label class="form-label">@L["StudentMobile"]</label><input class="form-control" name="Mobile" value="@Model.Mobile" /></div>
         <div class="col-md-6"><label class="form-label">@L["ParentMobile"]</label><input class="form-control" name="ParentMobile" value="@Model.ParentMobile" /></div>
-        <div class="col-md-6"><label class="form-label">@L["AcademicYear"]</label><select class="form-select" name="AcademicYearId"><option value="0">@L["SelectAcademicYear"]</option>@foreach (var year in (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears){<option value="@year.Id" selected="@(year.Id == Model.AcademicYearId)">@year.Name</option>}</select></div>
-        <div class="col-md-6"><label class="form-label">@L["Group"]</label><select class="form-select" name="GroupId"><option value="0">@L["SelectGroup"]</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select" name="AcademicYearId"><option value="0">@L["SelectAcademicYear"]</option>@foreach (var year in (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears){<option value="@year.Id" selected="@(year.Id == Model.AcademicYearId)">@year.Name</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">@L["Group"]</label><select id="GroupId" class="form-select" name="GroupId"><option value="0">@L["SelectGroup"]</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
         <div class="col-md-6"><label class="form-check mt-4"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> @L["Active"]</label></div>
         <div class="col-12"><label class="form-label">@L["Notes"]</label><textarea class="form-control" name="Notes">@Model.Notes</textarea></div>
     </div>
@@ -16,6 +16,29 @@
     <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
 
+@section Scripts {
+    <script>
+        (() => {
+            const academicYearSelect = document.getElementById('AcademicYearId');
+            const groupSelect = document.getElementById('GroupId');
+            const placeholder = groupSelect.options[0].text;
 
+            const resetGroups = () => {
+                groupSelect.innerHTML = '';
+                groupSelect.append(new Option(placeholder, '0'));
+            };
 
+            const loadGroups = async () => {
+                resetGroups();
+                if (!academicYearSelect.value || academicYearSelect.value === '0') return;
+
+                const response = await fetch(`@Url.Action("GroupsByAcademicYear")?academicYearId=${encodeURIComponent(academicYearSelect.value)}`);
+                const groups = await response.json();
+                groups.forEach(group => groupSelect.append(new Option(group.name, group.id)));
+            };
+
+            academicYearSelect.addEventListener('change', loadGroups);
+        })();
+    </script>
+}
 

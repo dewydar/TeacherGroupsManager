@@ -48,6 +48,7 @@ public interface IAcademicYearService
 public interface IGroupService
 {
     Task<IReadOnlyList<GroupDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<GroupDto>> GetByAcademicYearAsync(int academicYearId, CancellationToken cancellationToken = default);
     Task<DataTableResponseDto<GroupDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<GroupDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateGroupDto dto, CancellationToken cancellationToken = default);

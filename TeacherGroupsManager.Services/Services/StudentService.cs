@@ -136,7 +136,7 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoc
         {
             return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         }
-        if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId, cancellationToken))
+        if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId && x.AcademicYearId == academicYearId, cancellationToken))
         {
             return OperationResult.Failure(localizer["GroupNotFound"]);
         }

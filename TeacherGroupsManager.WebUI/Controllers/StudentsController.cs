@@ -29,8 +29,19 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        await FillLookups(cancellationToken);
+        await FillLookups(cancellationToken, includeAllGroupsWhenNoYear: false);
         return View(new CreateStudentDto(string.Empty, string.Empty, null, 0, 0, null));
+    }
+
+    public async Task<IActionResult> GroupsByAcademicYear(int academicYearId, CancellationToken cancellationToken)
+    {
+        if (academicYearId <= 0)
+        {
+            return Json(Array.Empty<object>());
+        }
+
+        var groups = await groupService.GetByAcademicYearAsync(academicYearId, cancellationToken);
+        return Json(groups.Select(x => new { id = x.Id, name = x.Name }));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -38,21 +49,21 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
     {
         if (!ModelState.IsValid)
         {
-            await FillLookups(cancellationToken);
+            await FillLookups(cancellationToken, dto.AcademicYearId, includeAllGroupsWhenNoYear: false);
             return View(dto);
         }
         if (dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredAcademicYear"]);
         if (dto.GroupId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredGroup"]);
         if (!ModelState.IsValid)
         {
-            await FillLookups(cancellationToken);
+            await FillLookups(cancellationToken, dto.AcademicYearId, includeAllGroupsWhenNoYear: false);
             return View(dto);
         }
         var result = await service.CreateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
         ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
-        await FillLookups(cancellationToken);
+        await FillLookups(cancellationToken, dto.AcademicYearId, includeAllGroupsWhenNoYear: false);
         return View(dto);
     }
 
@@ -60,7 +71,7 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
     {
         var student = await service.GetByIdAsync(id, cancellationToken);
         if (student is null) return NotFound();
-        await FillLookups(cancellationToken);
+        await FillLookups(cancellationToken, student.AcademicYearId);
         return View(new EditStudentDto(student.Id, student.FullName, student.Mobile, student.ParentMobile, student.AcademicYearId, student.GroupId, student.Notes, student.IsActive));
     }
 
@@ -69,21 +80,21 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
     {
         if (!ModelState.IsValid)
         {
-            await FillLookups(cancellationToken);
+            await FillLookups(cancellationToken, dto.AcademicYearId);
             return View(dto);
         }
         if (dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredAcademicYear"]);
         if (dto.GroupId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredGroup"]);
         if (!ModelState.IsValid)
         {
-            await FillLookups(cancellationToken);
+            await FillLookups(cancellationToken, dto.AcademicYearId);
             return View(dto);
         }
         var result = await service.UpdateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
         ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
-        await FillLookups(cancellationToken);
+        await FillLookups(cancellationToken, dto.AcademicYearId);
         return View(dto);
     }
 
@@ -95,10 +106,12 @@ public class StudentsController(IStudentService service, IAcademicYearService ac
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task FillLookups(CancellationToken cancellationToken)
+    private async Task FillLookups(CancellationToken cancellationToken, int? academicYearId = null, bool includeAllGroupsWhenNoYear = true)
     {
         ViewBag.AcademicYears = await academicYearService.GetAllAsync(cancellationToken);
-        ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+        ViewBag.Groups = academicYearId is > 0
+            ? await groupService.GetByAcademicYearAsync(academicYearId.Value, cancellationToken)
+            : includeAllGroupsWhenNoYear ? await groupService.GetAllAsync(cancellationToken) : Array.Empty<GroupDto>();
     }
 }
 
