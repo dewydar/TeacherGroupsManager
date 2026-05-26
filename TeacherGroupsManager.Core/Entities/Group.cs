@@ -9,15 +9,12 @@ public class Group : BaseEntity
     public int AcademicYearId { get; set; }
     public AcademicYear AcademicYear { get; set; } = null!;
     public GroupType GroupType { get; set; }
-    public int? TeacherId { get; set; }
-    public Employee? Teacher { get; set; }
-    public int? AssistantTeacherId { get; set; }
-    public Employee? AssistantTeacher { get; set; }
     public DayOfWeek DayOfWeek { get; set; }
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public decimal DefaultLessonPrice { get; set; }
     public bool IsActive { get; set; } = true;
+    public ICollection<GroupSchedule> Schedules { get; set; } = new List<GroupSchedule>();
     public ICollection<Student> Students { get; set; } = new List<Student>();
     public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

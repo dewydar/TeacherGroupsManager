@@ -11,7 +11,7 @@ using TeacherGroupsManager.WebUI.Infrastructure;
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.GroupsManage)]
-public class GroupsController(IGroupService service, IAcademicYearService academicYearService, IEmployeeService employeeService, IStringLocalizer<SharedResource> localizer) : Controller
+public class GroupsController(IGroupService service, IAcademicYearService academicYearService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index(GroupType? type, CancellationToken cancellationToken)
     {
@@ -34,7 +34,8 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         await FillLookups(cancellationToken);
-        return View(new CreateGroupDto(string.Empty, 0, GroupType.Public, null, null, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 0));
+        var schedules = new List<GroupScheduleDto> { new(DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0)) };
+        return View(new CreateGroupDto(string.Empty, 0, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 0, true, schedules));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -64,7 +65,7 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
         var group = await service.GetByIdAsync(id, cancellationToken);
         if (group is null) return NotFound();
         await FillLookups(cancellationToken);
-        return View(new EditGroupDto(group.Id, group.Name, group.AcademicYearId, group.GroupType, group.TeacherId, group.AssistantTeacherId, group.DayOfWeek, group.StartTime, group.EndTime, group.DefaultLessonPrice, group.IsActive));
+        return View(new EditGroupDto(group.Id, group.Name, group.AcademicYearId, group.GroupType, group.DayOfWeek, group.StartTime, group.EndTime, group.DefaultLessonPrice, group.IsActive, group.Schedules?.ToList()));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -100,7 +101,6 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
     private async Task FillLookups(CancellationToken cancellationToken)
     {
         ViewBag.AcademicYears = await academicYearService.GetAllAsync(cancellationToken);
-        ViewBag.Employees = await employeeService.GetAllAsync(cancellationToken);
     }
 }
 

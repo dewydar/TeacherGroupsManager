@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = L["Groups"];
     var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
-    var employees = (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees;
     var initialGroupType = ViewBag.GroupType is null ? "" : ((int)ViewBag.GroupType).ToString();
 }
 @Html.AntiForgeryToken()
@@ -11,8 +10,6 @@
         <div class="col-md-2"><label class="form-label">@L["GroupName"]</label><input id="Name" class="form-control" /></div>
         <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
         <div class="col-md-2"><label class="form-label">@L["LessonType"]</label><select id="GroupType" class="form-select"><option value="">@L["All"]</option><option value="1">@L["PrivateLesson"]</option><option value="2">@L["PublicGroup"]</option></select></div>
-        <div class="col-md-2"><label class="form-label">@L["Teacher"]</label><select id="TeacherId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
-        <div class="col-md-2"><label class="form-label">@L["AssistantTeacher"]</label><select id="AssistantTeacherId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
         <div class="col-md-1"><label class="form-label">@L["Day"]</label><select id="DayOfWeek" class="form-select"><option value="">@L["All"]</option><option value="6">@L["Saturday"]</option><option value="0">@L["Sunday"]</option><option value="1">@L["Monday"]</option><option value="2">@L["Tuesday"]</option><option value="3">@L["Wednesday"]</option><option value="4">@L["Thursday"]</option><option value="5">@L["Friday"]</option></select></div>
         <div class="col-md-1"><label class="form-label">@L["Status"]</label><select id="IsActive" class="form-select"><option value="">@L["All"]</option><option value="true">@L["Active"]</option><option value="false">@L["Inactive"]</option></select></div>
         <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
@@ -34,13 +31,13 @@
             searchButtonSelector: '#SearchFilters',
             resetButtonSelector: '#ResetFilters',
             reloadButtonSelector: '#ReloadTable',
-            filters: { name: '#Name', academicYearId: '#AcademicYearId', groupType: '#GroupType', teacherId: '#TeacherId', assistantTeacherId: '#AssistantTeacherId', dayOfWeek: '#DayOfWeek', isActive: '#IsActive' },
+            filters: { name: '#Name', academicYearId: '#AcademicYearId', groupType: '#GroupType', dayOfWeek: '#DayOfWeek', isActive: '#IsActive' },
             columns: [
                 { data: 'name' },
                 { data: 'academicYearName' },
                 { data: 'groupType', render: renderGroupType },
                 { data: 'dayOfWeek', render: renderDayOfWeek },
-                { data: 'startTime', render: function (data, type, row) { return `${row.startTime} - ${row.endTime}`; } },
+                { data: 'schedules', render: renderGroupSchedules },
                 { data: 'defaultLessonPrice', render: renderMoney },
                 { data: 'isActive', render: renderBooleanStatus },
                 { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('Groups', id, true); } }

@@ -199,6 +199,64 @@
         return t.days[Number(value)] || '';
     };
 
+    window.renderGroupSchedules = function (value, type, row) {
+        const schedules = Array.isArray(row.schedules) && row.schedules.length ? row.schedules : [{
+            dayOfWeek: row.dayOfWeek,
+            startTime: row.startTime,
+            endTime: row.endTime
+        }];
+
+        return schedules.map(function (schedule) {
+            return `${window.renderDayOfWeek(schedule.dayOfWeek)} ${schedule.startTime} - ${schedule.endTime}`;
+        }).join('<br>');
+    };
+
+    window.initGroupSchedulesForm = function (formSelector, tableSelector, addButtonSelector) {
+        const $form = $(formSelector);
+        const $table = $(tableSelector);
+        const dayOptions = t.days.map(function (day, index) {
+            return `<option value="${index}">${day}</option>`;
+        }).join('');
+
+        function reindexSchedules() {
+            $table.find('tbody tr').each(function (index) {
+                $(this).find('.schedule-day').attr('name', `Schedules[${index}].DayOfWeek`);
+                $(this).find('.schedule-start').attr('name', `Schedules[${index}].StartTime`);
+                $(this).find('.schedule-end').attr('name', `Schedules[${index}].EndTime`);
+            });
+            syncPrimarySchedule();
+        }
+
+        function syncPrimarySchedule() {
+            const $first = $table.find('tbody tr:first');
+            $('#PrimaryDayOfWeek').val($first.find('.schedule-day').val() || '6');
+            $('#PrimaryStartTime').val($first.find('.schedule-start').val() || '18:00');
+            $('#PrimaryEndTime').val($first.find('.schedule-end').val() || '20:00');
+        }
+
+        $(addButtonSelector).on('click', function () {
+            $table.find('tbody').append(`<tr>
+                <td><select class="form-select schedule-day">${dayOptions}</select></td>
+                <td><input class="form-control schedule-start" type="time" value="18:00" /></td>
+                <td><input class="form-control schedule-end" type="time" value="20:00" /></td>
+                <td><button class="btn btn-outline-danger btn-sm remove-schedule" type="button">${t.delete}</button></td>
+            </tr>`);
+            reindexSchedules();
+        });
+
+        $table.on('click', '.remove-schedule', function () {
+            if ($table.find('tbody tr').length <= 1) return;
+            $(this).closest('tr').remove();
+            reindexSchedules();
+        });
+
+        $table.on('change', '.schedule-day, .schedule-start, .schedule-end', syncPrimarySchedule);
+        $form.on('submit', function () {
+            reindexSchedules();
+            syncPrimarySchedule();
+        });
+    };
+
     window.renderActions = function (controller, id, includeDetails, permissionsUrl) {
         const details = includeDetails ? `<a class="btn btn-sm btn-outline-secondary" href="/${controller}/Details/${id}">${t.details}</a> ` : '';
         const permissions = permissionsUrl ? `<a class="btn btn-sm btn-outline-secondary" href="${permissionsUrl}/${id}">${t.permissions}</a> ` : '';

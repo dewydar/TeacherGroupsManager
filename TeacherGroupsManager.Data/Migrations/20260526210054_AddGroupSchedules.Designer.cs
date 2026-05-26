@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeacherGroupsManager.Data.Context;
 
@@ -11,9 +12,11 @@ using TeacherGroupsManager.Data.Context;
 namespace TeacherGroupsManager.Data.Migrations
 {
     [DbContext(typeof(TeacherGroupsDbContext))]
-    partial class TeacherGroupsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260526210054_AddGroupSchedules")]
+    partial class AddGroupSchedules
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,6 +155,9 @@ namespace TeacherGroupsManager.Data.Migrations
                     b.Property<int>("AcademicYearId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AssistantTeacherId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -180,6 +186,9 @@ namespace TeacherGroupsManager.Data.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -190,7 +199,11 @@ namespace TeacherGroupsManager.Data.Migrations
 
                     b.HasIndex("AcademicYearId");
 
+                    b.HasIndex("AssistantTeacherId");
+
                     b.HasIndex("CreatedByEmployeeId");
+
+                    b.HasIndex("TeacherId");
 
                     b.HasIndex("UpdatedByEmployeeId");
 
@@ -825,9 +838,19 @@ namespace TeacherGroupsManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TeacherGroupsManager.Core.Entities.Employee", "AssistantTeacher")
+                        .WithMany()
+                        .HasForeignKey("AssistantTeacherId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("TeacherGroupsManager.Core.Entities.Employee", "CreatedByEmployee")
                         .WithMany()
                         .HasForeignKey("CreatedByEmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TeacherGroupsManager.Core.Entities.Employee", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TeacherGroupsManager.Core.Entities.Employee", "UpdatedByEmployee")
@@ -837,7 +860,11 @@ namespace TeacherGroupsManager.Data.Migrations
 
                     b.Navigation("AcademicYear");
 
+                    b.Navigation("AssistantTeacher");
+
                     b.Navigation("CreatedByEmployee");
+
+                    b.Navigation("Teacher");
 
                     b.Navigation("UpdatedByEmployee");
                 });

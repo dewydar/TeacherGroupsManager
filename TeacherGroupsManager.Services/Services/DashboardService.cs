@@ -33,8 +33,9 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
             g.Students.SelectMany(s => s.MonthlyPayments).Where(p => p.Month == now.Month && p.Year == now.Year).Sum(p => p.RemainingAmount),
             $"/Groups/Details/{g.Id}")).ToListAsync(cancellationToken);
 
-        var groupsByDay = await groups.GroupBy(x => x.DayOfWeek)
-            .Select(x => new GroupDayDto(x.Key, x.Key.DayToArabic(), x.Count(), x.Select(g => g.Name).ToList()))
+        var groupsByDay = await unitOfWork.Repository<GroupSchedule>().Query()
+            .GroupBy(x => x.DayOfWeek)
+            .Select(x => new GroupDayDto(x.Key, x.Key.DayToArabic(), x.Select(schedule => schedule.GroupId).Distinct().Count(), x.Select(schedule => schedule.Group.Name).Distinct().ToList()))
             .ToListAsync(cancellationToken);
 
         return new DashboardSummaryDto(

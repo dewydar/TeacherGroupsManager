@@ -14,6 +14,7 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<AcademicYear> AcademicYears => Set<AcademicYear>();
     public DbSet<Group> Groups => Set<Group>();
+    public DbSet<GroupSchedule> GroupSchedules => Set<GroupSchedule>();
     public DbSet<Student> Students => Set<Student>();
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<LessonStudent> LessonStudents => Set<LessonStudent>();
@@ -25,6 +26,7 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<LessonStudent>().HasKey(x => new { x.LessonId, x.StudentId });
 
         modelBuilder.Entity<Group>().Property(x => x.DefaultLessonPrice).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<GroupSchedule>().HasIndex(x => new { x.GroupId, x.DayOfWeek, x.StartTime });
         modelBuilder.Entity<Lesson>().Property(x => x.Price).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RequiredAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.PaidAmount).HasColumnType("decimal(18,2)");
@@ -46,17 +48,11 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
-        modelBuilder.Entity<Group>()
-            .HasOne(x => x.Teacher)
-            .WithMany()
-            .HasForeignKey(x => x.TeacherId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Group>()
-            .HasOne(x => x.AssistantTeacher)
-            .WithMany()
-            .HasForeignKey(x => x.AssistantTeacherId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<GroupSchedule>()
+            .HasOne(x => x.Group)
+            .WithMany(x => x.Schedules)
+            .HasForeignKey(x => x.GroupId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Student>()
             .HasOne(x => x.AcademicYear)
@@ -128,5 +124,6 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<Group>().HasData(
             new Group { Id = 1, Name = "مجموعة السبت مساء", AcademicYearId = 1, GroupType = GroupType.Public, DayOfWeek = DayOfWeek.Saturday, StartTime = new TimeOnly(18, 0), EndTime = new TimeOnly(20, 0), DefaultLessonPrice = 150, IsActive = true },
             new Group { Id = 2, Name = "درس خاص الأحد", AcademicYearId = 2, GroupType = GroupType.Private, DayOfWeek = DayOfWeek.Sunday, StartTime = new TimeOnly(19, 0), EndTime = new TimeOnly(20, 30), DefaultLessonPrice = 300, IsActive = true });
+
     }
 }

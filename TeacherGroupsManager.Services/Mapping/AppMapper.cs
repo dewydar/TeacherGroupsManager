@@ -32,6 +32,10 @@ public partial class AppMapper
 
     public partial List<GroupDto> Map(IEnumerable<Group> groups);
 
+    public partial GroupScheduleDto Map(GroupSchedule schedule);
+
+    public partial List<GroupScheduleDto> Map(IEnumerable<GroupSchedule> schedules);
+
     [MapProperty(nameof(@Student.AcademicYear.Name), nameof(StudentDto.AcademicYearName))]
     [MapProperty(nameof(@Student.Group.Name), nameof(StudentDto.GroupName))]
     [MapProperty(nameof(@Student.CreatedByEmployee.FullName), nameof(StudentDto.CreatedByEmployeeName))]

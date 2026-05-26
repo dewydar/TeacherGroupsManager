@@ -12,7 +12,13 @@ else
         <dl class="row">
             <dt class="col-sm-3">@L["AcademicYear"]</dt><dd class="col-sm-9">@Model.AcademicYearName</dd>
             <dt class="col-sm-3">@L["Group"]</dt><dd class="col-sm-9">@Model.GroupType.ToArabic()</dd>
-            <dt class="col-sm-3">@L["Time"]</dt><dd class="col-sm-9">@Model.DayOfWeek.DayToArabic() @Model.StartTime - @Model.EndTime</dd>
+            <dt class="col-sm-3">@L["Time"]</dt>
+            <dd class="col-sm-9">
+                @foreach (var schedule in Model.Schedules ?? new List<TeacherGroupsManager.Dtos.GroupScheduleDto> { new(Model.DayOfWeek, Model.StartTime, Model.EndTime) })
+                {
+                    <div>@schedule.DayOfWeek.DayToArabic() @schedule.StartTime - @schedule.EndTime</div>
+                }
+            </dd>
             <dt class="col-sm-3">@L["Price"]</dt><dd class="col-sm-9">@Model.DefaultLessonPrice.ToString("N2")</dd>
             <dt class="col-sm-3">@L["CreatedBy"]</dt><dd class="col-sm-9">@(Model.CreatedByEmployeeName ?? "-")</dd>
             <dt class="col-sm-3">@L["CreatedAt"]</dt><dd class="col-sm-9">@(Model.CreatedAt?.ToLocalTime().ToString("yyyy/MM/dd HH:mm") ?? "-")</dd>

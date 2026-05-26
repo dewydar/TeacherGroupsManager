@@ -43,6 +43,10 @@ public class CreateGroupDtoValidator : AbstractValidator<CreateGroupDto>
         RuleFor(x => x.AcademicYearId).GreaterThan(0).WithMessage(localizer["RequiredAcademicYear"]);
         RuleFor(x => x.DefaultLessonPrice).GreaterThan(0).WithMessage(localizer["PriceGreaterThanZero"]);
         RuleFor(x => x.EndTime).GreaterThan(x => x.StartTime).WithMessage(localizer["EndTimeAfterStartTime"]);
+        RuleForEach(x => x.Schedules).ChildRules(schedule =>
+        {
+            schedule.RuleFor(x => x.EndTime).GreaterThan(x => x.StartTime).WithMessage(localizer["EndTimeAfterStartTime"]);
+        });
     }
 }
 

@@ -14,7 +14,7 @@ public class GroupServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new GroupService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var result = await service.CreateAsync(new CreateGroupDto("Test Group", 1, GroupType.Public, null, null, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
+        var result = await service.CreateAsync(new CreateGroupDto("Test Group", 1, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
 
         Assert.True(result.Succeeded);
         Assert.Equal(3, await context.Groups.CountAsync());
@@ -26,7 +26,7 @@ public class GroupServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new GroupService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var result = await service.CreateAsync(new CreateGroupDto("Missing Year", 999, GroupType.Public, null, null, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
+        var result = await service.CreateAsync(new CreateGroupDto("Missing Year", 999, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
 
         Assert.False(result.Succeeded);
         Assert.Equal(2, await context.Groups.CountAsync());
@@ -38,8 +38,8 @@ public class GroupServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new GroupService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var first = await service.CreateAsync(new CreateGroupDto("Test Group", 1, GroupType.Public, null, null, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
-        var duplicate = await service.CreateAsync(new CreateGroupDto(" test group ", 1, GroupType.Public, null, null, DayOfWeek.Sunday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
+        var first = await service.CreateAsync(new CreateGroupDto("Test Group", 1, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
+        var duplicate = await service.CreateAsync(new CreateGroupDto(" test group ", 1, GroupType.Public, DayOfWeek.Sunday, new TimeOnly(18, 0), new TimeOnly(20, 0), 150));
 
         Assert.True(first.Succeeded);
         Assert.False(duplicate.Succeeded);

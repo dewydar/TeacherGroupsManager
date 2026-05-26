@@ -38,7 +38,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
 
     public async Task<OperationResult> CreateAsync(CreateGroupDto dto, CancellationToken cancellationToken = default)
     {
-        var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.TeacherId, dto.AssistantTeacherId, cancellationToken);
+        var validation = await ValidateReferencesAsync(dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var name = dto.Name.Trim();
         var normalizedName = name.ToLower();
@@ -47,18 +47,23 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
             return OperationResult.Failure(localizer["DuplicateGroup"]);
         }
 
+        var schedules = NormalizeSchedules(dto.Schedules, dto.DayOfWeek, dto.StartTime, dto.EndTime);
+        var scheduleValidation = ValidateSchedules(schedules);
+        if (!scheduleValidation.Succeeded) return scheduleValidation;
+        var primarySchedule = schedules.First();
         await unitOfWork.Repository<Group>().AddAsync(new Group
         {
             Name = name,
             AcademicYearId = dto.AcademicYearId,
             GroupType = dto.GroupType,
-            TeacherId = dto.TeacherId,
-            AssistantTeacherId = dto.AssistantTeacherId,
-            DayOfWeek = dto.DayOfWeek,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
+            DayOfWeek = primarySchedule.DayOfWeek,
+            StartTime = primarySchedule.StartTime,
+            EndTime = primarySchedule.EndTime,
             DefaultLessonPrice = dto.DefaultLessonPrice,
-            IsActive = dto.IsActive
+            IsActive = dto.IsActive,
+            Schedules = schedules
+                .Select(x => new GroupSchedule { DayOfWeek = x.DayOfWeek, StartTime = x.StartTime, EndTime = x.EndTime })
+                .ToList()
         }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success(localizer["GroupSaved"]);
@@ -66,9 +71,11 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
 
     public async Task<OperationResult> UpdateAsync(EditGroupDto dto, CancellationToken cancellationToken = default)
     {
-        var group = await unitOfWork.Repository<Group>().GetByIdAsync(dto.Id, cancellationToken);
+        var group = await unitOfWork.Repository<Group>().Query()
+            .Include(x => x.Schedules)
+            .FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
         if (group is null) return OperationResult.Failure(localizer["GroupNotFound"]);
-        var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.TeacherId, dto.AssistantTeacherId, cancellationToken);
+        var validation = await ValidateReferencesAsync(dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var name = dto.Name.Trim();
         var normalizedName = name.ToLower();
@@ -80,13 +87,25 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
         group.Name = name;
         group.AcademicYearId = dto.AcademicYearId;
         group.GroupType = dto.GroupType;
-        group.TeacherId = dto.TeacherId;
-        group.AssistantTeacherId = dto.AssistantTeacherId;
-        group.DayOfWeek = dto.DayOfWeek;
-        group.StartTime = dto.StartTime;
-        group.EndTime = dto.EndTime;
+        var schedules = NormalizeSchedules(dto.Schedules, dto.DayOfWeek, dto.StartTime, dto.EndTime);
+        var scheduleValidation = ValidateSchedules(schedules);
+        if (!scheduleValidation.Succeeded) return scheduleValidation;
+        var primarySchedule = schedules.First();
+        group.DayOfWeek = primarySchedule.DayOfWeek;
+        group.StartTime = primarySchedule.StartTime;
+        group.EndTime = primarySchedule.EndTime;
         group.DefaultLessonPrice = dto.DefaultLessonPrice;
         group.IsActive = dto.IsActive;
+        group.Schedules.Clear();
+        foreach (var schedule in schedules)
+        {
+            group.Schedules.Add(new GroupSchedule
+            {
+                DayOfWeek = schedule.DayOfWeek,
+                StartTime = schedule.StartTime,
+                EndTime = schedule.EndTime
+            });
+        }
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success(localizer["GroupUpdated"]);
     }
@@ -101,6 +120,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
 
     private IQueryable<Group> GroupsQuery() => unitOfWork.Repository<Group>().Query()
         .Include(x => x.AcademicYear)
+        .Include(x => x.Schedules.OrderBy(schedule => schedule.DayOfWeek).ThenBy(schedule => schedule.StartTime))
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
 
@@ -109,9 +129,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
         if (request.Filter("name") is { } name) query = query.Where(x => x.Name.Contains(name));
         if (request.FilterInt("academicYearId") is { } academicYearId) query = query.Where(x => x.AcademicYearId == academicYearId);
         if (request.FilterInt("groupType") is { } groupType) query = query.Where(x => (int)x.GroupType == groupType);
-        if (request.FilterInt("teacherId") is { } teacherId) query = query.Where(x => x.TeacherId == teacherId);
-        if (request.FilterInt("assistantTeacherId") is { } assistantTeacherId) query = query.Where(x => x.AssistantTeacherId == assistantTeacherId);
-        if (request.FilterInt("dayOfWeek") is { } dayOfWeek) query = query.Where(x => (int)x.DayOfWeek == dayOfWeek);
+        if (request.FilterInt("dayOfWeek") is { } dayOfWeek) query = query.Where(x => x.Schedules.Any(schedule => (int)schedule.DayOfWeek == dayOfWeek) || (!x.Schedules.Any() && (int)x.DayOfWeek == dayOfWeek));
         if (request.FilterBool("isActive") is { } isActive) query = query.Where(x => x.IsActive == isActive);
         return query;
     }
@@ -139,20 +157,40 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
         };
     }
 
-    private async Task<OperationResult> ValidateReferencesAsync(int academicYearId, int? teacherId, int? assistantTeacherId, CancellationToken cancellationToken)
+    private async Task<OperationResult> ValidateReferencesAsync(int academicYearId, CancellationToken cancellationToken)
     {
         if (!await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id == academicYearId, cancellationToken))
         {
             return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         }
-        if (teacherId.HasValue && !await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id == teacherId.Value, cancellationToken))
-        {
-            return OperationResult.Failure(localizer["TeacherNotFound"]);
-        }
-        if (assistantTeacherId.HasValue && !await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id == assistantTeacherId.Value, cancellationToken))
-        {
-            return OperationResult.Failure(localizer["AssistantTeacherNotFound"]);
-        }
         return OperationResult.Success();
+    }
+
+    private static List<GroupScheduleDto> NormalizeSchedules(IReadOnlyList<GroupScheduleDto>? schedules, DayOfWeek fallbackDay, TimeOnly fallbackStart, TimeOnly fallbackEnd)
+    {
+        var normalized = (schedules is { Count: > 0 }
+                ? schedules
+                : [new GroupScheduleDto(fallbackDay, fallbackStart, fallbackEnd)])
+            .GroupBy(x => new { x.DayOfWeek, x.StartTime, x.EndTime })
+            .Select(x => x.First())
+            .OrderBy(x => x.DayOfWeek)
+            .ThenBy(x => x.StartTime)
+            .ToList();
+
+        return normalized.Count > 0
+            ? normalized
+            : [new GroupScheduleDto(fallbackDay, fallbackStart, fallbackEnd)];
+    }
+
+    private OperationResult ValidateSchedules(IReadOnlyList<GroupScheduleDto> schedules)
+    {
+        if (schedules.Count == 0)
+        {
+            return OperationResult.Failure(localizer["EndTimeAfterStartTime"]);
+        }
+
+        return schedules.Any(x => x.EndTime <= x.StartTime)
+            ? OperationResult.Failure(localizer["EndTimeAfterStartTime"])
+            : OperationResult.Success();
     }
 }
