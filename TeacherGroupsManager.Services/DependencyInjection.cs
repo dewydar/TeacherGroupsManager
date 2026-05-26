@@ -15,7 +15,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
-        services.AddAutoMapper(typeof(AppMappingProfile));
+        services.AddSingleton<AppMapper>();
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IRoleService, RoleService>();

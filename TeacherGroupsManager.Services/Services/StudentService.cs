@@ -1,20 +1,20 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class StudentService(IUnitOfWork unitOfWork, IMapper mapper) : IStudentService
+public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudentService
 {
     public async Task<IReadOnlyList<StudentDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map<List<StudentDto>>(await StudentsQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
+        mapper.Map(await StudentsQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
 
     public async Task<StudentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<StudentDto?>(await StudentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken));
+        await StudentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } student ? mapper.Map(student) : null;
 
     public async Task<OperationResult> CreateAsync(CreateStudentDto dto, CancellationToken cancellationToken = default)
     {

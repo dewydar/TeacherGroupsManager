@@ -1,21 +1,21 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Services.Security;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher) : IEmployeeService
+public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPasswordHasher passwordHasher) : IEmployeeService
 {
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map<List<EmployeeDto>>(await EmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
+        mapper.Map(await EmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
 
     public async Task<EmployeeDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<EmployeeDto?>(await EmployeesQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken));
+        await EmployeesQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } employee ? mapper.Map(employee) : null;
 
     public async Task<OperationResult> CreateAsync(CreateEmployeeDto dto, CancellationToken cancellationToken = default)
     {

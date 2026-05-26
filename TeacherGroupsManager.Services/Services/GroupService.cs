@@ -1,20 +1,20 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class GroupService(IUnitOfWork unitOfWork, IMapper mapper) : IGroupService
+public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupService
 {
     public async Task<IReadOnlyList<GroupDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map<List<GroupDto>>(await GroupsQuery().OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime).ToListAsync(cancellationToken));
+        mapper.Map(await GroupsQuery().OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime).ToListAsync(cancellationToken));
 
     public async Task<GroupDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<GroupDto?>(await GroupsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken));
+        await GroupsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } group ? mapper.Map(group) : null;
 
     public async Task<OperationResult> CreateAsync(CreateGroupDto dto, CancellationToken cancellationToken = default)
     {

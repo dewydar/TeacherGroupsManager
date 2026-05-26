@@ -1,26 +1,26 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class PaymentService(IUnitOfWork unitOfWork, IMapper mapper) : IPaymentService
+public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPaymentService
 {
     public async Task<IReadOnlyList<MonthlyPaymentDto>> GetAllAsync(int? month = null, int? year = null, CancellationToken cancellationToken = default)
     {
         var query = PaymentsQuery();
         if (month.HasValue) query = query.Where(x => x.Month == month);
         if (year.HasValue) query = query.Where(x => x.Year == year);
-        return mapper.Map<List<MonthlyPaymentDto>>(await query.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ToListAsync(cancellationToken));
+        return mapper.Map(await query.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ToListAsync(cancellationToken));
     }
 
     public async Task<MonthlyPaymentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<MonthlyPaymentDto?>(await PaymentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken));
+        await PaymentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } payment ? mapper.Map(payment) : null;
 
     public async Task<OperationResult> CreateAsync(CreateMonthlyPaymentDto dto, CancellationToken cancellationToken = default)
     {

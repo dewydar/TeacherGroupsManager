@@ -1,20 +1,20 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class RoleService(IUnitOfWork unitOfWork, IMapper mapper) : IRoleService
+public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleService
 {
     public async Task<IReadOnlyList<RoleDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map<List<RoleDto>>(await unitOfWork.Repository<Role>().Query().OrderBy(x => x.Id).ToListAsync(cancellationToken));
+        mapper.Map(await unitOfWork.Repository<Role>().Query().OrderBy(x => x.Id).ToListAsync(cancellationToken));
 
     public async Task<RoleDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<RoleDto?>(await unitOfWork.Repository<Role>().GetByIdAsync(id, cancellationToken));
+        await unitOfWork.Repository<Role>().GetByIdAsync(id, cancellationToken) is { } role ? mapper.Map(role) : null;
 
     public async Task<OperationResult> CreateAsync(RoleDto dto, CancellationToken cancellationToken = default)
     {

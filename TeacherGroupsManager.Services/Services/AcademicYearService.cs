@@ -1,20 +1,20 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class AcademicYearService(IUnitOfWork unitOfWork, IMapper mapper) : IAcademicYearService
+public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper) : IAcademicYearService
 {
     public async Task<IReadOnlyList<AcademicYearDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map<List<AcademicYearDto>>(await unitOfWork.Repository<AcademicYear>().Query().OrderByDescending(x => x.StartDate).ToListAsync(cancellationToken));
+        mapper.Map(await unitOfWork.Repository<AcademicYear>().Query().OrderByDescending(x => x.StartDate).ToListAsync(cancellationToken));
 
     public async Task<AcademicYearDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        mapper.Map<AcademicYearDto?>(await unitOfWork.Repository<AcademicYear>().GetByIdAsync(id, cancellationToken));
+        await unitOfWork.Repository<AcademicYear>().GetByIdAsync(id, cancellationToken) is { } academicYear ? mapper.Map(academicYear) : null;
 
     public async Task<OperationResult> CreateAsync(CreateAcademicYearDto dto, CancellationToken cancellationToken = default)
     {

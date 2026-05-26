@@ -87,7 +87,7 @@ Contains DTOs, request models, response models, and ViewModels.
 
 ### TeacherGroupsManager.Services
 
-Contains business services, service interfaces, AutoMapper profiles, FluentValidation validators, permissions logic, and dashboard calculations.
+Contains business services, service interfaces, Mapperly mappers, FluentValidation validators, permissions logic, and dashboard calculations.
 
 ### TeacherGroupsManager.Services.Tests
 
