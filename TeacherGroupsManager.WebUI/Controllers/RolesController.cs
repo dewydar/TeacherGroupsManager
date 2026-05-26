@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
@@ -12,7 +13,16 @@ public class RolesController(IRoleService roleService, IPermissionService permis
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         ViewBag.Permissions = await permissionService.GetAllAsync(cancellationToken);
-        return View(await roleService.GetAllAsync(cancellationToken));
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GetData(CancellationToken cancellationToken)
+    {
+        var request = DataTablesRequestHelper.Parse(Request);
+        var result = await roleService.GetPagedAsync(request, cancellationToken);
+        return Json(result);
     }
 
     public IActionResult Create() => View(new RoleDto(0, string.Empty, string.Empty, true));

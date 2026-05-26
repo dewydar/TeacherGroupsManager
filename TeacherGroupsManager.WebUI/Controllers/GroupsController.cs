@@ -4,6 +4,7 @@ using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
@@ -12,8 +13,18 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
 {
     public async Task<IActionResult> Index(GroupType? type, CancellationToken cancellationToken)
     {
-        var data = await service.GetAllAsync(cancellationToken);
-        return View(type.HasValue ? data.Where(x => x.GroupType == type).ToList() : data);
+        await FillLookups(cancellationToken);
+        ViewBag.GroupType = type;
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GetData(CancellationToken cancellationToken)
+    {
+        var request = DataTablesRequestHelper.Parse(Request);
+        var result = await service.GetPagedAsync(request, cancellationToken);
+        return Json(result);
     }
 
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken) => View(await service.GetByIdAsync(id, cancellationToken));

@@ -1,6 +1,33 @@
-@using TeacherGroupsManager.Shared.Extensions
-@model IReadOnlyList<TeacherGroupsManager.Dtos.LessonDto>
-@{ ViewData["Title"] = "تقرير الدروس"; }
-<div class="panel"><table class="table"><thead><tr><th>الدرس</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.Title</td><td>@item.GroupName</td><td>@item.LessonType.ToArabic()</td><td>@item.LessonDate.ToString("yyyy/MM/dd")</td><td>@item.Price.ToString("N2")</td></tr>}
-</tbody></table></div>
+@{
+    ViewData["Title"] = "تقرير الدروس";
+    var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
+    var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
+}
+@Html.AntiForgeryToken()
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label">عنوان الدرس</label><input id="Title" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">الشهر</label><input id="Month" class="form-control" type="number" min="1" max="12" /></div>
+        <div class="col-md-2"><label class="form-label">السنة</label><input id="Year" class="form-control" type="number" /></div>
+        <div class="col-md-2 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive"><table id="reportLessonsTable" class="table w-100"><thead><tr><th>الدرس</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th></tr></thead><tbody></tbody></table></div>
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#reportLessonsTable',
+            url: '@Url.Action("LessonsData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: { title: '#Title', academicYearId: '#AcademicYearId', groupId: '#GroupId', month: '#Month', year: '#Year' },
+            columns: [
+                { data: 'title' }, { data: 'groupName' }, { data: 'lessonType', render: renderLessonType },
+                { data: 'lessonDate', render: renderDate }, { data: 'price', render: renderMoney }
+            ]
+        });
+    </script>
+}

@@ -1,16 +1,49 @@
-@using TeacherGroupsManager.Shared.Extensions
-@model IReadOnlyList<TeacherGroupsManager.Dtos.LessonDto>
-@{ ViewData["Title"] = "الدروس"; }
-<p><a class="btn btn-primary" asp-action="Create">إضافة درس</a></p>
-<div class="panel"><table class="table align-middle"><thead><tr><th>العنوان</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th><th>الشهر</th><th>السنة</th><th></th></tr></thead><tbody>
-@foreach (var item in Model)
-{
-    <tr>
-        <td>@item.Title</td><td>@item.GroupName</td><td>@item.LessonType.ToArabic()</td><td>@item.LessonDate.ToString("yyyy/MM/dd")</td><td>@item.Price.ToString("N2")</td><td>@item.Month</td><td>@item.Year</td>
-        <td class="text-nowrap">
-            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
-            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
-        </td>
-    </tr>
+@{
+    ViewData["Title"] = "الدروس";
+    var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
+    var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
 }
-</tbody></table></div>
+@Html.AntiForgeryToken()
+<p><a class="btn btn-primary" asp-action="Create">إضافة درس</a></p>
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label">عنوان الدرس</label><input id="Title" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">النوع</label><select id="LessonType" class="form-select"><option value="">الكل</option><option value="1">درس خاص</option><option value="2">درس للمجموعة بالكامل</option></select></div>
+        <div class="col-md-2"><label class="form-label">التاريخ من</label><input id="LessonDateFrom" class="form-control" type="date" /></div>
+        <div class="col-md-2"><label class="form-label">التاريخ إلى</label><input id="LessonDateTo" class="form-control" type="date" /></div>
+        <div class="col-md-2"><label class="form-label">الشهر</label><input id="Month" class="form-control" type="number" min="1" max="12" /></div>
+        <div class="col-md-2"><label class="form-label">السنة</label><input id="Year" class="form-control" type="number" /></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive">
+    <table id="lessonsTable" class="table align-middle w-100">
+        <thead><tr><th>العنوان</th><th>المجموعة</th><th>النوع</th><th>التاريخ</th><th>السعر</th><th>الشهر</th><th>السنة</th><th></th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#lessonsTable',
+            url: '@Url.Action("GetData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: { title: '#Title', academicYearId: '#AcademicYearId', groupId: '#GroupId', lessonType: '#LessonType', lessonDateFrom: '#LessonDateFrom', lessonDateTo: '#LessonDateTo', month: '#Month', year: '#Year' },
+            columns: [
+                { data: 'title' },
+                { data: 'groupName' },
+                { data: 'lessonType', render: renderLessonType },
+                { data: 'lessonDate', render: renderDate },
+                { data: 'price', render: renderMoney },
+                { data: 'month' },
+                { data: 'year' },
+                { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('Lessons', id); } }
+            ]
+        });
+    </script>
+}

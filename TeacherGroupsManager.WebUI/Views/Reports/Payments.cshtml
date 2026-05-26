@@ -1,6 +1,34 @@
-@using TeacherGroupsManager.Shared.Extensions
-@model IReadOnlyList<TeacherGroupsManager.Dtos.MonthlyPaymentDto>
-@{ ViewData["Title"] = "تقرير المدفوعات الشهرية"; }
-<div class="panel"><table class="table"><thead><tr><th>الطالب</th><th>المجموعة</th><th>الشهر</th><th>السنة</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.StudentName</td><td>@item.GroupName</td><td>@item.Month</td><td>@item.Year</td><td>@item.PaidAmount.ToString("N2")</td><td>@item.RemainingAmount.ToString("N2")</td><td>@item.PaymentStatus.ToArabic()</td></tr>}
-</tbody></table></div>
+@{
+    ViewData["Title"] = "تقرير المدفوعات الشهرية";
+    var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
+    var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
+}
+@Html.AntiForgeryToken()
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">الشهر</label><input id="Month" class="form-control" type="number" min="1" max="12" /></div>
+        <div class="col-md-2"><label class="form-label">السنة</label><input id="Year" class="form-control" type="number" /></div>
+        <div class="col-md-2"><label class="form-label">الحالة</label><select id="PaymentStatus" class="form-select"><option value="">الكل</option><option value="1">غير مدفوع</option><option value="2">مدفوع جزئي</option><option value="3">مدفوع</option></select></div>
+        <div class="col-md-2 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive"><table id="reportPaymentsTable" class="table w-100"><thead><tr><th>الطالب</th><th>المجموعة</th><th>الشهر</th><th>السنة</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead><tbody></tbody></table></div>
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#reportPaymentsTable',
+            url: '@Url.Action("PaymentsData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: { academicYearId: '#AcademicYearId', groupId: '#GroupId', month: '#Month', year: '#Year', paymentStatus: '#PaymentStatus' },
+            columns: [
+                { data: 'studentName' }, { data: 'groupName' }, { data: 'month' }, { data: 'year' },
+                { data: 'paidAmount', render: renderMoney }, { data: 'remainingAmount', render: renderMoney },
+                { data: 'paymentStatus', render: renderPaymentStatus }
+            ]
+        });
+    </script>
+}

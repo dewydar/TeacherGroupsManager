@@ -4,13 +4,28 @@ using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.LessonsManage)]
-public class LessonsController(ILessonService service, IGroupService groupService) : Controller
+public class LessonsController(ILessonService service, IGroupService groupService, IAcademicYearService academicYearService) : Controller
 {
-    public async Task<IActionResult> Index(CancellationToken cancellationToken) => View(await service.GetAllAsync(cancellationToken));
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    {
+        ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
+        ViewBag.AcademicYears = await academicYearService.GetAllAsync(cancellationToken);
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GetData(CancellationToken cancellationToken)
+    {
+        var request = DataTablesRequestHelper.Parse(Request);
+        var result = await service.GetPagedAsync(request, cancellationToken);
+        return Json(result);
+    }
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {

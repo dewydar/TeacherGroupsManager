@@ -3,13 +3,23 @@ using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.AcademicYearsManage)]
 public class AcademicYearsController(IAcademicYearService service) : Controller
 {
-    public async Task<IActionResult> Index(CancellationToken cancellationToken) => View(await service.GetAllAsync(cancellationToken));
+    public IActionResult Index() => View();
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GetData(CancellationToken cancellationToken)
+    {
+        var request = DataTablesRequestHelper.Parse(Request);
+        var result = await service.GetPagedAsync(request, cancellationToken);
+        return Json(result);
+    }
 
     public IActionResult Create() => View(new CreateAcademicYearDto(string.Empty, DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(9))));
 

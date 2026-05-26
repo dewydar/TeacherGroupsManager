@@ -1,15 +1,53 @@
-@model IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>
-@{ ViewData["Title"] = "الطلاب"; }
-<p><a class="btn btn-primary" asp-action="Create">إضافة طالب</a></p>
-<div class="panel"><table class="table align-middle"><thead><tr><th>الاسم</th><th>الجوال</th><th>ولي الأمر</th><th>السنة الدراسية</th><th>المجموعة</th><th>الحالة</th><th></th></tr></thead><tbody>
-@foreach (var item in Model)
-{
-    <tr>
-        <td>@item.FullName</td><td>@item.Mobile</td><td>@item.ParentMobile</td><td>@item.AcademicYearName</td><td>@item.GroupName</td><td>@(item.IsActive ? "نشط" : "غير نشط")</td>
-        <td class="text-nowrap">
-            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
-            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
-        </td>
-    </tr>
+@{
+    ViewData["Title"] = "الطلاب";
+    var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
+    var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
 }
-</tbody></table></div>
+@Html.AntiForgeryToken()
+<p><a class="btn btn-primary" asp-action="Create">إضافة طالب</a></p>
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label">اسم الطالب</label><input id="FullName" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">الجوال</label><input id="Mobile" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">ولي الأمر</label><input id="ParentMobile" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-1"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشط</option><option value="false">غير نشط</option></select></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive">
+    <table id="studentsTable" class="table align-middle w-100">
+        <thead><tr><th>الاسم</th><th>الجوال</th><th>ولي الأمر</th><th>السنة الدراسية</th><th>المجموعة</th><th>الحالة</th><th></th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#studentsTable',
+            url: '@Url.Action("GetData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: {
+                fullName: '#FullName',
+                mobile: '#Mobile',
+                parentMobile: '#ParentMobile',
+                academicYearId: '#AcademicYearId',
+                groupId: '#GroupId',
+                isActive: '#IsActive'
+            },
+            columns: [
+                { data: 'fullName' },
+                { data: 'mobile' },
+                { data: 'parentMobile' },
+                { data: 'academicYearName' },
+                { data: 'groupName' },
+                { data: 'isActive', render: renderBooleanStatus },
+                { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('Students', id); } }
+            ]
+        });
+    </script>
+}

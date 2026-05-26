@@ -16,6 +16,16 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper) : IAc
     public async Task<AcademicYearDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await unitOfWork.Repository<AcademicYear>().GetByIdAsync(id, cancellationToken) is { } academicYear ? mapper.Map(academicYear) : null;
 
+    public Task<DataTableResponseDto<AcademicYearDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            unitOfWork.Repository<AcademicYear>().Query().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(CreateAcademicYearDto dto, CancellationToken cancellationToken = default)
     {
         var name = dto.Name.Trim();
@@ -28,6 +38,35 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper) : IAc
         await unitOfWork.Repository<AcademicYear>().AddAsync(new AcademicYear { Name = name, StartDate = dto.StartDate, EndDate = dto.EndDate, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم حفظ السنة الدراسية بنجاح");
+    }
+
+    private static IQueryable<AcademicYear> ApplyFilters(IQueryable<AcademicYear> query, DataTableRequestDto request)
+    {
+        if (request.Filter("name") is { } name) query = query.Where(x => x.Name.Contains(name));
+        if (request.FilterDateOnly("startDate") is { } startDate) query = query.Where(x => x.StartDate >= startDate);
+        if (request.FilterDateOnly("endDate") is { } endDate) query = query.Where(x => x.EndDate <= endDate);
+        if (request.FilterBool("isActive") is { } isActive) query = query.Where(x => x.IsActive == isActive);
+        return query;
+    }
+
+    private static IQueryable<AcademicYear> ApplySearch(IQueryable<AcademicYear> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x => x.Name.Contains(search));
+    }
+
+    private static IQueryable<AcademicYear> ApplySorting(IQueryable<AcademicYear> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "name" => desc ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
+            "startDate" => desc ? query.OrderByDescending(x => x.StartDate) : query.OrderBy(x => x.StartDate),
+            "endDate" => desc ? query.OrderByDescending(x => x.EndDate) : query.OrderBy(x => x.EndDate),
+            "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
+            _ => query.OrderByDescending(x => x.StartDate)
+        };
     }
 
     public async Task<OperationResult> UpdateAsync(EditAcademicYearDto dto, CancellationToken cancellationToken = default)

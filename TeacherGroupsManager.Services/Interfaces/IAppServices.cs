@@ -11,6 +11,7 @@ public interface IAuthService
 public interface IRoleService
 {
     Task<IReadOnlyList<RoleDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<RoleDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<RoleDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(RoleDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(RoleDto dto, CancellationToken cancellationToken = default);
@@ -27,6 +28,7 @@ public interface IPermissionService
 public interface IEmployeeService
 {
     Task<IReadOnlyList<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<EmployeeDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<EmployeeDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateEmployeeDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditEmployeeDto dto, CancellationToken cancellationToken = default);
@@ -36,6 +38,7 @@ public interface IEmployeeService
 public interface IAcademicYearService
 {
     Task<IReadOnlyList<AcademicYearDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<AcademicYearDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<AcademicYearDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateAcademicYearDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditAcademicYearDto dto, CancellationToken cancellationToken = default);
@@ -45,6 +48,7 @@ public interface IAcademicYearService
 public interface IGroupService
 {
     Task<IReadOnlyList<GroupDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<GroupDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<GroupDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateGroupDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditGroupDto dto, CancellationToken cancellationToken = default);
@@ -54,6 +58,7 @@ public interface IGroupService
 public interface IStudentService
 {
     Task<IReadOnlyList<StudentDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<StudentDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<StudentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateStudentDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditStudentDto dto, CancellationToken cancellationToken = default);
@@ -63,6 +68,7 @@ public interface IStudentService
 public interface ILessonService
 {
     Task<IReadOnlyList<LessonDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<LessonDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<LessonDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateLessonDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditLessonDto dto, CancellationToken cancellationToken = default);
@@ -72,6 +78,7 @@ public interface ILessonService
 public interface IPaymentService
 {
     Task<IReadOnlyList<MonthlyPaymentDto>> GetAllAsync(int? month = null, int? year = null, CancellationToken cancellationToken = default);
+    Task<DataTableResponseDto<MonthlyPaymentDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<MonthlyPaymentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateMonthlyPaymentDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditMonthlyPaymentDto dto, CancellationToken cancellationToken = default);
@@ -81,11 +88,4 @@ public interface IPaymentService
 public interface IDashboardService
 {
     Task<DashboardSummaryDto> GetSummaryAsync(CancellationToken cancellationToken = default);
-}
-
-public interface IReportService
-{
-    Task<IReadOnlyList<StudentDto>> GetStudentsReportAsync(int? academicYearId, int? groupId, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<MonthlyPaymentDto>> GetPaymentsReportAsync(int? month, int? year, int? groupId, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<LessonDto>> GetLessonsReportAsync(int? groupId, int? month, int? year, CancellationToken cancellationToken = default);
 }

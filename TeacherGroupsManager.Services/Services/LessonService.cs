@@ -17,6 +17,16 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
     public async Task<LessonDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await LessonsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } lesson ? mapper.Map(lesson) : null;
 
+    public Task<DataTableResponseDto<LessonDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            LessonsQuery().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(CreateLessonDto dto, CancellationToken cancellationToken = default)
     {
         var validation = await ValidateReferencesAsync(dto.GroupId, dto.LessonType, dto.StudentIds, cancellationToken);
@@ -76,8 +86,45 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
 
     private IQueryable<Lesson> LessonsQuery() => unitOfWork.Repository<Lesson>().Query()
         .Include(x => x.Group)
+        .ThenInclude(x => x.AcademicYear)
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
+
+    private static IQueryable<Lesson> ApplyFilters(IQueryable<Lesson> query, DataTableRequestDto request)
+    {
+        if (request.Filter("title") is { } title) query = query.Where(x => x.Title.Contains(title));
+        if (request.FilterInt("academicYearId") is { } academicYearId) query = query.Where(x => x.Group.AcademicYearId == academicYearId);
+        if (request.FilterInt("groupId") is { } groupId) query = query.Where(x => x.GroupId == groupId);
+        if (request.FilterInt("lessonType") is { } lessonType) query = query.Where(x => (int)x.LessonType == lessonType);
+        if (request.FilterDateTime("lessonDateFrom") is { } from) query = query.Where(x => x.LessonDate.Date >= from);
+        if (request.FilterDateTime("lessonDateTo") is { } to) query = query.Where(x => x.LessonDate.Date <= to);
+        if (request.FilterInt("month") is { } month) query = query.Where(x => x.Month == month);
+        if (request.FilterInt("year") is { } year) query = query.Where(x => x.Year == year);
+        return query;
+    }
+
+    private static IQueryable<Lesson> ApplySearch(IQueryable<Lesson> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x => x.Title.Contains(search) || x.Group.Name.Contains(search));
+    }
+
+    private static IQueryable<Lesson> ApplySorting(IQueryable<Lesson> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "title" => desc ? query.OrderByDescending(x => x.Title) : query.OrderBy(x => x.Title),
+            "groupName" => desc ? query.OrderByDescending(x => x.Group.Name) : query.OrderBy(x => x.Group.Name),
+            "lessonType" => desc ? query.OrderByDescending(x => x.LessonType) : query.OrderBy(x => x.LessonType),
+            "lessonDate" => desc ? query.OrderByDescending(x => x.LessonDate) : query.OrderBy(x => x.LessonDate),
+            "price" => desc ? query.OrderByDescending(x => x.Price) : query.OrderBy(x => x.Price),
+            "month" => desc ? query.OrderByDescending(x => x.Month) : query.OrderBy(x => x.Month),
+            "year" => desc ? query.OrderByDescending(x => x.Year) : query.OrderBy(x => x.Year),
+            _ => query.OrderByDescending(x => x.LessonDate)
+        };
+    }
 
     private async Task SetLessonStudentsAsync(Lesson lesson, LessonType lessonType, int groupId, IEnumerable<int> studentIds, CancellationToken cancellationToken)
     {

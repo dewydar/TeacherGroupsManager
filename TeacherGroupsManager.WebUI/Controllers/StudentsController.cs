@@ -3,13 +3,27 @@ using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.StudentsManage)]
 public class StudentsController(IStudentService service, IAcademicYearService academicYearService, IGroupService groupService) : Controller
 {
-    public async Task<IActionResult> Index(CancellationToken cancellationToken) => View(await service.GetAllAsync(cancellationToken));
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    {
+        await FillLookups(cancellationToken);
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> GetData(CancellationToken cancellationToken)
+    {
+        var request = DataTablesRequestHelper.Parse(Request);
+        var result = await service.GetPagedAsync(request, cancellationToken);
+        return Json(result);
+    }
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {

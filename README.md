@@ -175,3 +175,13 @@ MonthlyPayments
 Employees
 AcademicYears
 ```
+
+## Recommended Indexes
+
+For server-side DataTables filtering and sorting, keep indexes on frequently queried columns:
+
+- Students: `FullName`, `GroupId`, `AcademicYearId`, `IsActive`
+- Groups: `AcademicYearId`, `GroupType`, `TeacherId`, `AssistantTeacherId`, `DayOfWeek`, `IsActive`
+- Lessons: `GroupId`, `LessonType`, `LessonDate`, `Month`, `Year`
+- MonthlyPayments: `StudentId`, `GroupId`, `AcademicYearId`, `Month`, `Year`, `PaymentStatus`
+- Employees: `RoleId`, `Username`, `Mobile`, `IsActive`

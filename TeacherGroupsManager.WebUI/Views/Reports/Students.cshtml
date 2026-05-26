@@ -1,5 +1,28 @@
-@model IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>
-@{ ViewData["Title"] = "تقرير الطلاب"; }
-<div class="panel"><table class="table"><thead><tr><th>الطالب</th><th>السنة الدراسية</th><th>المجموعة</th><th>الجوال</th></tr></thead><tbody>
-@foreach (var item in Model){<tr><td>@item.FullName</td><td>@item.AcademicYearName</td><td>@item.GroupName</td><td>@item.Mobile</td></tr>}
-</tbody></table></div>
+@{
+    ViewData["Title"] = "تقرير الطلاب";
+    var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
+    var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
+}
+@Html.AntiForgeryToken()
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label">اسم الطالب</label><input id="FullName" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-3"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-3 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive"><table id="reportStudentsTable" class="table w-100"><thead><tr><th>الطالب</th><th>السنة الدراسية</th><th>المجموعة</th><th>الجوال</th></tr></thead><tbody></tbody></table></div>
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#reportStudentsTable',
+            url: '@Url.Action("StudentsData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: { fullName: '#FullName', academicYearId: '#AcademicYearId', groupId: '#GroupId' },
+            columns: [{ data: 'fullName' }, { data: 'academicYearName' }, { data: 'groupName' }, { data: 'mobile' }]
+        });
+    </script>
+}

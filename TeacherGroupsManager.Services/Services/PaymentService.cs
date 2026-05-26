@@ -22,6 +22,16 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
     public async Task<MonthlyPaymentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await PaymentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } payment ? mapper.Map(payment) : null;
 
+    public Task<DataTableResponseDto<MonthlyPaymentDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            PaymentsQuery().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(CreateMonthlyPaymentDto dto, CancellationToken cancellationToken = default)
     {
         var validation = await ValidateReferencesAsync(dto.StudentId, dto.GroupId, dto.AcademicYearId, cancellationToken);
@@ -94,6 +104,48 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
         .Include(x => x.AcademicYear)
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
+
+    private static IQueryable<MonthlyPayment> ApplyFilters(IQueryable<MonthlyPayment> query, DataTableRequestDto request)
+    {
+        if (request.FilterInt("studentId") is { } studentId) query = query.Where(x => x.StudentId == studentId);
+        if (request.Filter("student") is { } student) query = query.Where(x => x.Student.FullName.Contains(student));
+        if (request.FilterInt("academicYearId") is { } academicYearId) query = query.Where(x => x.AcademicYearId == academicYearId);
+        if (request.FilterInt("groupId") is { } groupId) query = query.Where(x => x.GroupId == groupId);
+        if (request.FilterInt("month") is { } month) query = query.Where(x => x.Month == month);
+        if (request.FilterInt("year") is { } year) query = query.Where(x => x.Year == year);
+        if (request.FilterInt("paymentStatus") is { } status) query = query.Where(x => (int)x.PaymentStatus == status);
+        if (request.FilterDateTime("paymentDateFrom") is { } from) query = query.Where(x => x.PaymentDate != null && x.PaymentDate.Value.Date >= from);
+        if (request.FilterDateTime("paymentDateTo") is { } to) query = query.Where(x => x.PaymentDate != null && x.PaymentDate.Value.Date <= to);
+        return query;
+    }
+
+    private static IQueryable<MonthlyPayment> ApplySearch(IQueryable<MonthlyPayment> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x =>
+            x.Student.FullName.Contains(search) ||
+            x.Group.Name.Contains(search) ||
+            x.AcademicYear.Name.Contains(search));
+    }
+
+    private static IQueryable<MonthlyPayment> ApplySorting(IQueryable<MonthlyPayment> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "studentName" => desc ? query.OrderByDescending(x => x.Student.FullName) : query.OrderBy(x => x.Student.FullName),
+            "groupName" => desc ? query.OrderByDescending(x => x.Group.Name) : query.OrderBy(x => x.Group.Name),
+            "academicYearName" => desc ? query.OrderByDescending(x => x.AcademicYear.Name) : query.OrderBy(x => x.AcademicYear.Name),
+            "month" => desc ? query.OrderByDescending(x => x.Month) : query.OrderBy(x => x.Month),
+            "year" => desc ? query.OrderByDescending(x => x.Year) : query.OrderBy(x => x.Year),
+            "requiredAmount" => desc ? query.OrderByDescending(x => x.RequiredAmount) : query.OrderBy(x => x.RequiredAmount),
+            "paidAmount" => desc ? query.OrderByDescending(x => x.PaidAmount) : query.OrderBy(x => x.PaidAmount),
+            "remainingAmount" => desc ? query.OrderByDescending(x => x.RemainingAmount) : query.OrderBy(x => x.RemainingAmount),
+            "paymentStatus" => desc ? query.OrderByDescending(x => x.PaymentStatus) : query.OrderBy(x => x.PaymentStatus),
+            _ => query.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month)
+        };
+    }
 
     private async Task<OperationResult> ValidateReferencesAsync(int studentId, int groupId, int academicYearId, CancellationToken cancellationToken)
     {

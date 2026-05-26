@@ -1,15 +1,38 @@
-@model IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>
 @{ ViewData["Title"] = "السنوات الدراسية"; }
+@Html.AntiForgeryToken()
 <p><a class="btn btn-primary" asp-action="Create">إضافة سنة دراسية</a></p>
-<div class="panel"><table class="table align-middle"><thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th></th></tr></thead><tbody>
-@foreach (var item in Model)
-{
-    <tr>
-        <td>@item.Name</td><td>@item.StartDate</td><td>@item.EndDate</td><td>@(item.IsActive ? "نشطة" : "غير نشطة")</td>
-        <td class="text-nowrap">
-            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
-            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('هل تريد حذف هذا السجل؟')">حذف</button></form>
-        </td>
-    </tr>
+<div class="panel mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label">الاسم</label><input id="Name" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">البداية من</label><input id="StartDate" class="form-control" type="date" /></div>
+        <div class="col-md-3"><label class="form-label">النهاية إلى</label><input id="EndDate" class="form-control" type="date" /></div>
+        <div class="col-md-3"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشطة</option><option value="false">غير نشطة</option></select></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+    </div>
+</div>
+<div class="panel table-responsive">
+    <table id="academicYearsTable" class="table align-middle w-100">
+        <thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th></th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        initServerDataTable({
+            tableSelector: '#academicYearsTable',
+            url: '@Url.Action("GetData")',
+            searchButtonSelector: '#SearchFilters',
+            resetButtonSelector: '#ResetFilters',
+            reloadButtonSelector: '#ReloadTable',
+            filters: { name: '#Name', startDate: '#StartDate', endDate: '#EndDate', isActive: '#IsActive' },
+            columns: [
+                { data: 'name' },
+                { data: 'startDate', render: renderDate },
+                { data: 'endDate', render: renderDate },
+                { data: 'isActive', render: renderBooleanStatus },
+                { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('AcademicYears', id); } }
+            ]
+        });
+    </script>
 }
-</tbody></table></div>

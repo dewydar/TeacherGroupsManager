@@ -16,6 +16,16 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
     public async Task<StudentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await StudentsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } student ? mapper.Map(student) : null;
 
+    public Task<DataTableResponseDto<StudentDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            StudentsQuery().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(CreateStudentDto dto, CancellationToken cancellationToken = default)
     {
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
@@ -79,6 +89,44 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
         .Include(x => x.AcademicYear)
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
+
+    private static IQueryable<Student> ApplyFilters(IQueryable<Student> query, DataTableRequestDto request)
+    {
+        if (request.Filter("fullName") is { } fullName) query = query.Where(x => x.FullName.Contains(fullName));
+        if (request.Filter("mobile") is { } mobile) query = query.Where(x => x.Mobile.Contains(mobile));
+        if (request.Filter("parentMobile") is { } parentMobile) query = query.Where(x => x.ParentMobile != null && x.ParentMobile.Contains(parentMobile));
+        if (request.FilterInt("academicYearId") is { } academicYearId) query = query.Where(x => x.AcademicYearId == academicYearId);
+        if (request.FilterInt("groupId") is { } groupId) query = query.Where(x => x.GroupId == groupId);
+        if (request.FilterBool("isActive") is { } isActive) query = query.Where(x => x.IsActive == isActive);
+        return query;
+    }
+
+    private static IQueryable<Student> ApplySearch(IQueryable<Student> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x =>
+            x.FullName.Contains(search) ||
+            x.Mobile.Contains(search) ||
+            (x.ParentMobile != null && x.ParentMobile.Contains(search)) ||
+            x.AcademicYear.Name.Contains(search) ||
+            x.Group.Name.Contains(search));
+    }
+
+    private static IQueryable<Student> ApplySorting(IQueryable<Student> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "fullName" => desc ? query.OrderByDescending(x => x.FullName) : query.OrderBy(x => x.FullName),
+            "mobile" => desc ? query.OrderByDescending(x => x.Mobile) : query.OrderBy(x => x.Mobile),
+            "parentMobile" => desc ? query.OrderByDescending(x => x.ParentMobile) : query.OrderBy(x => x.ParentMobile),
+            "academicYearName" => desc ? query.OrderByDescending(x => x.AcademicYear.Name) : query.OrderBy(x => x.AcademicYear.Name),
+            "groupName" => desc ? query.OrderByDescending(x => x.Group.Name) : query.OrderBy(x => x.Group.Name),
+            "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
+            _ => query.OrderBy(x => x.FullName)
+        };
+    }
 
     private async Task<OperationResult> ValidateReferencesAsync(int academicYearId, int groupId, CancellationToken cancellationToken)
     {

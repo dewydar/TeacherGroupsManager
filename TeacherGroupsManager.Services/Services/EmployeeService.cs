@@ -17,6 +17,16 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
     public async Task<EmployeeDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await EmployeesQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } employee ? mapper.Map(employee) : null;
 
+    public Task<DataTableResponseDto<EmployeeDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            EmployeesQuery().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(CreateEmployeeDto dto, CancellationToken cancellationToken = default)
     {
         var username = dto.Username.Trim();
@@ -103,4 +113,43 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         .ThenInclude(x => x.Permission)
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
+
+    private static IQueryable<Employee> ApplyFilters(IQueryable<Employee> query, DataTableRequestDto request)
+    {
+        if (request.Filter("fullName") is { } fullName) query = query.Where(x => x.FullName.Contains(fullName));
+        if (request.Filter("username") is { } username) query = query.Where(x => x.Username.Contains(username));
+        if (request.Filter("mobile") is { } mobile) query = query.Where(x => x.Mobile.Contains(mobile));
+        if (request.Filter("email") is { } email) query = query.Where(x => x.Email != null && x.Email.Contains(email));
+        if (request.FilterInt("roleId") is { } roleId) query = query.Where(x => x.RoleId == roleId);
+        if (request.FilterBool("isActive") is { } isActive) query = query.Where(x => x.IsActive == isActive);
+        return query;
+    }
+
+    private static IQueryable<Employee> ApplySearch(IQueryable<Employee> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x =>
+            x.FullName.Contains(search) ||
+            x.Username.Contains(search) ||
+            x.Mobile.Contains(search) ||
+            (x.Email != null && x.Email.Contains(search)) ||
+            x.Role.Name.Contains(search) ||
+            x.Role.ArabicName.Contains(search));
+    }
+
+    private static IQueryable<Employee> ApplySorting(IQueryable<Employee> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "fullName" => desc ? query.OrderByDescending(x => x.FullName) : query.OrderBy(x => x.FullName),
+            "mobile" => desc ? query.OrderByDescending(x => x.Mobile) : query.OrderBy(x => x.Mobile),
+            "email" => desc ? query.OrderByDescending(x => x.Email) : query.OrderBy(x => x.Email),
+            "username" => desc ? query.OrderByDescending(x => x.Username) : query.OrderBy(x => x.Username),
+            "roleArabicName" => desc ? query.OrderByDescending(x => x.Role.ArabicName) : query.OrderBy(x => x.Role.ArabicName),
+            "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
+            _ => query.OrderBy(x => x.FullName)
+        };
+    }
 }

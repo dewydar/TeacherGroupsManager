@@ -16,6 +16,16 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
     public async Task<RoleDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await unitOfWork.Repository<Role>().GetByIdAsync(id, cancellationToken) is { } role ? mapper.Map(role) : null;
 
+    public Task<DataTableResponseDto<RoleDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
+        DataTableQueryHelper.ToDataTableResponseAsync(
+            unitOfWork.Repository<Role>().Query().AsNoTracking(),
+            request,
+            ApplyFilters,
+            ApplySearch,
+            ApplySorting,
+            mapper.Map,
+            cancellationToken);
+
     public async Task<OperationResult> CreateAsync(RoleDto dto, CancellationToken cancellationToken = default)
     {
         var name = dto.Name.Trim();
@@ -32,6 +42,33 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
         await unitOfWork.Repository<Role>().AddAsync(new Role { Name = name, ArabicName = arabicName, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success("تم حفظ الدور بنجاح");
+    }
+
+    private static IQueryable<Role> ApplyFilters(IQueryable<Role> query, DataTableRequestDto request)
+    {
+        if (request.Filter("name") is { } name) query = query.Where(x => x.Name.Contains(name));
+        if (request.Filter("arabicName") is { } arabicName) query = query.Where(x => x.ArabicName.Contains(arabicName));
+        if (request.FilterBool("isActive") is { } isActive) query = query.Where(x => x.IsActive == isActive);
+        return query;
+    }
+
+    private static IQueryable<Role> ApplySearch(IQueryable<Role> query, string? search)
+    {
+        if (string.IsNullOrWhiteSpace(search)) return query;
+        search = search.Trim();
+        return query.Where(x => x.Name.Contains(search) || x.ArabicName.Contains(search));
+    }
+
+    private static IQueryable<Role> ApplySorting(IQueryable<Role> query, string? sortColumn, string? sortDirection)
+    {
+        var desc = DataTableQueryHelper.Descending(sortDirection);
+        return sortColumn switch
+        {
+            "name" => desc ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
+            "arabicName" => desc ? query.OrderByDescending(x => x.ArabicName) : query.OrderBy(x => x.ArabicName),
+            "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
+            _ => query.OrderBy(x => x.Id)
+        };
     }
 
     public async Task<OperationResult> UpdateAsync(RoleDto dto, CancellationToken cancellationToken = default)
