@@ -1,5 +1,5 @@
-@{
-    ViewData["Title"] = "المدفوعات الشهرية";
+﻿@{
+    ViewData["Title"] = L["MonthlyPayments"];
     var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
     var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
     var initialMonth = ViewBag.Month?.ToString() ?? "";
@@ -7,23 +7,23 @@
     var initialStatus = ViewBag.Status is null ? "" : ((int)ViewBag.Status).ToString();
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">إضافة مدفوعة</a></p>
+<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
 <div class="panel mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-md-2"><label class="form-label">الطالب</label><input id="Student" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
-        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
-        <div class="col-md-1"><label class="form-label">الشهر</label><input id="Month" class="form-control" type="number" min="1" max="12" /></div>
-        <div class="col-md-1"><label class="form-label">السنة</label><input id="Year" class="form-control" type="number" /></div>
-        <div class="col-md-2"><label class="form-label">الحالة</label><select id="PaymentStatus" class="form-select"><option value="">الكل</option><option value="1">غير مدفوع</option><option value="2">مدفوع جزئي</option><option value="3">مدفوع</option></select></div>
-        <div class="col-md-2"><label class="form-label">تاريخ الدفع من</label><input id="PaymentDateFrom" class="form-control" type="date" /></div>
-        <div class="col-md-2"><label class="form-label">تاريخ الدفع إلى</label><input id="PaymentDateTo" class="form-control" type="date" /></div>
-        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+        <div class="col-md-2"><label class="form-label">@L["Student"]</label><input id="Student" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">@L["Group"]</label><select id="GroupId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-1"><label class="form-label">@L["Month"]</label><input id="Month" class="form-control" type="number" min="1" max="12" /></div>
+        <div class="col-md-1"><label class="form-label">@L["Year"]</label><input id="Year" class="form-control" type="number" /></div>
+        <div class="col-md-2"><label class="form-label">@L["Status"]</label><select id="PaymentStatus" class="form-select"><option value="">@L["All"]</option><option value="1">@L["Unpaid"]</option><option value="2">@L["PartiallyPaid"]</option><option value="3">@L["Paid"]</option></select></div>
+        <div class="col-md-2"><label class="form-label">@L["PaymentDateFrom"]</label><input id="PaymentDateFrom" class="form-control" type="date" /></div>
+        <div class="col-md-2"><label class="form-label">@L["PaymentDateTo"]</label><input id="PaymentDateTo" class="form-control" type="date" /></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
 <div class="panel table-responsive">
     <table id="paymentsTable" class="table align-middle w-100">
-        <thead><tr><th>الطالب</th><th>المجموعة</th><th>السنة الدراسية</th><th>الشهر</th><th>السنة</th><th>المطلوب</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th></th></tr></thead>
+        <thead><tr><th>@L["Student"]</th><th>@L["Group"]</th><th>@L["AcademicYear"]</th><th>@L["Month"]</th><th>@L["Year"]</th><th>@L["RequiredAmount"]</th><th>@L["PaidAmount"]</th><th>@L["RemainingAmount"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -55,3 +55,7 @@
         });
     </script>
 }
+
+
+
+

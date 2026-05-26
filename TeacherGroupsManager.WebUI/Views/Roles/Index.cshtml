@@ -1,26 +1,26 @@
-@{
-    ViewData["Title"] = "إدارة الأدوار";
+﻿@{
+    ViewData["Title"] = L["RolesManagement"];
     var permissions = (IReadOnlyList<TeacherGroupsManager.Dtos.PermissionDto>)ViewBag.Permissions;
     var permissionsUrl = User.IsInRole(TeacherGroupsManager.Core.Constants.AppConstants.AdminRole) ? "'/Roles/Permissions'" : "null";
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">إضافة دور</a></p>
+<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
 <div class="panel mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-md-4"><label class="form-label">اسم الدور</label><input id="Name" class="form-control" /></div>
-        <div class="col-md-4"><label class="form-label">الاسم العربي</label><input id="ArabicName" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشط</option><option value="false">غير نشط</option></select></div>
-        <div class="col-md-2 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+        <div class="col-md-4"><label class="form-label">@L["Role"]</label><input id="Name" class="form-control" /></div>
+        <div class="col-md-4"><label class="form-label">@L["ArabicName"]</label><input id="ArabicName" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["Status"]</label><select id="IsActive" class="form-select"><option value="">@L["All"]</option><option value="true">@L["Active"]</option><option value="false">@L["Inactive"]</option></select></div>
+        <div class="col-md-2 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
 <div class="panel">
     <div class="table-responsive">
         <table id="rolesTable" class="table align-middle w-100">
-            <thead><tr><th>الاسم</th><th>الاسم العربي</th><th>الحالة</th><th></th></tr></thead>
+            <thead><tr><th>@L["Name"]</th><th>@L["ArabicName"]</th><th>@L["Status"]</th><th></th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
-    <h2 class="h5 mt-4">الصلاحيات</h2>
+    <h2 class="h5 mt-4">@L["Permissions"]</h2>
     <div class="row">
         @foreach (var permission in permissions)
         {
@@ -47,3 +47,7 @@
         });
     </script>
 }
+
+
+
+

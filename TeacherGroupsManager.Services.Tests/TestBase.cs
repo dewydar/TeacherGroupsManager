@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Data.Context;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Services.Mapping;
@@ -22,3 +22,5 @@ public abstract class TestBase
         public int? EmployeeId => employeeId;
     }
 }
+
+

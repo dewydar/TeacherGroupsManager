@@ -1,17 +1,21 @@
-@model TeacherGroupsManager.Dtos.EditEmployeeDto
-@{ ViewData["Title"] = "تعديل موظف"; }
+﻿@model TeacherGroupsManager.Dtos.EditEmployeeDto
+@{ ViewData["Title"] = L["Edit"] + " - " + L["EmployeesManagement"]; }
 <form method="post" class="panel">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">الاسم بالكامل</label><input class="form-control" name="FullName" value="@Model.FullName" /></div>
-        <div class="col-md-6"><label class="form-label">الجوال</label><input class="form-control" name="Mobile" value="@Model.Mobile" /></div>
-        <div class="col-md-6"><label class="form-label">البريد الإلكتروني</label><input class="form-control" name="Email" value="@Model.Email" /></div>
-        <div class="col-md-6"><label class="form-label">اسم المستخدم</label><input class="form-control" name="Username" value="@Model.Username" /></div>
-        <div class="col-md-6"><label class="form-label">كلمة المرور الجديدة</label><input class="form-control" type="password" name="Password" /></div>
-        <div class="col-md-6"><label class="form-label">الدور</label><select class="form-select" name="RoleId"><option value="0">اختر الدور</option>@foreach (var role in (IReadOnlyList<TeacherGroupsManager.Dtos.RoleDto>)ViewBag.Roles){<option value="@role.Id" selected="@(role.Id == Model.RoleId)">@role.ArabicName</option>}</select></div>
-        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> نشط</label></div>
+        <div class="col-md-6"><label class="form-label">@L["FullName"]</label><input class="form-control" name="FullName" value="@Model.FullName" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Mobile"]</label><input class="form-control" name="Mobile" value="@Model.Mobile" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Email"]</label><input class="form-control" name="Email" value="@Model.Email" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Username"]</label><input class="form-control" name="Username" value="@Model.Username" /></div>
+        <div class="col-md-6"><label class="form-label">@L["NewPassword"]</label><input class="form-control" type="password" name="Password" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Role"]</label><select class="form-select" name="RoleId"><option value="0">@L["SelectRole"]</option>@foreach (var role in (IReadOnlyList<TeacherGroupsManager.Dtos.RoleDto>)ViewBag.Roles){<option value="@role.Id" selected="@(role.Id == Model.RoleId)">@role.ArabicName</option>}</select></div>
+        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> @L["Active"]</label></div>
     </div>
-    <button class="btn btn-primary mt-3">حفظ</button>
-    <a class="btn btn-outline-secondary mt-3" asp-action="Index">رجوع</a>
+    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
+
+
+
+

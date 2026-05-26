@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonService
+public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : ILessonService
 {
     public async Task<IReadOnlyList<LessonDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await LessonsQuery().OrderByDescending(x => x.LessonDate).ToListAsync(cancellationToken));
@@ -36,20 +38,20 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
         var lessonDate = dto.LessonDate.Date;
         if (await unitOfWork.Repository<Lesson>().AnyAsync(x => x.GroupId == dto.GroupId && x.LessonDate.Date == lessonDate && x.Title.Trim().ToLower() == normalizedTitle, cancellationToken))
         {
-            return OperationResult.Failure("الدرس موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateLesson"]);
         }
 
         var lesson = new Lesson { Title = title, Description = dto.Description?.Trim(), GroupId = dto.GroupId, LessonType = dto.LessonType, LessonDate = dto.LessonDate, Price = dto.Price, IsMonthlyPaymentRequired = dto.IsMonthlyPaymentRequired, Month = dto.Month, Year = dto.Year, CreatedByEmployeeId = dto.CreatedByEmployeeId };
         await SetLessonStudentsAsync(lesson, dto.LessonType, dto.GroupId, dto.StudentIds, cancellationToken);
         await unitOfWork.Repository<Lesson>().AddAsync(lesson, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ الدرس بنجاح");
+        return OperationResult.Success(localizer["LessonSaved"]);
     }
 
     public async Task<OperationResult> UpdateAsync(EditLessonDto dto, CancellationToken cancellationToken = default)
     {
         var lesson = await unitOfWork.Repository<Lesson>().Query().Include(x => x.LessonStudents).FirstOrDefaultAsync(x => x.Id == dto.Id, cancellationToken);
-        if (lesson is null) return OperationResult.Failure("الدرس غير موجود");
+        if (lesson is null) return OperationResult.Failure(localizer["LessonNotFound"]);
         var validation = await ValidateReferencesAsync(dto.GroupId, dto.LessonType, dto.StudentIds, cancellationToken);
         if (!validation.Succeeded) return validation;
         var title = dto.Title.Trim();
@@ -57,7 +59,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
         var lessonDate = dto.LessonDate.Date;
         if (await unitOfWork.Repository<Lesson>().AnyAsync(x => x.Id != dto.Id && x.GroupId == dto.GroupId && x.LessonDate.Date == lessonDate && x.Title.Trim().ToLower() == normalizedTitle, cancellationToken))
         {
-            return OperationResult.Failure("الدرس موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateLesson"]);
         }
 
         lesson.Title = title;
@@ -73,15 +75,15 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
         lesson.LessonStudents.Clear();
         await SetLessonStudentsAsync(lesson, dto.LessonType, dto.GroupId, dto.StudentIds, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل الدرس بنجاح");
+        return OperationResult.Success(localizer["LessonUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var lesson = await unitOfWork.Repository<Lesson>().GetByIdAsync(id, cancellationToken);
-        if (lesson is null) return OperationResult.Failure("الدرس غير موجود");
+        if (lesson is null) return OperationResult.Failure(localizer["LessonNotFound"]);
         unitOfWork.Repository<Lesson>().Delete(lesson);
-        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, "تم حذف الدرس بنجاح", cancellationToken);
+        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["LessonDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
 
     private IQueryable<Lesson> LessonsQuery() => unitOfWork.Repository<Lesson>().Query()
@@ -142,7 +144,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
     {
         if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId, cancellationToken))
         {
-            return OperationResult.Failure("المجموعة غير موجودة");
+            return OperationResult.Failure(localizer["GroupNotFound"]);
         }
         if (lessonType == LessonType.Private)
         {
@@ -150,7 +152,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper) : ILessonSe
             var existingStudentCount = await unitOfWork.Repository<Student>().Query().CountAsync(x => distinctStudentIds.Contains(x.Id), cancellationToken);
             if (existingStudentCount != distinctStudentIds.Length)
             {
-                return OperationResult.Failure("يوجد طلاب غير موجودين");
+                return OperationResult.Failure(localizer["SomeStudentsNotFound"]);
             }
         }
         return OperationResult.Success();

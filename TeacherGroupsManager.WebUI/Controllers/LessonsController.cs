@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.LessonsManage)]
-public class LessonsController(ILessonService service, IGroupService groupService, IAcademicYearService academicYearService) : Controller
+public class LessonsController(ILessonService service, IGroupService groupService, IAcademicYearService academicYearService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -44,14 +46,14 @@ public class LessonsController(ILessonService service, IGroupService groupServic
         }
         if (dto.GroupId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر المجموعة");
+            ModelState.AddModelError(string.Empty, localizer["SelectGroup"]);
             ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
             return View(dto);
         }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
         return View(dto);
     }
@@ -74,14 +76,14 @@ public class LessonsController(ILessonService service, IGroupService groupServic
         }
         if (dto.GroupId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر المجموعة");
+            ModelState.AddModelError(string.Empty, localizer["SelectGroup"]);
             ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
             return View(dto);
         }
         var result = await service.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
         return View(dto);
     }
@@ -90,7 +92,11 @@ public class LessonsController(ILessonService service, IGroupService groupServic
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 }
+
+
+
+

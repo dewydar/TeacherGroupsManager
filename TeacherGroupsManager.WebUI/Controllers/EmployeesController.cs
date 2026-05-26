@@ -1,14 +1,16 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.EmployeesManage)]
-public class EmployeesController(IEmployeeService employeeService, IRoleService roleService) : Controller
+public class EmployeesController(IEmployeeService employeeService, IRoleService roleService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -42,14 +44,14 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
         }
         if (dto.RoleId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر الدور");
+            ModelState.AddModelError(string.Empty, localizer["SelectRole"]);
             ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
             return View(dto);
         }
         var result = await employeeService.CreateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
         return View(dto);
     }
@@ -73,14 +75,14 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
         }
         if (dto.RoleId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر الدور");
+            ModelState.AddModelError(string.Empty, localizer["SelectRole"]);
             ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
             return View(dto);
         }
         var result = await employeeService.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
         return View(dto);
     }
@@ -90,7 +92,11 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await employeeService.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 }
+
+
+
+

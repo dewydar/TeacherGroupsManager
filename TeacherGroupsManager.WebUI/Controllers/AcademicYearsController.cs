@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
@@ -28,8 +28,8 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
     {
         if (!ModelState.IsValid) return View(dto);
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 
@@ -44,8 +44,8 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
     {
         if (!ModelState.IsValid) return View(dto);
         var result = await service.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 
@@ -53,7 +53,9 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 }
+
+

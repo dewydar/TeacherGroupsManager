@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.PaymentsManage)]
-public class PaymentsController(IPaymentService service, IStudentService studentService, IAcademicYearService academicYearService, IGroupService groupService) : Controller
+public class PaymentsController(IPaymentService service, IStudentService studentService, IAcademicYearService academicYearService, IGroupService groupService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index(int? month, int? year, PaymentStatus? status, CancellationToken cancellationToken)
     {
@@ -45,17 +47,17 @@ public class PaymentsController(IPaymentService service, IStudentService student
             await FillLookups(cancellationToken);
             return View(dto);
         }
-        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب");
-        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب مرة أخرى لتحديد المجموعة والسنة الدراسية");
+        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredStudent"]);
+        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, localizer["SelectStudentAgainForGroupAndYear"]);
         if (!ModelState.IsValid)
         {
             await FillLookups(cancellationToken);
             return View(dto);
         }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         await FillLookups(cancellationToken);
         return View(dto);
     }
@@ -76,17 +78,17 @@ public class PaymentsController(IPaymentService service, IStudentService student
             await FillLookups(cancellationToken);
             return View(dto);
         }
-        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب");
-        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, "اختر الطالب مرة أخرى لتحديد المجموعة والسنة الدراسية");
+        if (dto.StudentId <= 0) ModelState.AddModelError(string.Empty, localizer["RequiredStudent"]);
+        if (dto.GroupId <= 0 || dto.AcademicYearId <= 0) ModelState.AddModelError(string.Empty, localizer["SelectStudentAgainForGroupAndYear"]);
         if (!ModelState.IsValid)
         {
             await FillLookups(cancellationToken);
             return View(dto);
         }
         var result = await service.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         await FillLookups(cancellationToken);
         return View(dto);
     }
@@ -95,7 +97,7 @@ public class PaymentsController(IPaymentService service, IStudentService student
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 
@@ -106,3 +108,5 @@ public class PaymentsController(IPaymentService service, IStudentService student
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
     }
 }
+
+

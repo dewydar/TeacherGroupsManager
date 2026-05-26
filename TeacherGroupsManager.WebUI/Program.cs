@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
+builder.Services.AddLocalization();
 
 builder.Services.AddDbContext<TeacherGroupsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -41,12 +42,17 @@ var app = builder.Build();
 
 await app.InitializeDatabaseAsync();
 
-var culture = new CultureInfo(AppConstants.ArabicCulture);
+var supportedCultures = new[]
+{
+    new CultureInfo(AppConstants.ArabicCulture),
+    new CultureInfo("en-US"),
+    new CultureInfo("fr-FR")
+};
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
-    DefaultRequestCulture = new RequestCulture(culture),
-    SupportedCultures = [culture],
-    SupportedUICultures = [culture]
+    DefaultRequestCulture = new RequestCulture(AppConstants.ArabicCulture),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
 });
 
 if (!app.Environment.IsDevelopment())

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Services;
@@ -11,7 +11,7 @@ public class StudentServiceTests : TestBase
     public async Task CreateAsync_Creates_Student()
     {
         var (context, mapper) = CreateContext();
-        var service = new StudentService(new UnitOfWork(context), mapper);
+        var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", "01011111111", 1, 1, null));
 
@@ -23,7 +23,7 @@ public class StudentServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Group_Does_Not_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new StudentService(new UnitOfWork(context), mapper);
+        var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateStudentDto("Missing Group", "01000000000", null, 1, 999, null));
 
@@ -35,7 +35,7 @@ public class StudentServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Student_Mobile_Already_Exists()
     {
         var (context, mapper) = CreateContext();
-        var service = new StudentService(new UnitOfWork(context), mapper);
+        var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
         var duplicate = await service.CreateAsync(new CreateStudentDto("Different Student", "01000000000", null, 1, 1, null));
@@ -49,7 +49,7 @@ public class StudentServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Student_Name_Already_Exists_In_Same_Group()
     {
         var (context, mapper) = CreateContext();
-        var service = new StudentService(new UnitOfWork(context), mapper);
+        var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
         var duplicate = await service.CreateAsync(new CreateStudentDto(" ahmed mohamed ", "01000000001", null, 1, 1, null));
@@ -64,7 +64,7 @@ public class StudentServiceTests : TestBase
     {
         var (context, mapper) = CreateContext();
         var unitOfWork = new UnitOfWork(context, new TestCurrentUserContext(42));
-        var service = new StudentService(unitOfWork, mapper);
+        var service = new StudentService(unitOfWork, mapper, TestLocalizer.Instance);
 
         var create = await service.CreateAsync(new CreateStudentDto("Audit Student", "01000000000", null, 1, 1, null));
 
@@ -84,3 +84,5 @@ public class StudentServiceTests : TestBase
         Assert.Equal(42, student.UpdatedByEmployeeId);
     }
 }
+
+

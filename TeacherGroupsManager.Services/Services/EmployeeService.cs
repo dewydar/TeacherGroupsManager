@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
 using TeacherGroupsManager.Services.Security;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPasswordHasher passwordHasher) : IEmployeeService
+public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPasswordHasher passwordHasher, IStringLocalizer<SharedResource> localizer) : IEmployeeService
 {
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await EmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
@@ -35,17 +37,17 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
 
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
-            return OperationResult.Failure("الدور غير موجود");
+            return OperationResult.Failure(localizer["RoleNotFound"]);
         }
 
         if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Username.Trim().ToLower() == normalizedUsername, cancellationToken))
         {
-            return OperationResult.Failure("اسم المستخدم مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateUsername"]);
         }
 
         if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Mobile.Trim() == mobile, cancellationToken))
         {
-            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateMobile"]);
         }
 
         await unitOfWork.Repository<Employee>().AddAsync(new Employee
@@ -60,28 +62,28 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         }, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ الموظف بنجاح");
+        return OperationResult.Success(localizer["EmployeeSaved"]);
     }
 
     public async Task<OperationResult> UpdateAsync(EditEmployeeDto dto, CancellationToken cancellationToken = default)
     {
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(dto.Id, cancellationToken);
-        if (employee is null) return OperationResult.Failure("الموظف غير موجود");
+        if (employee is null) return OperationResult.Failure(localizer["EmployeeNotFound"]);
         var username = dto.Username.Trim();
         var mobile = dto.Mobile.Trim();
         var normalizedUsername = username.ToLower();
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
-            return OperationResult.Failure("الدور غير موجود");
+            return OperationResult.Failure(localizer["RoleNotFound"]);
         }
         if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id != dto.Id && x.Username.Trim().ToLower() == normalizedUsername, cancellationToken))
         {
-            return OperationResult.Failure("اسم المستخدم مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateUsername"]);
         }
 
         if (await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id != dto.Id && x.Mobile.Trim() == mobile, cancellationToken))
         {
-            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateMobile"]);
         }
 
         employee.FullName = dto.FullName.Trim();
@@ -96,15 +98,15 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل الموظف بنجاح");
+        return OperationResult.Success(localizer["EmployeeUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
-        if (employee is null) return OperationResult.Failure("الموظف غير موجود");
+        if (employee is null) return OperationResult.Failure(localizer["EmployeeNotFound"]);
         unitOfWork.Repository<Employee>().Delete(employee);
-        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, "تم حذف الموظف بنجاح", cancellationToken);
+        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["EmployeeDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
 
     private IQueryable<Employee> EmployeesQuery() => unitOfWork.Repository<Employee>().Query()

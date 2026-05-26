@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
@@ -33,7 +33,7 @@ public class RolesController(IRoleService roleService, IPermissionService permis
     {
         var result = await roleService.CreateAsync(dto, cancellationToken);
         TempData[result.Succeeded ? "Success" : "Error"] = result.Message;
-        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 
@@ -48,8 +48,8 @@ public class RolesController(IRoleService roleService, IPermissionService permis
     public async Task<IActionResult> Edit(RoleDto dto, CancellationToken cancellationToken)
     {
         var result = await roleService.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
-        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         return result.Succeeded ? RedirectToAction(nameof(Index)) : View(dto);
     }
 
@@ -58,7 +58,7 @@ public class RolesController(IRoleService roleService, IPermissionService permis
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await roleService.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 
@@ -77,7 +77,9 @@ public class RolesController(IRoleService roleService, IPermissionService permis
     public async Task<IActionResult> Permissions(int roleId, int[] permissionIds, CancellationToken cancellationToken)
     {
         var result = await roleService.UpdatePermissionsAsync(roleId, permissionIds, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 }
+
+

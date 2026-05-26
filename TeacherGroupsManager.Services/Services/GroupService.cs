@@ -1,14 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupService
+public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : IGroupService
 {
     public async Task<IReadOnlyList<GroupDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await GroupsQuery().OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime).ToListAsync(cancellationToken));
@@ -34,7 +36,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupServ
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
-            return OperationResult.Failure("المجموعة موجودة من قبل");
+            return OperationResult.Failure(localizer["DuplicateGroup"]);
         }
 
         await unitOfWork.Repository<Group>().AddAsync(new Group
@@ -51,20 +53,20 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupServ
             IsActive = dto.IsActive
         }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ المجموعة بنجاح");
+        return OperationResult.Success(localizer["GroupSaved"]);
     }
 
     public async Task<OperationResult> UpdateAsync(EditGroupDto dto, CancellationToken cancellationToken = default)
     {
         var group = await unitOfWork.Repository<Group>().GetByIdAsync(dto.Id, cancellationToken);
-        if (group is null) return OperationResult.Failure("المجموعة غير موجودة");
+        if (group is null) return OperationResult.Failure(localizer["GroupNotFound"]);
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.TeacherId, dto.AssistantTeacherId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var name = dto.Name.Trim();
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Id != dto.Id && x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
-            return OperationResult.Failure("المجموعة موجودة من قبل");
+            return OperationResult.Failure(localizer["DuplicateGroup"]);
         }
 
         group.Name = name;
@@ -78,15 +80,15 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupServ
         group.DefaultLessonPrice = dto.DefaultLessonPrice;
         group.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل المجموعة بنجاح");
+        return OperationResult.Success(localizer["GroupUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var group = await unitOfWork.Repository<Group>().GetByIdAsync(id, cancellationToken);
-        if (group is null) return OperationResult.Failure("المجموعة غير موجودة");
+        if (group is null) return OperationResult.Failure(localizer["GroupNotFound"]);
         unitOfWork.Repository<Group>().Delete(group);
-        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, "تم حذف المجموعة بنجاح", cancellationToken);
+        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["GroupDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
 
     private IQueryable<Group> GroupsQuery() => unitOfWork.Repository<Group>().Query()
@@ -133,15 +135,15 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper) : IGroupServ
     {
         if (!await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id == academicYearId, cancellationToken))
         {
-            return OperationResult.Failure("السنة الدراسية غير موجودة");
+            return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         }
         if (teacherId.HasValue && !await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id == teacherId.Value, cancellationToken))
         {
-            return OperationResult.Failure("المدرس غير موجود");
+            return OperationResult.Failure(localizer["TeacherNotFound"]);
         }
         if (assistantTeacherId.HasValue && !await unitOfWork.Repository<Employee>().AnyAsync(x => x.Id == assistantTeacherId.Value, cancellationToken))
         {
-            return OperationResult.Failure("المدرس المساعد غير موجود");
+            return OperationResult.Failure(localizer["AssistantTeacherNotFound"]);
         }
         return OperationResult.Success();
     }

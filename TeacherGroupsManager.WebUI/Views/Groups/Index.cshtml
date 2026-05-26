@@ -1,26 +1,26 @@
-@{
-    ViewData["Title"] = "المجموعات";
+﻿@{
+    ViewData["Title"] = L["Groups"];
     var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
     var employees = (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees;
     var initialGroupType = ViewBag.GroupType is null ? "" : ((int)ViewBag.GroupType).ToString();
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">إضافة مجموعة</a></p>
+<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
 <div class="panel mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-md-2"><label class="form-label">اسم المجموعة</label><input id="Name" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
-        <div class="col-md-2"><label class="form-label">النوع</label><select id="GroupType" class="form-select"><option value="">الكل</option><option value="1">درس خاص</option><option value="2">مجموعة عامة</option></select></div>
-        <div class="col-md-2"><label class="form-label">المدرس</label><select id="TeacherId" class="form-select"><option value="">الكل</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
-        <div class="col-md-2"><label class="form-label">المدرس المساعد</label><select id="AssistantTeacherId" class="form-select"><option value="">الكل</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
-        <div class="col-md-1"><label class="form-label">اليوم</label><select id="DayOfWeek" class="form-select"><option value="">الكل</option><option value="6">السبت</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option></select></div>
-        <div class="col-md-1"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشط</option><option value="false">غير نشط</option></select></div>
-        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+        <div class="col-md-2"><label class="form-label">@L["GroupName"]</label><input id="Name" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">@L["LessonType"]</label><select id="GroupType" class="form-select"><option value="">@L["All"]</option><option value="1">@L["PrivateLesson"]</option><option value="2">@L["PublicGroup"]</option></select></div>
+        <div class="col-md-2"><label class="form-label">@L["Teacher"]</label><select id="TeacherId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">@L["AssistantTeacher"]</label><select id="AssistantTeacherId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in employees){<option value="@item.Id">@item.FullName</option>}</select></div>
+        <div class="col-md-1"><label class="form-label">@L["Day"]</label><select id="DayOfWeek" class="form-select"><option value="">@L["All"]</option><option value="6">@L["Saturday"]</option><option value="0">@L["Sunday"]</option><option value="1">@L["Monday"]</option><option value="2">@L["Tuesday"]</option><option value="3">@L["Wednesday"]</option><option value="4">@L["Thursday"]</option><option value="5">@L["Friday"]</option></select></div>
+        <div class="col-md-1"><label class="form-label">@L["Status"]</label><select id="IsActive" class="form-select"><option value="">@L["All"]</option><option value="true">@L["Active"]</option><option value="false">@L["Inactive"]</option></select></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
 <div class="panel table-responsive">
     <table id="groupsTable" class="table align-middle w-100">
-        <thead><tr><th>الاسم</th><th>السنة الدراسية</th><th>النوع</th><th>اليوم</th><th>الوقت</th><th>سعر الدرس</th><th>الحالة</th><th></th></tr></thead>
+        <thead><tr><th>@L["Name"]</th><th>@L["AcademicYear"]</th><th>@L["LessonType"]</th><th>@L["Day"]</th><th>@L["Time"]</th><th>@L["Price"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -48,3 +48,7 @@
         });
     </script>
 }
+
+
+
+

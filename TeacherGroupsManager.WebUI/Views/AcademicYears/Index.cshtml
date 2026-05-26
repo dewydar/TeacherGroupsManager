@@ -1,18 +1,18 @@
-@{ ViewData["Title"] = "السنوات الدراسية"; }
+﻿@{ ViewData["Title"] = L["AcademicYears"]; }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">إضافة سنة دراسية</a></p>
+<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
 <div class="panel mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-md-3"><label class="form-label">الاسم</label><input id="Name" class="form-control" /></div>
-        <div class="col-md-3"><label class="form-label">البداية من</label><input id="StartDate" class="form-control" type="date" /></div>
-        <div class="col-md-3"><label class="form-label">النهاية إلى</label><input id="EndDate" class="form-control" type="date" /></div>
-        <div class="col-md-3"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشطة</option><option value="false">غير نشطة</option></select></div>
-        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+        <div class="col-md-3"><label class="form-label">@L["Name"]</label><input id="Name" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">@L["StartDateFrom"]</label><input id="StartDate" class="form-control" type="date" /></div>
+        <div class="col-md-3"><label class="form-label">@L["EndDateTo"]</label><input id="EndDate" class="form-control" type="date" /></div>
+        <div class="col-md-3"><label class="form-label">@L["Status"]</label><select id="IsActive" class="form-select"><option value="">@L["All"]</option><option value="true">@L["Active"]</option><option value="false">@L["Inactive"]</option></select></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
 <div class="panel table-responsive">
     <table id="academicYearsTable" class="table align-middle w-100">
-        <thead><tr><th>الاسم</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th></th></tr></thead>
+        <thead><tr><th>@L["Name"]</th><th>@L["StartDate"]</th><th>@L["EndDate"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -36,3 +36,8 @@
         });
     </script>
 }
+
+
+
+
+

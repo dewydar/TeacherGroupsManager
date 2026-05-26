@@ -5,7 +5,7 @@ namespace TeacherGroupsManager.Services.Services;
 
 internal static class ServiceHelpers
 {
-    public static async Task<OperationResult> SaveDeleteAsync(Func<CancellationToken, Task> saveChanges, string successMessage, CancellationToken cancellationToken)
+    public static async Task<OperationResult> SaveDeleteAsync(Func<CancellationToken, Task> saveChanges, string successMessage, string failureMessage, CancellationToken cancellationToken)
     {
         try
         {
@@ -14,7 +14,7 @@ internal static class ServiceHelpers
         }
         catch (DbUpdateException)
         {
-            return OperationResult.Failure("لا يمكن حذف سجل مرتبط ببيانات أخرى");
+            return OperationResult.Failure(failureMessage);
         }
     }
 }

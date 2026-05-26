@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPaymentService
+public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : IPaymentService
 {
     public async Task<IReadOnlyList<MonthlyPaymentDto>> GetAllAsync(int? month = null, int? year = null, CancellationToken cancellationToken = default)
     {
@@ -38,7 +40,7 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
         if (!validation.Succeeded) return validation;
         if (await unitOfWork.Repository<MonthlyPayment>().AnyAsync(x => x.StudentId == dto.StudentId && x.Month == dto.Month && x.Year == dto.Year, cancellationToken))
         {
-            return OperationResult.Failure("المدفوعة موجودة من قبل لهذا الشهر");
+            return OperationResult.Failure(localizer["DuplicatePaymentForMonth"]);
         }
 
         var remaining = Math.Max(0, dto.RequiredAmount - dto.PaidAmount);
@@ -59,18 +61,18 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
             CreatedByEmployeeId = dto.CreatedByEmployeeId
         }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ المدفوعة بنجاح");
+        return OperationResult.Success(localizer["PaymentSaved"]);
     }
 
     public async Task<OperationResult> UpdateAsync(EditMonthlyPaymentDto dto, CancellationToken cancellationToken = default)
     {
         var payment = await unitOfWork.Repository<MonthlyPayment>().GetByIdAsync(dto.Id, cancellationToken);
-        if (payment is null) return OperationResult.Failure("المدفوعة غير موجودة");
+        if (payment is null) return OperationResult.Failure(localizer["PaymentNotFound"]);
         var validation = await ValidateReferencesAsync(dto.StudentId, dto.GroupId, dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
         if (await unitOfWork.Repository<MonthlyPayment>().AnyAsync(x => x.Id != dto.Id && x.StudentId == dto.StudentId && x.Month == dto.Month && x.Year == dto.Year, cancellationToken))
         {
-            return OperationResult.Failure("المدفوعة موجودة من قبل لهذا الشهر");
+            return OperationResult.Failure(localizer["DuplicatePaymentForMonth"]);
         }
 
         var remaining = Math.Max(0, dto.RequiredAmount - dto.PaidAmount);
@@ -87,15 +89,15 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
         payment.Notes = dto.Notes?.Trim();
         payment.CreatedByEmployeeId = dto.CreatedByEmployeeId;
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل المدفوعة بنجاح");
+        return OperationResult.Success(localizer["PaymentUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var payment = await unitOfWork.Repository<MonthlyPayment>().GetByIdAsync(id, cancellationToken);
-        if (payment is null) return OperationResult.Failure("المدفوعة غير موجودة");
+        if (payment is null) return OperationResult.Failure(localizer["PaymentNotFound"]);
         unitOfWork.Repository<MonthlyPayment>().Delete(payment);
-        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, "تم حذف المدفوعة بنجاح", cancellationToken);
+        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["PaymentDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
 
     private IQueryable<MonthlyPayment> PaymentsQuery() => unitOfWork.Repository<MonthlyPayment>().Query()
@@ -151,15 +153,15 @@ public class PaymentService(IUnitOfWork unitOfWork, AppMapper mapper) : IPayment
     {
         if (!await unitOfWork.Repository<Student>().AnyAsync(x => x.Id == studentId, cancellationToken))
         {
-            return OperationResult.Failure("الطالب غير موجود");
+            return OperationResult.Failure(localizer["StudentNotFound"]);
         }
         if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId, cancellationToken))
         {
-            return OperationResult.Failure("المجموعة غير موجودة");
+            return OperationResult.Failure(localizer["GroupNotFound"]);
         }
         if (!await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id == academicYearId, cancellationToken))
         {
-            return OperationResult.Failure("السنة الدراسية غير موجودة");
+            return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         }
         return OperationResult.Success();
     }

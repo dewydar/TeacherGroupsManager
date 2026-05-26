@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
@@ -25,7 +25,7 @@ public class EmployeeServiceTests : TestBase
         context.Employees.Add(employee);
         await context.SaveChangesAsync();
         var originalHash = employee.PasswordHash;
-        var service = new EmployeeService(new UnitOfWork(context, new TestCurrentUserContext(1)), mapper, hasher);
+        var service = new EmployeeService(new UnitOfWork(context, new TestCurrentUserContext(1)), mapper, hasher, TestLocalizer.Instance);
 
         var result = await service.UpdateAsync(new EditEmployeeDto(employee.Id, "New Name", "2", "new@example.com", "employee2", null, 3, false));
 
@@ -43,7 +43,7 @@ public class EmployeeServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Role_Does_Not_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher());
+        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher(), TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateEmployeeDto("User", "1", null, "user", "Password123", 999));
 
@@ -55,7 +55,7 @@ public class EmployeeServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Username_Already_Exists_With_Different_Case_Or_Spaces()
     {
         var (context, mapper) = CreateContext();
-        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher());
+        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher(), TestLocalizer.Instance);
 
         var first = await service.CreateAsync(new CreateEmployeeDto("User One", "1", null, "employee", "Password123", 2));
         var duplicate = await service.CreateAsync(new CreateEmployeeDto("User Two", "2", null, " EMPLOYEE ", "Password123", 2));
@@ -65,3 +65,5 @@ public class EmployeeServiceTests : TestBase
         Assert.Single(context.Employees);
     }
 }
+
+

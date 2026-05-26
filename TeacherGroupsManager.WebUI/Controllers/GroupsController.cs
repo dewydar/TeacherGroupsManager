@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.WebUI.Infrastructure;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
 [Authorize(Policy = PermissionCodes.GroupsManage)]
-public class GroupsController(IGroupService service, IAcademicYearService academicYearService, IEmployeeService employeeService) : Controller
+public class GroupsController(IGroupService service, IAcademicYearService academicYearService, IEmployeeService employeeService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index(GroupType? type, CancellationToken cancellationToken)
     {
@@ -45,14 +47,14 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
         }
         if (dto.AcademicYearId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر السنة الدراسية");
+            ModelState.AddModelError(string.Empty, localizer["RequiredAcademicYear"]);
             await FillLookups(cancellationToken);
             return View(dto);
         }
         var result = await service.CreateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         await FillLookups(cancellationToken);
         return View(dto);
     }
@@ -75,14 +77,14 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
         }
         if (dto.AcademicYearId <= 0)
         {
-            ModelState.AddModelError(string.Empty, "اختر السنة الدراسية");
+            ModelState.AddModelError(string.Empty, localizer["RequiredAcademicYear"]);
             await FillLookups(cancellationToken);
             return View(dto);
         }
         var result = await service.UpdateAsync(dto, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
-        ModelState.AddModelError(string.Empty, string.Join("، ", result.Errors));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         await FillLookups(cancellationToken);
         return View(dto);
     }
@@ -91,7 +93,7 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
-        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join("، ", result.Errors);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
         return RedirectToAction(nameof(Index));
     }
 
@@ -101,3 +103,5 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
         ViewBag.Employees = await employeeService.GetAllAsync(cancellationToken);
     }
 }
+
+

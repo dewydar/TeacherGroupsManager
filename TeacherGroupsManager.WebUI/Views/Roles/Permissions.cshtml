@@ -1,6 +1,6 @@
-@model TeacherGroupsManager.Dtos.RolePermissionsDto
+﻿@model TeacherGroupsManager.Dtos.RolePermissionsDto
 @{
-    ViewData["Title"] = "صلاحيات الدور";
+    ViewData["Title"] = L["Permissions"] + " - " + L["Role"];
     var selected = Model.PermissionIds.ToHashSet();
 }
 <form method="post" class="panel">
@@ -18,6 +18,10 @@
             </div>
         }
     </div>
-    <button class="btn btn-primary mt-3">حفظ</button>
-    <a class="btn btn-outline-secondary mt-3" asp-action="Index">رجوع</a>
+    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
+
+
+
+

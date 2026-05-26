@@ -1,24 +1,24 @@
-@{
-    ViewData["Title"] = "الطلاب";
+﻿@{
+    ViewData["Title"] = L["Students"];
     var academicYears = (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears;
     var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">إضافة طالب</a></p>
+<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
 <div class="panel mb-3">
     <div class="row g-2 align-items-end">
-        <div class="col-md-3"><label class="form-label">اسم الطالب</label><input id="FullName" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">الجوال</label><input id="Mobile" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">ولي الأمر</label><input id="ParentMobile" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">السنة الدراسية</label><select id="AcademicYearId" class="form-select"><option value="">الكل</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
-        <div class="col-md-2"><label class="form-label">المجموعة</label><select id="GroupId" class="form-select"><option value="">الكل</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
-        <div class="col-md-1"><label class="form-label">الحالة</label><select id="IsActive" class="form-select"><option value="">الكل</option><option value="true">نشط</option><option value="false">غير نشط</option></select></div>
-        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">بحث</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">إعادة تعيين</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">تحديث</button></div>
+        <div class="col-md-3"><label class="form-label">@L["StudentName"]</label><input id="FullName" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["Mobile"]</label><input id="Mobile" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["ParentMobile"]</label><input id="ParentMobile" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-2"><label class="form-label">@L["Group"]</label><select id="GroupId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in groups){<option value="@item.Id">@item.Name</option>}</select></div>
+        <div class="col-md-1"><label class="form-label">@L["Status"]</label><select id="IsActive" class="form-select"><option value="">@L["All"]</option><option value="true">@L["Active"]</option><option value="false">@L["Inactive"]</option></select></div>
+        <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
 <div class="panel table-responsive">
     <table id="studentsTable" class="table align-middle w-100">
-        <thead><tr><th>الاسم</th><th>الجوال</th><th>ولي الأمر</th><th>السنة الدراسية</th><th>المجموعة</th><th>الحالة</th><th></th></tr></thead>
+        <thead><tr><th>@L["Name"]</th><th>@L["Mobile"]</th><th>@L["ParentMobile"]</th><th>@L["AcademicYear"]</th><th>@L["Group"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -51,3 +51,7 @@
         });
     </script>
 }
+
+
+
+

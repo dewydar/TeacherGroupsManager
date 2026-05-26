@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Data.Repositories;
@@ -15,7 +15,7 @@ public class PaymentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         context.Students.Add(new Student { Id = 10, FullName = "Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
         await context.SaveChangesAsync();
-        var service = new PaymentService(new UnitOfWork(context), mapper);
+        var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateMonthlyPaymentDto(10, 1, 1, 5, 2026, 300, 100, PaymentStatus.PartiallyPaid, DateTime.Today, null, null));
 
@@ -29,7 +29,7 @@ public class PaymentServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Student_Does_Not_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new PaymentService(new UnitOfWork(context), mapper);
+        var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateMonthlyPaymentDto(999, 1, 1, 5, 2026, 300, 100, PaymentStatus.PartiallyPaid, DateTime.Today, null, null));
 
@@ -43,7 +43,7 @@ public class PaymentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         context.Students.Add(new Student { Id = 10, FullName = "Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
         await context.SaveChangesAsync();
-        var service = new PaymentService(new UnitOfWork(context), mapper);
+        var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var first = await service.CreateAsync(new CreateMonthlyPaymentDto(10, 1, 1, 5, 2026, 300, 100, PaymentStatus.PartiallyPaid, DateTime.Today, null, null));
         var duplicate = await service.CreateAsync(new CreateMonthlyPaymentDto(10, 1, 1, 5, 2026, 300, 300, PaymentStatus.Paid, DateTime.Today, null, null));
@@ -72,7 +72,7 @@ public class PaymentServiceTests : TestBase
             PaymentStatus = PaymentStatus.Unpaid
         });
         await context.SaveChangesAsync();
-        var service = new PaymentService(new UnitOfWork(context, new TestCurrentUserContext(1)), mapper);
+        var service = new PaymentService(new UnitOfWork(context, new TestCurrentUserContext(1)), mapper, TestLocalizer.Instance);
 
         var result = await service.UpdateAsync(new EditMonthlyPaymentDto(30, 20, 1, 1, 5, 2026, 300, 300, PaymentStatus.Unpaid, DateTime.Today, "Paid", null));
 
@@ -83,3 +83,5 @@ public class PaymentServiceTests : TestBase
         Assert.Equal(1, payment.UpdatedByEmployeeId);
     }
 }
+
+

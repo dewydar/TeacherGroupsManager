@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Services.Services;
 
@@ -10,7 +10,7 @@ public class RoleServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Role_Name_Already_Exists_With_Different_Case_Or_Spaces()
     {
         var (context, mapper) = CreateContext();
-        var service = new RoleService(new UnitOfWork(context), mapper);
+        var service = new RoleService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new TeacherGroupsManager.Dtos.RoleDto(0, " admin ", "New Admin Name", true));
 
@@ -22,7 +22,7 @@ public class RoleServiceTests : TestBase
     public async Task UpdatePermissionsAsync_Updates_Role_Permissions()
     {
         var (context, mapper) = CreateContext();
-        var service = new RoleService(new UnitOfWork(context, new TestCurrentUserContext(7)), mapper);
+        var service = new RoleService(new UnitOfWork(context, new TestCurrentUserContext(7)), mapper, TestLocalizer.Instance);
 
         var result = await service.UpdatePermissionsAsync(3, [5, 9]);
 
@@ -39,7 +39,7 @@ public class RoleServiceTests : TestBase
     public async Task UpdatePermissionsAsync_Fails_When_Permission_Does_Not_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new RoleService(new UnitOfWork(context), mapper);
+        var service = new RoleService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.UpdatePermissionsAsync(3, [999]);
 
@@ -47,3 +47,5 @@ public class RoleServiceTests : TestBase
         Assert.Empty(context.RolePermissions.Where(x => x.RoleId == 3));
     }
 }
+
+

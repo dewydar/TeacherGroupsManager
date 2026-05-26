@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Services.Interfaces;
@@ -67,3 +67,4 @@ public class ReportsController(
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
     }
 }
+

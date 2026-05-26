@@ -1,33 +1,33 @@
-@model TeacherGroupsManager.Dtos.DashboardSummaryDto
+﻿@model TeacherGroupsManager.Dtos.DashboardSummaryDto
 @{
-    ViewData["Title"] = "لوحة التحكم";
+    ViewData["Title"] = L["Dashboard"];
 }
 <div class="row g-3 mb-3">
-    <div class="col-md-3"><a class="card-stat" href="@Model.StudentsUrl"><div class="stat-title">عدد الطلاب</div><div class="stat-value">@Model.TotalStudents</div></a></div>
-    <div class="col-md-3"><a class="card-stat" href="@Model.GroupsUrl"><div class="stat-title">عدد المجموعات</div><div class="stat-value">@Model.TotalGroups</div></a></div>
-    <div class="col-md-3"><a class="card-stat" href="@Model.PrivateGroupsUrl"><div class="stat-title">عدد المجموعات الخاصة</div><div class="stat-value">@Model.TotalPrivateGroups</div></a></div>
-    <div class="col-md-3"><a class="card-stat" href="@Model.PublicGroupsUrl"><div class="stat-title">عدد المجموعات العامة</div><div class="stat-value">@Model.TotalPublicGroups</div></a></div>
-    <div class="col-md-3"><div class="card-stat"><div class="stat-title">عدد المدرسين</div><div class="stat-value">@Model.TotalTeachers</div></div></div>
-    <div class="col-md-3"><div class="card-stat"><div class="stat-title">عدد المساعدين</div><div class="stat-value">@Model.TotalAssistantTeachers</div></div></div>
-    <div class="col-md-3"><a class="card-stat" href="@Model.PaidStudentsUrl"><div class="stat-title">عدد الطلاب الذين دفعوا هذا الشهر</div><div class="stat-value">@Model.CurrentMonthPaidStudentsCount</div></a></div>
-    <div class="col-md-3"><a class="card-stat" href="@Model.UnpaidStudentsUrl"><div class="stat-title">عدد الطلاب الذين لم يدفعوا هذا الشهر</div><div class="stat-value">@Model.CurrentMonthUnpaidStudentsCount</div></a></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.StudentsUrl"><div class="stat-title">@L["TotalStudents"]</div><div class="stat-value">@Model.TotalStudents</div></a></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.GroupsUrl"><div class="stat-title">@L["TotalGroups"]</div><div class="stat-value">@Model.TotalGroups</div></a></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.PrivateGroupsUrl"><div class="stat-title">@L["PrivateGroups"]</div><div class="stat-value">@Model.TotalPrivateGroups</div></a></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.PublicGroupsUrl"><div class="stat-title">@L["PublicGroups"]</div><div class="stat-value">@Model.TotalPublicGroups</div></a></div>
+    <div class="col-md-3"><div class="card-stat"><div class="stat-title">@L["TotalTeachers"]</div><div class="stat-value">@Model.TotalTeachers</div></div></div>
+    <div class="col-md-3"><div class="card-stat"><div class="stat-title">@L["TotalAssistants"]</div><div class="stat-value">@Model.TotalAssistantTeachers</div></div></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.PaidStudentsUrl"><div class="stat-title">@L["PaidStudentsThisMonth"]</div><div class="stat-value">@Model.CurrentMonthPaidStudentsCount</div></a></div>
+    <div class="col-md-3"><a class="card-stat" href="@Model.UnpaidStudentsUrl"><div class="stat-title">@L["UnpaidStudentsThisMonth"]</div><div class="stat-value">@Model.CurrentMonthUnpaidStudentsCount</div></a></div>
 </div>
 <div class="row g-3">
     <div class="col-lg-6">
         <div class="panel">
-            <h2 class="h5">ملخص المدفوعات الشهرية</h2>
+            <h2 class="h5">@L["MonthlyPaymentsSummary"]</h2>
             <canvas id="paymentsChart" height="160"></canvas>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="panel">
-            <h2 class="h5">المجموعات حسب اليوم</h2>
+            <h2 class="h5">@L["GroupsByDay"]</h2>
             <table class="table table-sm">
-                <thead><tr><th>اليوم</th><th>عدد المجموعات</th><th>المجموعات</th></tr></thead>
+                <thead><tr><th>@L["Day"]</th><th>@L["TotalGroups"]</th><th>@L["Groups"]</th></tr></thead>
                 <tbody>
                 @foreach (var item in Model.GroupsByDay)
                 {
-                    <tr><td>@item.DayName</td><td>@item.GroupsCount</td><td>@string.Join("، ", item.GroupNames)</td></tr>
+                    <tr><td>@item.DayName</td><td>@item.GroupsCount</td><td>@string.Join(", ", item.GroupNames)</td></tr>
                 }
                 </tbody>
             </table>
@@ -35,15 +35,15 @@
     </div>
     <div class="col-12">
         <div class="panel">
-            <h2 class="h5">ملخص كل مجموعة</h2>
+            <h2 class="h5">@L["EachGroupSummary"]</h2>
             <div class="row g-3">
             @foreach (var group in Model.PaymentsPerGroup)
             {
                 <div class="col-md-4">
                     <a class="card-stat" href="@group.GroupDetailsUrl">
                         <div class="fw-bold">@group.GroupName</div>
-                        <div class="small text-muted">طلاب: @group.TotalStudents | دفعوا: @group.PaidStudentsCount | لم يدفعوا: @group.UnpaidStudentsCount</div>
-                        <div class="mt-2">المحصل: @group.TotalCollectedAmount.ToString("N2") | المتبقي: @group.RemainingAmount.ToString("N2")</div>
+                        <div class="small text-muted">@L["StudentsLabel"]: @group.TotalStudents | @L["PaidStudentsLabel"]: @group.PaidStudentsCount | @L["UnpaidStudentsLabel"]: @group.UnpaidStudentsCount</div>
+                        <div class="mt-2">@L["CollectedAmount"]: @group.TotalCollectedAmount.ToString("N2") | @L["RemainingAmount"]: @group.RemainingAmount.ToString("N2")</div>
                     </a>
                 </div>
             }
@@ -56,9 +56,14 @@
 new Chart(document.getElementById('paymentsChart'), {
     type: 'bar',
     data: {
-        labels: ['المطلوب', 'المدفوع', 'المتبقي'],
-        datasets: [{ label: 'المبلغ', data: [@Model.CurrentMonthTotalRequiredAmount, @Model.CurrentMonthTotalPaidAmount, @Model.CurrentMonthTotalRemainingAmount], backgroundColor: ['#5a8dee', '#39b980', '#f05d5e'] }]
+        labels: ['@L["RequiredAmount"]', '@L["PaidAmount"]', '@L["RemainingAmount"]'],
+        datasets: [{ label: '@L["ChartAmount"]', data: [@Model.CurrentMonthTotalRequiredAmount, @Model.CurrentMonthTotalPaidAmount, @Model.CurrentMonthTotalRemainingAmount], backgroundColor: ['#5a8dee', '#39b980', '#f05d5e'] }]
     }
 });
 </script>
 }
+
+
+
+
+

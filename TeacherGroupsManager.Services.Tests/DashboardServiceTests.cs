@@ -1,4 +1,4 @@
-using TeacherGroupsManager.Core.Entities;
+﻿using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Services.Services;
 
@@ -19,3 +19,5 @@ public class DashboardServiceTests : TestBase
         Assert.Equal(1, dashboard.TotalStudents);
     }
 }
+
+

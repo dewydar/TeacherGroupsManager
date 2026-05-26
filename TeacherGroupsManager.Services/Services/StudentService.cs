@@ -1,14 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudentService
+public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : IStudentService
 {
     public async Task<IReadOnlyList<StudentDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await StudentsQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
@@ -35,22 +37,22 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
         var normalizedFullName = fullName.ToLower();
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Mobile.Trim() == mobile, cancellationToken))
         {
-            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateMobile"]);
         }
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.GroupId == dto.GroupId && x.FullName.Trim().ToLower() == normalizedFullName, cancellationToken))
         {
-            return OperationResult.Failure("الطالب موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateStudent"]);
         }
 
         await unitOfWork.Repository<Student>().AddAsync(new Student { FullName = fullName, Mobile = mobile, ParentMobile = dto.ParentMobile?.Trim(), AcademicYearId = dto.AcademicYearId, GroupId = dto.GroupId, Notes = dto.Notes?.Trim(), IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ الطالب بنجاح");
+        return OperationResult.Success(localizer["StudentSaved"]);
     }
 
     public async Task<OperationResult> UpdateAsync(EditStudentDto dto, CancellationToken cancellationToken = default)
     {
         var student = await unitOfWork.Repository<Student>().GetByIdAsync(dto.Id, cancellationToken);
-        if (student is null) return OperationResult.Failure("الطالب غير موجود");
+        if (student is null) return OperationResult.Failure(localizer["StudentNotFound"]);
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var fullName = dto.FullName.Trim();
@@ -58,11 +60,11 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
         var normalizedFullName = fullName.ToLower();
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Id != dto.Id && x.Mobile.Trim() == mobile, cancellationToken))
         {
-            return OperationResult.Failure("رقم الموبايل مستخدم من قبل");
+            return OperationResult.Failure(localizer["DuplicateMobile"]);
         }
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Id != dto.Id && x.GroupId == dto.GroupId && x.FullName.Trim().ToLower() == normalizedFullName, cancellationToken))
         {
-            return OperationResult.Failure("الطالب موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateStudent"]);
         }
 
         student.FullName = fullName;
@@ -73,15 +75,15 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
         student.Notes = dto.Notes?.Trim();
         student.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل الطالب بنجاح");
+        return OperationResult.Success(localizer["StudentUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var student = await unitOfWork.Repository<Student>().GetByIdAsync(id, cancellationToken);
-        if (student is null) return OperationResult.Failure("الطالب غير موجود");
+        if (student is null) return OperationResult.Failure(localizer["StudentNotFound"]);
         unitOfWork.Repository<Student>().Delete(student);
-        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, "تم حذف الطالب بنجاح", cancellationToken);
+        return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["StudentDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
 
     private IQueryable<Student> StudentsQuery() => unitOfWork.Repository<Student>().Query()
@@ -132,11 +134,11 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper) : IStudent
     {
         if (!await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id == academicYearId, cancellationToken))
         {
-            return OperationResult.Failure("السنة الدراسية غير موجودة");
+            return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         }
         if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId, cancellationToken))
         {
-            return OperationResult.Failure("المجموعة غير موجودة");
+            return OperationResult.Failure(localizer["GroupNotFound"]);
         }
         return OperationResult.Success();
     }

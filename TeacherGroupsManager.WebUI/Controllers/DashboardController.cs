@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Services.Interfaces;
@@ -11,3 +11,4 @@ public class DashboardController(IDashboardService dashboardService) : Controlle
     public async Task<IActionResult> Index(CancellationToken cancellationToken) =>
         View(await dashboardService.GetSummaryAsync(cancellationToken));
 }
+

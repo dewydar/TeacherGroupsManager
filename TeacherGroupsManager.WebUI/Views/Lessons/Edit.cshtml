@@ -1,21 +1,25 @@
-@using TeacherGroupsManager.Core.Enums
+﻿@using TeacherGroupsManager.Core.Enums
 @model TeacherGroupsManager.Dtos.EditLessonDto
-@{ ViewData["Title"] = "تعديل درس"; }
+@{ ViewData["Title"] = L["Edit"] + " - " + L["Lessons"]; }
 <form method="post" class="panel">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <input type="hidden" name="CreatedByEmployeeId" value="@Model.CreatedByEmployeeId" />
     <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">عنوان الدرس</label><input class="form-control" name="Title" value="@Model.Title" /></div>
-        <div class="col-md-6"><label class="form-label">المجموعة</label><select class="form-select" name="GroupId"><option value="0">اختر المجموعة</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
-        <div class="col-md-4"><label class="form-label">نوع الدرس</label><select class="form-select" name="LessonType"><option value="@((int)LessonType.Group)" selected="@(Model.LessonType == LessonType.Group)">درس للمجموعة بالكامل</option><option value="@((int)LessonType.Private)" selected="@(Model.LessonType == LessonType.Private)">درس خاص</option></select></div>
-        <div class="col-md-4"><label class="form-label">تاريخ الدرس</label><input class="form-control" type="datetime-local" name="LessonDate" value="@Model.LessonDate.ToString("yyyy-MM-ddTHH:mm")" /></div>
-        <div class="col-md-4"><label class="form-label">السعر</label><input class="form-control" type="number" step="0.01" name="Price" value="@Model.Price" /></div>
-        <div class="col-md-6"><label class="form-label">الشهر</label><input class="form-control" type="number" name="Month" value="@Model.Month" /></div>
-        <div class="col-md-6"><label class="form-label">السنة</label><input class="form-control" type="number" name="Year" value="@Model.Year" /></div>
-        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsMonthlyPaymentRequired" value="true" @(Model.IsMonthlyPaymentRequired ? "checked" : "") /> مطلوب في المدفوعات الشهرية</label></div>
-        <div class="col-12"><label class="form-label">الوصف</label><textarea class="form-control" name="Description">@Model.Description</textarea></div>
+        <div class="col-md-6"><label class="form-label">@L["LessonTitle"]</label><input class="form-control" name="Title" value="@Model.Title" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Group"]</label><select class="form-select" name="GroupId"><option value="0">@L["SelectGroup"]</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
+        <div class="col-md-4"><label class="form-label">@L["LessonType"]</label><select class="form-select" name="LessonType"><option value="@((int)LessonType.Group)" selected="@(Model.LessonType == LessonType.Group)">@L["GroupLesson"]</option><option value="@((int)LessonType.Private)" selected="@(Model.LessonType == LessonType.Private)">@L["PrivateLesson"]</option></select></div>
+        <div class="col-md-4"><label class="form-label">@L["LessonDate"]</label><input class="form-control" type="datetime-local" name="LessonDate" value="@Model.LessonDate.ToString("yyyy-MM-ddTHH:mm")" /></div>
+        <div class="col-md-4"><label class="form-label">@L["Price"]</label><input class="form-control" type="number" step="0.01" name="Price" value="@Model.Price" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Month"]</label><input class="form-control" type="number" name="Month" value="@Model.Month" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Year"]</label><input class="form-control" type="number" name="Year" value="@Model.Year" /></div>
+        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsMonthlyPaymentRequired" value="true" @(Model.IsMonthlyPaymentRequired ? "checked" : "") /> @L["MonthlyPaymentRequired"]</label></div>
+        <div class="col-12"><label class="form-label">@L["Description"]</label><textarea class="form-control" name="Description">@Model.Description</textarea></div>
     </div>
-    <button class="btn btn-primary mt-3">حفظ</button>
-    <a class="btn btn-outline-secondary mt-3" asp-action="Index">رجوع</a>
+    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
+
+
+
+

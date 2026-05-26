@@ -1,21 +1,26 @@
-@using TeacherGroupsManager.Core.Enums
+﻿@using TeacherGroupsManager.Core.Enums
 @model TeacherGroupsManager.Dtos.EditGroupDto
-@{ ViewData["Title"] = "تعديل مجموعة"; }
+@{ ViewData["Title"] = L["Edit"] + " - " + L["Groups"]; }
 <form method="post" class="panel">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">اسم المجموعة</label><input class="form-control" name="Name" value="@Model.Name" /></div>
-        <div class="col-md-6"><label class="form-label">السنة الدراسية</label><select class="form-select" name="AcademicYearId"><option value="0">اختر السنة الدراسية</option>@foreach (var year in (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears){<option value="@year.Id" selected="@(year.Id == Model.AcademicYearId)">@year.Name</option>}</select></div>
-        <div class="col-md-4"><label class="form-label">نوع المجموعة</label><select class="form-select" name="GroupType"><option value="@((int)GroupType.Public)" selected="@(Model.GroupType == GroupType.Public)">مجموعة عامة</option><option value="@((int)GroupType.Private)" selected="@(Model.GroupType == GroupType.Private)">درس خاص</option></select></div>
-        <div class="col-md-4"><label class="form-label">اليوم</label><select class="form-select" name="DayOfWeek">@foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>()){<option value="@((int)day)" selected="@(day == Model.DayOfWeek)">@day</option>}</select></div>
-        <div class="col-md-4"><label class="form-label">سعر الدرس الافتراضي</label><input class="form-control" type="number" step="0.01" name="DefaultLessonPrice" value="@Model.DefaultLessonPrice" /></div>
-        <div class="col-md-6"><label class="form-label">وقت البداية</label><input class="form-control" type="time" name="StartTime" value="@Model.StartTime.ToString("HH:mm")" /></div>
-        <div class="col-md-6"><label class="form-label">وقت النهاية</label><input class="form-control" type="time" name="EndTime" value="@Model.EndTime.ToString("HH:mm")" /></div>
-        <div class="col-md-6"><label class="form-label">المدرس</label><select class="form-select" name="TeacherId"><option value="">بدون</option>@foreach (var employee in (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees){<option value="@employee.Id" selected="@(employee.Id == Model.TeacherId)">@employee.FullName</option>}</select></div>
-        <div class="col-md-6"><label class="form-label">المدرس المساعد</label><select class="form-select" name="AssistantTeacherId"><option value="">بدون</option>@foreach (var employee in (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees){<option value="@employee.Id" selected="@(employee.Id == Model.AssistantTeacherId)">@employee.FullName</option>}</select></div>
-        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> نشطة</label></div>
+        <div class="col-md-6"><label class="form-label">@L["GroupName"]</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+        <div class="col-md-6"><label class="form-label">@L["AcademicYear"]</label><select class="form-select" name="AcademicYearId"><option value="0">@L["SelectAcademicYear"]</option>@foreach (var year in (IReadOnlyList<TeacherGroupsManager.Dtos.AcademicYearDto>)ViewBag.AcademicYears){<option value="@year.Id" selected="@(year.Id == Model.AcademicYearId)">@year.Name</option>}</select></div>
+        <div class="col-md-4"><label class="form-label">@L["GroupType"]</label><select class="form-select" name="GroupType"><option value="@((int)GroupType.Public)" selected="@(Model.GroupType == GroupType.Public)">@L["PublicGroup"]</option><option value="@((int)GroupType.Private)" selected="@(Model.GroupType == GroupType.Private)">@L["PrivateLesson"]</option></select></div>
+        <div class="col-md-4"><label class="form-label">@L["Day"]</label><select class="form-select" name="DayOfWeek">@foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>()){<option value="@((int)day)" selected="@(day == Model.DayOfWeek)">@day</option>}</select></div>
+        <div class="col-md-4"><label class="form-label">@L["DefaultLessonPrice"]</label><input class="form-control" type="number" step="0.01" name="DefaultLessonPrice" value="@Model.DefaultLessonPrice" /></div>
+        <div class="col-md-6"><label class="form-label">@L["StartTime"]</label><input class="form-control" type="time" name="StartTime" value="@Model.StartTime.ToString("HH:mm")" /></div>
+        <div class="col-md-6"><label class="form-label">@L["EndTime"]</label><input class="form-control" type="time" name="EndTime" value="@Model.EndTime.ToString("HH:mm")" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Teacher"]</label><select class="form-select" name="TeacherId"><option value="">-</option>@foreach (var employee in (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees){<option value="@employee.Id" selected="@(employee.Id == Model.TeacherId)">@employee.FullName</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">@L["AssistantTeacher"]</label><select class="form-select" name="AssistantTeacherId"><option value="">-</option>@foreach (var employee in (IReadOnlyList<TeacherGroupsManager.Dtos.EmployeeDto>)ViewBag.Employees){<option value="@employee.Id" selected="@(employee.Id == Model.AssistantTeacherId)">@employee.FullName</option>}</select></div>
+        <div class="col-12"><label class="form-check"><input class="form-check-input" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> @L["Active"]</label></div>
     </div>
-    <button class="btn btn-primary mt-3">حفظ</button>
-    <a class="btn btn-outline-secondary mt-3" asp-action="Index">رجوع</a>
+    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
+
+
+
+
+

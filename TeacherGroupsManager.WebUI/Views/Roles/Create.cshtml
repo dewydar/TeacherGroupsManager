@@ -1,8 +1,12 @@
-@model TeacherGroupsManager.Dtos.RoleDto
-@{ ViewData["Title"] = "إضافة دور"; }
+﻿@model TeacherGroupsManager.Dtos.RoleDto
+@{ ViewData["Title"] = L["Add"] + " - " + L["RolesManagement"]; }
 <form method="post" class="panel">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
-    <div class="mb-3"><label class="form-label">اسم الدور بالإنجليزية</label><input class="form-control" name="Name" value="@Model.Name" /></div>
-    <div class="mb-3"><label class="form-label">اسم الدور بالعربية</label><input class="form-control" name="ArabicName" value="@Model.ArabicName" /></div>
-    <button class="btn btn-primary">حفظ</button>
+    <div class="mb-3"><label class="form-label">@L["EnglishRoleName"]</label><input class="form-control" name="Name" value="@Model.Name" /></div>
+    <div class="mb-3"><label class="form-label">@L["ArabicRoleName"]</label><input class="form-control" name="ArabicName" value="@Model.ArabicName" /></div>
+    <button class="btn btn-primary">@L["Save"]</button>
 </form>
+
+
+
+

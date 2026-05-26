@@ -1,14 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
+using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleService
+public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : IRoleService
 {
     public async Task<IReadOnlyList<RoleDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await unitOfWork.Repository<Role>().Query().OrderBy(x => x.Id).ToListAsync(cancellationToken));
@@ -36,12 +38,12 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
             x.Name.Trim().ToLower() == normalizedName ||
             x.ArabicName.Trim().ToLower() == normalizedArabicName, cancellationToken))
         {
-            return OperationResult.Failure("الدور موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateRole"]);
         }
 
         await unitOfWork.Repository<Role>().AddAsync(new Role { Name = name, ArabicName = arabicName, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حفظ الدور بنجاح");
+        return OperationResult.Success(localizer["RoleSaved"]);
     }
 
     private static IQueryable<Role> ApplyFilters(IQueryable<Role> query, DataTableRequestDto request)
@@ -74,7 +76,7 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
     public async Task<OperationResult> UpdateAsync(RoleDto dto, CancellationToken cancellationToken = default)
     {
         var role = await unitOfWork.Repository<Role>().GetByIdAsync(dto.Id, cancellationToken);
-        if (role is null) return OperationResult.Failure("الدور غير موجود");
+        if (role is null) return OperationResult.Failure(localizer["RoleNotFound"]);
         var name = dto.Name.Trim();
         var arabicName = dto.ArabicName.Trim();
         var normalizedName = name.ToLower();
@@ -84,24 +86,24 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
             (x.Name.Trim().ToLower() == normalizedName ||
              x.ArabicName.Trim().ToLower() == normalizedArabicName), cancellationToken))
         {
-            return OperationResult.Failure("الدور موجود من قبل");
+            return OperationResult.Failure(localizer["DuplicateRole"]);
         }
 
         role.Name = name;
         role.ArabicName = arabicName;
         role.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تعديل الدور بنجاح");
+        return OperationResult.Success(localizer["RoleUpdated"]);
     }
 
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var role = await unitOfWork.Repository<Role>().Query().Include(x => x.Employees).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-        if (role is null) return OperationResult.Failure("الدور غير موجود");
-        if (role.Employees.Count != 0) return OperationResult.Failure("لا يمكن حذف دور مرتبط بموظفين");
+        if (role is null) return OperationResult.Failure(localizer["RoleNotFound"]);
+        if (role.Employees.Count != 0) return OperationResult.Failure(localizer["CannotDeleteRoleWithEmployees"]);
         unitOfWork.Repository<Role>().Delete(role);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم حذف الدور بنجاح");
+        return OperationResult.Success(localizer["RoleDeleted"]);
     }
 
     public async Task<RolePermissionsDto?> GetPermissionsAsync(int roleId, CancellationToken cancellationToken = default)
@@ -117,7 +119,7 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
         var role = await unitOfWork.Repository<Role>().Query()
             .Include(x => x.RolePermissions)
             .FirstOrDefaultAsync(x => x.Id == roleId, cancellationToken);
-        if (role is null) return OperationResult.Failure("الدور غير موجود");
+        if (role is null) return OperationResult.Failure(localizer["RoleNotFound"]);
 
         var distinctPermissionIds = permissionIds.Distinct().ToArray();
         var existingPermissionIds = await unitOfWork.Repository<Permission>().Query()
@@ -126,7 +128,7 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
             .ToListAsync(cancellationToken);
         if (existingPermissionIds.Count != distinctPermissionIds.Length)
         {
-            return OperationResult.Failure("توجد صلاحيات غير موجودة");
+            return OperationResult.Failure(localizer["PermissionsNotFound"]);
         }
 
         role.RolePermissions.Clear();
@@ -136,6 +138,6 @@ public class RoleService(IUnitOfWork unitOfWork, AppMapper mapper) : IRoleServic
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return OperationResult.Success("تم تحديث صلاحيات الدور بنجاح");
+        return OperationResult.Success(localizer["RolePermissionsUpdated"]);
     }
 }

@@ -1,14 +1,16 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
+using TeacherGroupsManager.Shared.Localization;
 
 namespace TeacherGroupsManager.WebUI.Controllers;
 
-public class AccountController(IAuthService authService) : Controller
+public class AccountController(IAuthService authService, IStringLocalizer<SharedResource> localizer) : Controller
 {
     [AllowAnonymous]
     public IActionResult Login() => View(new LoginDto(string.Empty, string.Empty));
@@ -21,7 +23,7 @@ public class AccountController(IAuthService authService) : Controller
         var result = await authService.LoginAsync(dto, cancellationToken);
         if (!result.Succeeded || result.Data is null)
         {
-            ViewBag.Error = result.Errors.FirstOrDefault() ?? "تعذر تسجيل الدخول";
+            ViewBag.Error = result.Errors.FirstOrDefault() ?? localizer["FailureDefault"];
             return View(dto);
         }
 
@@ -47,3 +49,4 @@ public class AccountController(IAuthService authService) : Controller
     [AllowAnonymous]
     public IActionResult AccessDenied() => View();
 }
+

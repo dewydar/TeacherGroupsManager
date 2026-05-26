@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Data.Repositories;
@@ -17,7 +17,7 @@ public class LessonServiceTests : TestBase
             new Student { FullName = "Student 1", Mobile = "1", AcademicYearId = 1, GroupId = 1 },
             new Student { FullName = "Student 2", Mobile = "2", AcademicYearId = 1, GroupId = 1 });
         await context.SaveChangesAsync();
-        var service = new LessonService(new UnitOfWork(context), mapper);
+        var service = new LessonService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateLessonDto("Unit 1", null, 1, LessonType.Group, DateTime.Today, 150, true, DateTime.Today.Month, DateTime.Today.Year, null, []));
 
@@ -29,7 +29,7 @@ public class LessonServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Private_Lesson_Student_Does_Not_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new LessonService(new UnitOfWork(context), mapper);
+        var service = new LessonService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
         var result = await service.CreateAsync(new CreateLessonDto("Private", null, 1, LessonType.Private, DateTime.Today, 150, true, DateTime.Today.Month, DateTime.Today.Year, null, [999]));
 
@@ -41,7 +41,7 @@ public class LessonServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Lesson_Title_Group_And_Date_Already_Exist()
     {
         var (context, mapper) = CreateContext();
-        var service = new LessonService(new UnitOfWork(context), mapper);
+        var service = new LessonService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
         var lessonDate = DateTime.Today;
 
         var first = await service.CreateAsync(new CreateLessonDto("Unit 1", null, 1, LessonType.Group, lessonDate, 150, true, lessonDate.Month, lessonDate.Year, null, []));
@@ -52,3 +52,5 @@ public class LessonServiceTests : TestBase
         Assert.Single(context.Lessons);
     }
 }
+
+
