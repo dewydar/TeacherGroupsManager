@@ -13,205 +13,205 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppName" xml:space="preserve">
-    <value>Ø¥Ø¯Ø§Ø±Ø© Ù…Ø¬Ù…ÙˆØ¹Ø§Øª Ø§Ù„Ù…Ø¯Ø±Ø³</value>
+    <value>إدارة مجموعات المدرس</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</value>
+    <value>الرئيسية</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
-    <value>Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ…</value>
+    <value>لوحة التحكم</value>
   </data>
   <data name="RolesManagement" xml:space="preserve">
-    <value>Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ø¯ÙˆØ§Ø±</value>
+    <value>إدارة الأدوار</value>
   </data>
   <data name="EmployeesManagement" xml:space="preserve">
-    <value>Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…ÙˆØ¸ÙÙŠÙ†</value>
+    <value>إدارة الموظفين</value>
   </data>
   <data name="AcademicYears" xml:space="preserve">
-    <value>Ø§Ù„Ø³Ù†ÙˆØ§Øª Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©</value>
+    <value>السنوات الدراسية</value>
   </data>
   <data name="Groups" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª</value>
+    <value>المجموعات</value>
   </data>
   <data name="Students" xml:space="preserve">
-    <value>Ø§Ù„Ø·Ù„Ø§Ø¨</value>
+    <value>الطلاب</value>
   </data>
   <data name="Lessons" xml:space="preserve">
-    <value>Ø§Ù„Ø¯Ø±ÙˆØ³</value>
+    <value>الدروس</value>
   </data>
   <data name="MonthlyPayments" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ©</value>
+    <value>المدفوعات الشهرية</value>
   </data>
   <data name="Reports" xml:space="preserve">
-    <value>Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ±</value>
+    <value>التقارير</value>
   </data>
   <data name="Logout" xml:space="preserve">
-    <value>ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬</value>
+    <value>تسجيل الخروج</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„</value>
+    <value>تسجيل الدخول</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…</value>
+    <value>اسم المستخدم</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±</value>
+    <value>كلمة المرور</value>
   </data>
   <data name="RememberMe" xml:space="preserve">
-    <value>ØªØ°ÙƒØ±Ù†ÙŠ</value>
+    <value>تذكرني</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>Ø§Ù„Ù„ØºØ©</value>
+    <value>اللغة</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¸Ù‡Ø±</value>
+    <value>المظهر</value>
   </data>
   <data name="LightTheme" xml:space="preserve">
-    <value>ÙØ§ØªØ­</value>
+    <value>فاتح</value>
   </data>
   <data name="DarkTheme" xml:space="preserve">
-    <value>Ø¯Ø§ÙƒÙ†</value>
+    <value>داكن</value>
   </data>
   <data name="Arabic" xml:space="preserve">
-    <value>Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</value>
+    <value>العربية</value>
   </data>
   <data name="English" xml:space="preserve">
-    <value>Ø§Ù„Ø¥Ù†Ø¬Ù„ÙŠØ²ÙŠØ©</value>
+    <value>الإنجليزية</value>
   </data>
   <data name="French" xml:space="preserve">
-    <value>Ø§Ù„ÙØ±Ù†Ø³ÙŠØ©</value>
+    <value>الفرنسية</value>
   </data>
   <data name="Add" xml:space="preserve">
-    <value>Ø¥Ø¶Ø§ÙØ©</value>
+    <value>إضافة</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Ø­ÙØ¸</value>
+    <value>حفظ</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Ø¨Ø­Ø«</value>
+    <value>بحث</value>
   </data>
   <data name="Reset" xml:space="preserve">
-    <value>Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ†</value>
+    <value>إعادة تعيين</value>
   </data>
   <data name="Reload" xml:space="preserve">
-    <value>ØªØ­Ø¯ÙŠØ«</value>
+    <value>تحديث</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>ØªØ¹Ø¯ÙŠÙ„</value>
+    <value>تعديل</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>Ø­Ø°Ù</value>
+    <value>حذف</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>ØªÙØ§ØµÙŠÙ„</value>
+    <value>تفاصيل</value>
   </data>
   <data name="Name" xml:space="preserve">
-    <value>Ø§Ù„Ø§Ø³Ù…</value>
+    <value>الاسم</value>
   </data>
   <data name="ArabicName" xml:space="preserve">
-    <value>Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø¹Ø±Ø¨ÙŠ</value>
+    <value>الاسم العربي</value>
   </data>
   <data name="FullName" xml:space="preserve">
-    <value>Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„ÙƒØ§Ù…Ù„</value>
+    <value>الاسم بالكامل</value>
   </data>
   <data name="Mobile" xml:space="preserve">
-    <value>Ø§Ù„Ø¬ÙˆØ§Ù„</value>
+    <value>الجوال</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</value>
+    <value>البريد الإلكتروني</value>
   </data>
   <data name="Role" xml:space="preserve">
-    <value>Ø§Ù„Ø¯ÙˆØ±</value>
+    <value>الدور</value>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Ø§Ù„Ø­Ø§Ù„Ø©</value>
+    <value>الحالة</value>
   </data>
   <data name="Active" xml:space="preserve">
-    <value>Ù†Ø´Ø·</value>
+    <value>نشط</value>
   </data>
   <data name="Inactive" xml:space="preserve">
-    <value>ØºÙŠØ± Ù†Ø´Ø·</value>
+    <value>غير نشط</value>
   </data>
   <data name="AcademicYear" xml:space="preserve">
-    <value>Ø§Ù„Ø³Ù†Ø© Ø§Ù„Ø¯Ø±Ø§Ø³ÙŠØ©</value>
+    <value>السنة الدراسية</value>
   </data>
   <data name="Group" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø©</value>
+    <value>المجموعة</value>
   </data>
   <data name="Student" xml:space="preserve">
-    <value>Ø§Ù„Ø·Ø§Ù„Ø¨</value>
+    <value>الطالب</value>
   </data>
   <data name="Teacher" xml:space="preserve">
-    <value>Ù…Ø¯Ø±Ø³</value>
+    <value>مدرس</value>
   </data>
   <data name="AssistantTeacher" xml:space="preserve">
-    <value>Ù…Ø³Ø§Ø¹Ø¯ Ù…Ø¯Ø±Ø³</value>
+    <value>مساعد مدرس</value>
   </data>
   <data name="Day" xml:space="preserve">
-    <value>Ø§Ù„ÙŠÙˆÙ…</value>
+    <value>اليوم</value>
   </data>
   <data name="Time" xml:space="preserve">
-    <value>Ø§Ù„ÙˆÙ‚Øª</value>
+    <value>الوقت</value>
   </data>
   <data name="Price" xml:space="preserve">
-    <value>Ø§Ù„Ø³Ø¹Ø±</value>
+    <value>السعر</value>
   </data>
   <data name="Year" xml:space="preserve">
-    <value>Ø§Ù„Ø³Ù†Ø©</value>
+    <value>السنة</value>
   </data>
   <data name="Month" xml:space="preserve">
-    <value>Ø§Ù„Ø´Ù‡Ø±</value>
+    <value>الشهر</value>
   </data>
   <data name="RequiredAmount" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø·Ù„ÙˆØ¨</value>
+    <value>المطلوب</value>
   </data>
   <data name="PaidAmount" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¯ÙÙˆØ¹</value>
+    <value>المدفوع</value>
   </data>
   <data name="RemainingAmount" xml:space="preserve">
-    <value>Ø§Ù„Ù…ØªØ¨Ù‚ÙŠ</value>
+    <value>المتبقي</value>
   </data>
   <data name="PaymentStatus" xml:space="preserve">
-    <value>Ø­Ø§Ù„Ø© Ø§Ù„Ø¯ÙØ¹</value>
+    <value>حالة الدفع</value>
   </data>
   <data name="TotalStudents" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨</value>
+    <value>عدد الطلاب</value>
   </data>
   <data name="TotalGroups" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª</value>
+    <value>عدد المجموعات</value>
   </data>
   <data name="PrivateGroups" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª Ø§Ù„Ø®Ø§ØµØ©</value>
+    <value>عدد المجموعات الخاصة</value>
   </data>
   <data name="PublicGroups" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª Ø§Ù„Ø¹Ø§Ù…Ø©</value>
+    <value>عدد المجموعات العامة</value>
   </data>
   <data name="TotalTeachers" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ø¯Ø±Ø³ÙŠÙ†</value>
+    <value>عدد المدرسين</value>
   </data>
   <data name="TotalAssistants" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ÙŠÙ†</value>
+    <value>عدد المساعدين</value>
   </data>
   <data name="PaidStudentsThisMonth" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ø°ÙŠÙ† Ø¯ÙØ¹ÙˆØ§ Ù‡Ø°Ø§ Ø§Ù„Ø´Ù‡Ø±</value>
+    <value>عدد الطلاب الذين دفعوا هذا الشهر</value>
   </data>
   <data name="UnpaidStudentsThisMonth" xml:space="preserve">
-    <value>Ø¹Ø¯Ø¯ Ø§Ù„Ø·Ù„Ø§Ø¨ Ø§Ù„Ø°ÙŠÙ† Ù„Ù… ÙŠØ¯ÙØ¹ÙˆØ§ Ù‡Ø°Ø§ Ø§Ù„Ø´Ù‡Ø±</value>
+    <value>عدد الطلاب الذين لم يدفعوا هذا الشهر</value>
   </data>
   <data name="MonthlyPaymentsSummary" xml:space="preserve">
-    <value>Ù…Ù„Ø®Øµ Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø§Øª Ø§Ù„Ø´Ù‡Ø±ÙŠØ©</value>
+    <value>ملخص المدفوعات الشهرية</value>
   </data>
   <data name="GroupsByDay" xml:space="preserve">
-    <value>Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø§Øª Ø­Ø³Ø¨ Ø§Ù„ÙŠÙˆÙ…</value>
+    <value>المجموعات حسب اليوم</value>
   </data>
   <data name="EachGroupSummary" xml:space="preserve">
-    <value>Ù…Ù„Ø®Øµ ÙƒÙ„ Ù…Ø¬Ù…ÙˆØ¹Ø©</value>
+    <value>ملخص كل مجموعة</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>ØºÙŠØ± Ù…ØµØ±Ø­</value>
+    <value>غير مصرح</value>
   </data>
   <data name="AccessDeniedMessage" xml:space="preserve">
-    <value>Ù„ÙŠØ³ Ù„Ø¯ÙŠÙƒ ØµÙ„Ø§Ø­ÙŠØ© Ù„Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø©.</value>
+    <value>ليس لديك صلاحية للوصول إلى هذه الصفحة.</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>الكل</value>
