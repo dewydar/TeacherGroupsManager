@@ -381,6 +381,9 @@
   <data name="EmployeeNotFound" xml:space="preserve">
     <value>Employee was not found</value>
   </data>
+  <data name="SystemAdminProtected" xml:space="preserve">
+    <value>System admin user cannot be changed or deleted</value>
+  </data>
   <data name="DuplicateGroup" xml:space="preserve">
     <value>Group already exists</value>
   </data>

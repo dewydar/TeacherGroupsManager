@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
@@ -14,14 +15,14 @@ namespace TeacherGroupsManager.Services.Services;
 public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPasswordHasher passwordHasher, IStringLocalizer<SharedResource> localizer) : IEmployeeService
 {
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        mapper.Map(await EmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
+        mapper.Map(await VisibleEmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
 
     public async Task<EmployeeDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        await EmployeesQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } employee ? mapper.Map(employee) : null;
+        await VisibleEmployeesQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } employee ? mapper.Map(employee) : null;
 
     public Task<DataTableResponseDto<EmployeeDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
         DataTableQueryHelper.ToDataTableResponseAsync(
-            EmployeesQuery().AsNoTracking(),
+            VisibleEmployeesQuery().AsNoTracking(),
             request,
             ApplyFilters,
             ApplySearch,
@@ -34,6 +35,10 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         var username = dto.Username.Trim();
         var mobile = dto.Mobile.Trim();
         var normalizedUsername = username.ToLower();
+        if (IsSystemAdminUsername(normalizedUsername))
+        {
+            return OperationResult.Failure(localizer["SystemAdminProtected"]);
+        }
 
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
@@ -69,9 +74,15 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
     {
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(dto.Id, cancellationToken);
         if (employee is null) return OperationResult.Failure(localizer["EmployeeNotFound"]);
+        if (IsSystemAdmin(employee)) return OperationResult.Failure(localizer["SystemAdminProtected"]);
         var username = dto.Username.Trim();
         var mobile = dto.Mobile.Trim();
         var normalizedUsername = username.ToLower();
+        if (IsSystemAdminUsername(normalizedUsername))
+        {
+            return OperationResult.Failure(localizer["SystemAdminProtected"]);
+        }
+
         if (!await unitOfWork.Repository<Role>().AnyAsync(x => x.Id == dto.RoleId, cancellationToken))
         {
             return OperationResult.Failure(localizer["RoleNotFound"]);
@@ -105,6 +116,7 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
     {
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(id, cancellationToken);
         if (employee is null) return OperationResult.Failure(localizer["EmployeeNotFound"]);
+        if (IsSystemAdmin(employee)) return OperationResult.Failure(localizer["SystemAdminProtected"]);
         unitOfWork.Repository<Employee>().Delete(employee);
         return await ServiceHelpers.SaveDeleteAsync(unitOfWork.SaveChangesAsync, localizer["EmployeeDeleted"], localizer["CannotDeleteLinkedRecord"], cancellationToken);
     }
@@ -115,6 +127,15 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         .ThenInclude(x => x.Permission)
         .Include(x => x.CreatedByEmployee)
         .Include(x => x.UpdatedByEmployee);
+
+    private IQueryable<Employee> VisibleEmployeesQuery() =>
+        EmployeesQuery().Where(x => x.Username.ToLower() != AppConstants.SystemAdminUsername);
+
+    private static bool IsSystemAdmin(Employee employee) =>
+        IsSystemAdminUsername(employee.Username.Trim().ToLower());
+
+    private static bool IsSystemAdminUsername(string normalizedUsername) =>
+        normalizedUsername == AppConstants.SystemAdminUsername;
 
     private static IQueryable<Employee> ApplyFilters(IQueryable<Employee> query, DataTableRequestDto request)
     {

@@ -4,6 +4,7 @@ public static class AppConstants
 {
     public const string ArabicCulture = "ar-EG";
     public const string AdminRole = "Admin";
+    public const string SystemAdminUsername = "admin";
     public const string TeacherRole = "Teacher";
     public const string AssistantTeacherRole = "AssistantTeacher";
     public const string AuthCookieName = "TeacherGroupsManager.Auth";

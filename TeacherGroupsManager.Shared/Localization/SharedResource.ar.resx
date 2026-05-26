@@ -381,6 +381,9 @@
   <data name="EmployeeNotFound" xml:space="preserve">
     <value>الموظف غير موجود</value>
   </data>
+  <data name="SystemAdminProtected" xml:space="preserve">
+    <value>Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªØ¹Ø¯ÙŠÙ„ Ø£Ùˆ Ø­Ø°Ù Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø¯ÙŠØ± Ø§Ù„Ù†Ø¸Ø§Ù…</value>
+  </data>
   <data name="DuplicateGroup" xml:space="preserve">
     <value>المجموعة موجودة من قبل</value>
   </data>

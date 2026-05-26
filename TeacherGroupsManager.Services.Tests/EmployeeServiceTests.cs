@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
@@ -63,6 +64,37 @@ public class EmployeeServiceTests : TestBase
         Assert.True(first.Succeeded);
         Assert.False(duplicate.Succeeded);
         Assert.Single(context.Employees);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_Excludes_System_Admin()
+    {
+        var (context, mapper) = CreateContext();
+        context.Employees.AddRange(
+            new Employee { FullName = "System Admin", Mobile = "0", Username = AppConstants.SystemAdminUsername, PasswordHash = "hash", RoleId = 1 },
+            new Employee { FullName = "Visible User", Mobile = "1", Username = "visible", PasswordHash = "hash", RoleId = 2 });
+        await context.SaveChangesAsync();
+        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher(), TestLocalizer.Instance);
+
+        var employees = await service.GetAllAsync();
+
+        Assert.DoesNotContain(employees, x => x.Username == AppConstants.SystemAdminUsername);
+        Assert.Contains(employees, x => x.Username == "visible");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_Fails_For_System_Admin()
+    {
+        var (context, mapper) = CreateContext();
+        var admin = new Employee { FullName = "System Admin", Mobile = "0", Username = AppConstants.SystemAdminUsername, PasswordHash = "hash", RoleId = 1 };
+        context.Employees.Add(admin);
+        await context.SaveChangesAsync();
+        var service = new EmployeeService(new UnitOfWork(context), mapper, new Pbkdf2PasswordHasher(), TestLocalizer.Instance);
+
+        var result = await service.DeleteAsync(admin.Id);
+
+        Assert.False(result.Succeeded);
+        Assert.True(await context.Employees.AnyAsync(x => x.Id == admin.Id));
     }
 }
 

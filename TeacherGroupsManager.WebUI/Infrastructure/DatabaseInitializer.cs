@@ -19,7 +19,7 @@ public static class DatabaseInitializer
 
     private static async Task SeedDefaultAdminAsync(IServiceProvider services, TeacherGroupsDbContext dbContext)
     {
-        if (await dbContext.Employees.AnyAsync(x => x.Username == "admin"))
+        if (await dbContext.Employees.AnyAsync(x => x.Username == AppConstants.SystemAdminUsername))
         {
             return;
         }
@@ -31,7 +31,7 @@ public static class DatabaseInitializer
         {
             FullName = "System Admin",
             Mobile = "0000000000",
-            Username = "admin",
+            Username = AppConstants.SystemAdminUsername,
             PasswordHash = passwordHasher.Hash("Admin@123"),
             RoleId = adminRole.Id,
             IsActive = true
