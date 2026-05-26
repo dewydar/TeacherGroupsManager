@@ -1,6 +1,11 @@
-﻿@model TeacherGroupsManager.Dtos.DashboardSummaryDto
+@model TeacherGroupsManager.Dtos.DashboardSummaryDto
+@using System.Globalization
+@using System.Text.Json
 @{
     ViewData["Title"] = L["Dashboard"];
+    var requiredAmount = Model.CurrentMonthTotalRequiredAmount.ToString(CultureInfo.InvariantCulture);
+    var paidAmount = Model.CurrentMonthTotalPaidAmount.ToString(CultureInfo.InvariantCulture);
+    var remainingAmount = Model.CurrentMonthTotalRemainingAmount.ToString(CultureInfo.InvariantCulture);
 }
 <div class="row g-3 mb-3">
     <div class="col-md-3"><a class="card-stat" href="@Model.StudentsUrl"><div class="stat-title">@L["TotalStudents"]</div><div class="stat-value">@Model.TotalStudents</div></a></div>
@@ -56,14 +61,9 @@
 new Chart(document.getElementById('paymentsChart'), {
     type: 'bar',
     data: {
-        labels: ['@L["RequiredAmount"]', '@L["PaidAmount"]', '@L["RemainingAmount"]'],
-        datasets: [{ label: '@L["ChartAmount"]', data: [@Model.CurrentMonthTotalRequiredAmount, @Model.CurrentMonthTotalPaidAmount, @Model.CurrentMonthTotalRemainingAmount], backgroundColor: ['#5a8dee', '#39b980', '#f05d5e'] }]
+        labels: [@Html.Raw(JsonSerializer.Serialize(L["RequiredAmount"].Value)), @Html.Raw(JsonSerializer.Serialize(L["PaidAmount"].Value)), @Html.Raw(JsonSerializer.Serialize(L["RemainingAmount"].Value))],
+        datasets: [{ label: @Html.Raw(JsonSerializer.Serialize(L["ChartAmount"].Value)), data: [@requiredAmount, @paidAmount, @remainingAmount], backgroundColor: ['#5a8dee', '#39b980', '#f05d5e'] }]
     }
 });
 </script>
 }
-
-
-
-
-
