@@ -260,7 +260,7 @@
     window.renderActions = function (controller, id, includeDetails, permissionsUrl) {
         const details = includeDetails ? `<a class="btn btn-sm btn-outline-secondary" href="/${controller}/Details/${id}">${t.details}</a> ` : '';
         const permissions = permissionsUrl ? `<a class="btn btn-sm btn-outline-secondary" href="${permissionsUrl}/${id}">${t.permissions}</a> ` : '';
-        return `<div class="text-nowrap">
+        return `<div class="table-actions">
             ${details}<a class="btn btn-sm btn-outline-primary" href="/${controller}/Edit/${id}">${t.edit}</a>
             ${permissions}<form action="/${controller}/Delete/${id}" method="post" class="d-inline">
                 <input name="__RequestVerificationToken" type="hidden" value="${$('input[name="__RequestVerificationToken"]').first().val() || ''}" />

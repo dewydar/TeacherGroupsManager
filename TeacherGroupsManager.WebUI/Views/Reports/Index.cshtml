@@ -1,10 +1,10 @@
 ﻿@{ ViewData["Title"] = L["Reports"]; }
 <div class="row g-3">
-    <div class="col-md-4"><a class="card-stat" asp-action="Students"><div class="stat-title">@L["StudentsReport"]</div><div class="mt-2">@L["StudentsByYearAndGroup"]</div></a></div>
-    <div class="col-md-4"><a class="card-stat" asp-controller="Groups" asp-action="Index"><div class="stat-title">@L["GroupsReport"]</div><div class="mt-2">@L["GroupsActiveAndTypes"]</div></a></div>
-    <div class="col-md-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">@L["MonthlyPaymentsReport"]</div><div class="mt-2">@L["PaidAndUnpaidView"]</div></a></div>
-    <div class="col-md-4"><a class="card-stat" asp-action="Payments" asp-route-status="Unpaid"><div class="stat-title">@L["UnpaidStudentsReport"]</div><div class="mt-2">@L["TrackRemainingPayments"]</div></a></div>
-    <div class="col-md-4"><a class="card-stat" asp-action="Lessons"><div class="stat-title">@L["LessonsReport"]</div><div class="mt-2">@L["LessonsByGroupAndMonth"]</div></a></div>
-    <div class="col-md-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">@L["TeacherRevenueReport"]</div><div class="mt-2">@L["RevenueSummary"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-action="Students"><div class="stat-title">@L["StudentsReport"]</div><div class="mt-2">@L["StudentsByYearAndGroup"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-controller="Groups" asp-action="Index"><div class="stat-title">@L["GroupsReport"]</div><div class="mt-2">@L["GroupsActiveAndTypes"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">@L["MonthlyPaymentsReport"]</div><div class="mt-2">@L["PaidAndUnpaidView"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-action="Payments" asp-route-status="Unpaid"><div class="stat-title">@L["UnpaidStudentsReport"]</div><div class="mt-2">@L["TrackRemainingPayments"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-action="Lessons"><div class="stat-title">@L["LessonsReport"]</div><div class="mt-2">@L["LessonsByGroupAndMonth"]</div></a></div>
+    <div class="col-sm-6 col-lg-4"><a class="card-stat" asp-action="Payments"><div class="stat-title">@L["TeacherRevenueReport"]</div><div class="mt-2">@L["RevenueSummary"]</div></a></div>
 </div>
 
