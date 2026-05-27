@@ -666,4 +666,31 @@
   <data name="UsernameFormatInvalid" xml:space="preserve">
     <value>Username cannot have whitespace. Use - instead of whitespace. Username can use only letters, numbers, and -</value>
   </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>Attendance</value>
+  </data>
+  <data name="AttendanceStatus" xml:space="preserve">
+    <value>Attendance Status</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
+  <data name="Excused" xml:space="preserve">
+    <value>Excused</value>
+  </data>
+  <data name="AttendanceUpdated" xml:space="preserve">
+    <value>Attendance updated successfully</value>
+  </data>
+  <data name="AvailableLessonDate" xml:space="preserve">
+    <value>Available Lesson Date</value>
+  </data>
+  <data name="SelectLessonDate" xml:space="preserve">
+    <value>Select lesson date</value>
+  </data>
+  <data name="NoAvailableLessonDates" xml:space="preserve">
+    <value>No available dates</value>
+  </data>
 </root>

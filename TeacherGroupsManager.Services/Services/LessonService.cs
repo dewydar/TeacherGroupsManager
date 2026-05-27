@@ -16,8 +16,95 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
     public async Task<IReadOnlyList<LessonDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await LessonsQuery().OrderByDescending(x => x.LessonDate).ToListAsync(cancellationToken));
 
+    public async Task<IReadOnlyList<AvailableLessonDateDto>> GetAvailableLessonDatesAsync(int groupId, int month, int year, DayOfWeek? dayOfWeek = null, CancellationToken cancellationToken = default)
+    {
+        if (groupId <= 0 || month is < 1 or > 12 || year <= 2000)
+        {
+            return [];
+        }
+
+        var group = await unitOfWork.Repository<Group>().Query()
+            .Include(x => x.Schedules)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == groupId, cancellationToken);
+
+        if (group is null)
+        {
+            return [];
+        }
+
+        var schedules = (group.Schedules.Count > 0
+                ? group.Schedules.Select(x => new { x.DayOfWeek, x.StartTime })
+                : [new { group.DayOfWeek, group.StartTime }])
+            .Where(x => dayOfWeek is null || x.DayOfWeek == dayOfWeek)
+            .GroupBy(x => new { x.DayOfWeek, x.StartTime })
+            .Select(x => x.Key)
+            .ToList();
+
+        if (schedules.Count == 0)
+        {
+            return [];
+        }
+
+        var monthStart = new DateTime(year, month, 1);
+        var monthEnd = monthStart.AddMonths(1);
+        var existingLessonDates = await unitOfWork.Repository<Lesson>().Query()
+            .Where(x => x.GroupId == groupId && x.LessonDate >= monthStart && x.LessonDate < monthEnd)
+            .Select(x => x.LessonDate.Date)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+        var existingDateSet = existingLessonDates.ToHashSet();
+
+        var daysInMonth = DateTime.DaysInMonth(year, month);
+        var dates = new List<AvailableLessonDateDto>();
+        foreach (var schedule in schedules)
+        {
+            for (var day = 1; day <= daysInMonth; day++)
+            {
+                var date = new DateTime(year, month, day);
+                if (date.DayOfWeek != schedule.DayOfWeek || existingDateSet.Contains(date))
+                {
+                    continue;
+                }
+
+                dates.Add(new AvailableLessonDateDto(date.Add(schedule.StartTime.ToTimeSpan()), schedule.DayOfWeek));
+            }
+        }
+
+        return dates
+            .OrderBy(x => x.LessonDate)
+            .ToList();
+    }
+
     public async Task<LessonDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await LessonsQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken) is { } lesson ? mapper.Map(lesson) : null;
+
+    public async Task<LessonAttendanceDto?> GetAttendanceAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var lesson = await unitOfWork.Repository<Lesson>().Query()
+            .Include(x => x.Group)
+            .Include(x => x.LessonStudents)
+            .ThenInclude(x => x.Student)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return lesson is null
+            ? null
+            : new LessonAttendanceDto(
+                lesson.Id,
+                lesson.Title,
+                lesson.Group.Name,
+                lesson.LessonDate,
+                lesson.LessonStudents
+                    .OrderBy(x => x.Student.FullName)
+                    .Select(x => new LessonAttendanceStudentDto(
+                        x.StudentId,
+                        x.Student.FullName,
+                        x.Student.Mobile,
+                        x.AttendanceStatus,
+                        x.AttendanceNotes))
+                    .ToList());
+    }
 
     public Task<DataTableResponseDto<LessonDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default) =>
         DataTableQueryHelper.ToDataTableResponseAsync(
@@ -78,6 +165,32 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
         return OperationResult.Success(localizer["LessonUpdated"]);
     }
 
+    public async Task<OperationResult> UpdateAttendanceAsync(UpdateLessonAttendanceDto dto, CancellationToken cancellationToken = default)
+    {
+        var lesson = await unitOfWork.Repository<Lesson>().Query()
+            .Include(x => x.LessonStudents)
+            .FirstOrDefaultAsync(x => x.Id == dto.LessonId, cancellationToken);
+
+        if (lesson is null) return OperationResult.Failure(localizer["LessonNotFound"]);
+
+        var lessonStudentsById = lesson.LessonStudents.ToDictionary(x => x.StudentId);
+        var requestedStudentIds = dto.Students.Select(x => x.StudentId).Distinct().ToArray();
+        if (requestedStudentIds.Length != lessonStudentsById.Count || requestedStudentIds.Any(x => !lessonStudentsById.ContainsKey(x)))
+        {
+            return OperationResult.Failure(localizer["SomeStudentsNotFound"]);
+        }
+
+        foreach (var item in dto.Students)
+        {
+            var lessonStudent = lessonStudentsById[item.StudentId];
+            lessonStudent.AttendanceStatus = item.AttendanceStatus;
+            lessonStudent.AttendanceNotes = string.IsNullOrWhiteSpace(item.AttendanceNotes) ? null : item.AttendanceNotes.Trim();
+        }
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return OperationResult.Success(localizer["AttendanceUpdated"]);
+    }
+
     public async Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var lesson = await unitOfWork.Repository<Lesson>().GetByIdAsync(id, cancellationToken);
@@ -128,10 +241,10 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
         };
     }
 
-    private async Task SetLessonStudentsAsync(Lesson lesson, LessonType lessonType, int groupId, IEnumerable<int> studentIds, CancellationToken cancellationToken)
+    private async Task SetLessonStudentsAsync(Lesson lesson, LessonType lessonType, int groupId, IEnumerable<int>? studentIds, CancellationToken cancellationToken)
     {
         var ids = lessonType == LessonType.Private
-            ? studentIds.Distinct().ToList()
+            ? (studentIds ?? []).Distinct().ToList()
             : await unitOfWork.Repository<Student>().Query().Where(x => x.GroupId == groupId && x.IsActive).Select(x => x.Id).ToListAsync(cancellationToken);
 
         foreach (var studentId in ids)
@@ -140,7 +253,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
         }
     }
 
-    private async Task<OperationResult> ValidateReferencesAsync(int groupId, LessonType lessonType, int[] studentIds, CancellationToken cancellationToken)
+    private async Task<OperationResult> ValidateReferencesAsync(int groupId, LessonType lessonType, int[]? studentIds, CancellationToken cancellationToken)
     {
         if (!await unitOfWork.Repository<Group>().AnyAsync(x => x.Id == groupId, cancellationToken))
         {
@@ -148,7 +261,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
         }
         if (lessonType == LessonType.Private)
         {
-            var distinctStudentIds = studentIds.Distinct().ToArray();
+            var distinctStudentIds = (studentIds ?? []).Distinct().ToArray();
             var existingStudentCount = await unitOfWork.Repository<Student>().Query().CountAsync(x => distinctStudentIds.Contains(x.Id), cancellationToken);
             if (existingStudentCount != distinctStudentIds.Length)
             {

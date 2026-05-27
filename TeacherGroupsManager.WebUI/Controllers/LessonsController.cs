@@ -36,6 +36,17 @@ public class LessonsController(ILessonService service, IGroupService groupServic
         return View(new CreateLessonDto(string.Empty, null, 0, LessonType.Group, now, 0, true, now.Month, now.Year, null, []));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAvailableDates(int groupId, int month, int year, DayOfWeek? dayOfWeek, CancellationToken cancellationToken)
+    {
+        var dates = await service.GetAvailableLessonDatesAsync(groupId, month, year, dayOfWeek, cancellationToken);
+        return Json(dates.Select(x => new
+        {
+            value = x.LessonDate.ToString("yyyy-MM-ddTHH:mm"),
+            text = $"{localizer[x.DayOfWeek.ToString()]} - {x.LessonDate:yyyy-MM-dd HH:mm}"
+        }));
+    }
+
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateLessonDto dto, CancellationToken cancellationToken)
     {
@@ -86,6 +97,23 @@ public class LessonsController(ILessonService service, IGroupService groupServic
         ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
         ViewBag.Groups = await groupService.GetAllAsync(cancellationToken);
         return View(dto);
+    }
+
+    public async Task<IActionResult> Attendance(int id, CancellationToken cancellationToken)
+    {
+        var attendance = await service.GetAttendanceAsync(id, cancellationToken);
+        return attendance is null ? NotFound() : View(attendance);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Attendance(UpdateLessonAttendanceDto dto, CancellationToken cancellationToken)
+    {
+        var result = await service.UpdateAttendanceAsync(dto, cancellationToken);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded ? result.Message : string.Join(", ", result.Errors);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
+        var attendance = await service.GetAttendanceAsync(dto.LessonId, cancellationToken);
+        return attendance is null ? NotFound() : View(attendance);
     }
 
     [HttpPost, ValidateAntiForgeryToken]

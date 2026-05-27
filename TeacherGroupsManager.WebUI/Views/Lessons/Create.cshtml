@@ -1,21 +1,72 @@
-﻿@using TeacherGroupsManager.Core.Enums
+@using TeacherGroupsManager.Core.Enums
 @model TeacherGroupsManager.Dtos.CreateLessonDto
 @{ ViewData["Title"] = L["Add"] + " - " + L["Lessons"]; }
 <form method="post" class="panel">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <div class="row g-3">
         <div class="col-md-6"><label class="form-label">@L["LessonTitle"]</label><input class="form-control" name="Title" value="@Model.Title" /></div>
-        <div class="col-md-6"><label class="form-label">@L["Group"]</label><select class="form-select" name="GroupId"><option value="0">@L["SelectGroup"]</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id">@group.Name</option>}</select></div>
-        <div class="col-md-4"><label class="form-label">@L["LessonType"]</label><select class="form-select" name="LessonType"><option value="@((int)LessonType.Group)">@L["GroupLesson"]</option><option value="@((int)LessonType.Private)">@L["PrivateLesson"]</option></select></div>
-        <div class="col-md-4"><label class="form-label">@L["LessonDate"]</label><input class="form-control" type="datetime-local" name="LessonDate" value="@Model.LessonDate.ToString("yyyy-MM-ddTHH:mm")" /></div>
+        <div class="col-md-6"><label class="form-label">@L["Group"]</label><select class="form-select" name="GroupId" id="GroupId"><option value="0">@L["SelectGroup"]</option>@foreach (var group in (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups){<option value="@group.Id" selected="@(group.Id == Model.GroupId)">@group.Name</option>}</select></div>
+        <div class="col-md-4"><label class="form-label">@L["LessonType"]</label><select class="form-select" name="LessonType"><option value="@((int)LessonType.Group)" selected="@(Model.LessonType == LessonType.Group)">@L["GroupLesson"]</option><option value="@((int)LessonType.Private)" selected="@(Model.LessonType == LessonType.Private)">@L["PrivateLesson"]</option></select></div>
+        <div class="col-md-4"><label class="form-label">@L["Month"]</label><input class="form-control" type="number" name="Month" id="Month" min="1" max="12" value="@Model.Month" /></div>
+        <div class="col-md-4"><label class="form-label">@L["Year"]</label><input class="form-control" type="number" name="Year" id="Year" value="@Model.Year" /></div>
+        <div class="col-md-4">
+            <label class="form-label">@L["Day"]</label>
+            <select class="form-select" id="DayOfWeek">
+                <option value="">@L["All"]</option>
+                @foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())
+                {
+                    <option value="@((int)day)">@L[day.ToString()]</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">@L["AvailableLessonDate"]</label><select class="form-select" id="AvailableLessonDate"><option value="">@L["SelectLessonDate"]</option></select></div>
+        <div class="col-md-4"><label class="form-label">@L["LessonDate"]</label><input class="form-control" type="datetime-local" name="LessonDate" id="LessonDate" value="@Model.LessonDate.ToString("yyyy-MM-ddTHH:mm")" /></div>
         <div class="col-md-4"><label class="form-label">@L["Price"]</label><input class="form-control" type="number" step="0.01" name="Price" value="@Model.Price" /></div>
-        <div class="col-md-6"><label class="form-label">@L["Month"]</label><input class="form-control" type="number" name="Month" value="@Model.Month" /></div>
-        <div class="col-md-6"><label class="form-label">@L["Year"]</label><input class="form-control" type="number" name="Year" value="@Model.Year" /></div>
         <div class="col-12"><label class="form-label">@L["Description"]</label><textarea class="form-control" name="Description">@Model.Description</textarea></div>
     </div>
     <button class="btn btn-primary mt-3">@L["Save"]</button>
 </form>
 
+@section Scripts {
+    <script>
+        (function () {
+            const group = document.getElementById('GroupId');
+            const month = document.getElementById('Month');
+            const year = document.getElementById('Year');
+            const day = document.getElementById('DayOfWeek');
+            const availableDate = document.getElementById('AvailableLessonDate');
+            const lessonDate = document.getElementById('LessonDate');
+            const selectText = '@L["SelectLessonDate"]';
+            const emptyText = '@L["NoAvailableLessonDates"]';
 
+            async function loadAvailableDates() {
+                const groupId = Number(group.value || 0);
+                const monthValue = Number(month.value || 0);
+                const yearValue = Number(year.value || 0);
+                availableDate.innerHTML = `<option value="">${selectText}</option>`;
+                if (!groupId || monthValue < 1 || monthValue > 12 || yearValue <= 2000) return;
 
+                const params = new URLSearchParams({ groupId, month: monthValue, year: yearValue });
+                if (day.value) params.append('dayOfWeek', day.value);
+                const response = await fetch(`@Url.Action("GetAvailableDates")?${params.toString()}`);
+                const dates = await response.json();
+                if (!dates.length) {
+                    availableDate.innerHTML = `<option value="">${emptyText}</option>`;
+                    return;
+                }
+                for (const item of dates) {
+                    availableDate.add(new Option(item.text, item.value));
+                }
+            }
 
+            availableDate.addEventListener('change', function () {
+                if (availableDate.value) lessonDate.value = availableDate.value;
+            });
+            group.addEventListener('change', loadAvailableDates);
+            month.addEventListener('change', loadAvailableDates);
+            year.addEventListener('change', loadAvailableDates);
+            day.addEventListener('change', loadAvailableDates);
+            loadAvailableDates();
+        })();
+    </script>
+}

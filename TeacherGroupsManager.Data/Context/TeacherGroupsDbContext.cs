@@ -28,6 +28,7 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<Group>().Property(x => x.DefaultLessonPrice).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<GroupSchedule>().HasIndex(x => new { x.GroupId, x.DayOfWeek, x.StartTime });
         modelBuilder.Entity<Lesson>().Property(x => x.Price).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<LessonStudent>().Property(x => x.AttendanceStatus).HasDefaultValue(AttendanceStatus.Present);
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RequiredAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.PaidAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RemainingAmount).HasColumnType("decimal(18,2)");

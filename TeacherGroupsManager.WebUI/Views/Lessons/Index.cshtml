@@ -42,7 +42,7 @@
                 { data: 'price', render: renderMoney },
                 { data: 'month' },
                 { data: 'year' },
-                { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('Lessons', id); } }
+                { data: 'id', orderable: false, searchable: false, render: function (id) { return `<a class="btn btn-sm btn-outline-secondary" href="/Lessons/Attendance/${id}">@L["Attendance"]</a> ${renderActions('Lessons', id)}`; } }
             ]
         });
     </script>

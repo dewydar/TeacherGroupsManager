@@ -1,0 +1,49 @@
+@using TeacherGroupsManager.Core.Enums
+@model TeacherGroupsManager.Dtos.LessonAttendanceDto
+@{
+    ViewData["Title"] = L["Attendance"] + " - " + Model.LessonTitle;
+}
+
+<form method="post" class="panel">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <input type="hidden" name="LessonId" value="@Model.LessonId" />
+    <div class="mb-3">
+        <div class="fw-semibold">@Model.LessonTitle</div>
+        <div class="text-muted">@Model.GroupName - @Model.LessonDate.ToString("yyyy-MM-dd")</div>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>@L["StudentName"]</th>
+                    <th>@L["Mobile"]</th>
+                    <th>@L["AttendanceStatus"]</th>
+                    <th>@L["Notes"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Students.Count; i++)
+                {
+                    var student = Model.Students[i];
+                    <tr>
+                        <td>
+                            @student.StudentName
+                            <input type="hidden" name="Students[@i].StudentId" value="@student.StudentId" />
+                        </td>
+                        <td>@student.Mobile</td>
+                        <td>
+                            <select class="form-select" name="Students[@i].AttendanceStatus">
+                                <option value="@((int)AttendanceStatus.Present)" selected="@(student.AttendanceStatus == AttendanceStatus.Present)">@L["Present"]</option>
+                                <option value="@((int)AttendanceStatus.Absent)" selected="@(student.AttendanceStatus == AttendanceStatus.Absent)">@L["Absent"]</option>
+                                <option value="@((int)AttendanceStatus.Excused)" selected="@(student.AttendanceStatus == AttendanceStatus.Excused)">@L["Excused"]</option>
+                            </select>
+                        </td>
+                        <td><input class="form-control" name="Students[@i].AttendanceNotes" value="@student.AttendanceNotes" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
+</form>

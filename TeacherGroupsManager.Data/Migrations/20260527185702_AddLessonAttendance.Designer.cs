@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeacherGroupsManager.Data.Context;
 
@@ -11,9 +12,11 @@ using TeacherGroupsManager.Data.Context;
 namespace TeacherGroupsManager.Data.Migrations
 {
     [DbContext(typeof(TeacherGroupsDbContext))]
-    partial class TeacherGroupsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260527185702_AddLessonAttendance")]
+    partial class AddLessonAttendance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,7 +350,9 @@ namespace TeacherGroupsManager.Data.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("AttendanceStatus")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");

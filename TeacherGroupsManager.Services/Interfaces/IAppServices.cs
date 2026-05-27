@@ -70,10 +70,13 @@ public interface IStudentService
 public interface ILessonService
 {
     Task<IReadOnlyList<LessonDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<AvailableLessonDateDto>> GetAvailableLessonDatesAsync(int groupId, int month, int year, DayOfWeek? dayOfWeek = null, CancellationToken cancellationToken = default);
     Task<DataTableResponseDto<LessonDto>> GetPagedAsync(DataTableRequestDto request, CancellationToken cancellationToken = default);
     Task<LessonDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<LessonAttendanceDto?> GetAttendanceAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateLessonDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditLessonDto dto, CancellationToken cancellationToken = default);
+    Task<OperationResult> UpdateAttendanceAsync(UpdateLessonAttendanceDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 

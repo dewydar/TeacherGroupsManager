@@ -666,4 +666,31 @@
   <data name="UsernameFormatInvalid" xml:space="preserve">
     <value>Le nom d'utilisateur ne peut pas contenir d'espaces. Utilisez - a la place des espaces. Le nom d'utilisateur utilise uniquement des lettres, des chiffres et -</value>
   </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>Presence</value>
+  </data>
+  <data name="AttendanceStatus" xml:space="preserve">
+    <value>Statut de presence</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
+  <data name="Excused" xml:space="preserve">
+    <value>Excuse</value>
+  </data>
+  <data name="AttendanceUpdated" xml:space="preserve">
+    <value>Presence mise a jour avec succes</value>
+  </data>
+  <data name="AvailableLessonDate" xml:space="preserve">
+    <value>Date de lecon disponible</value>
+  </data>
+  <data name="SelectLessonDate" xml:space="preserve">
+    <value>Selectionner la date de lecon</value>
+  </data>
+  <data name="NoAvailableLessonDates" xml:space="preserve">
+    <value>Aucune date disponible</value>
+  </data>
 </root>
