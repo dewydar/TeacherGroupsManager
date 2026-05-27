@@ -38,6 +38,7 @@
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.LessonsManage)) { <a class="@NavClass("Lessons")" aria-current="@NavCurrent("Lessons")" asp-controller="Lessons" asp-action="Index">@L["Lessons"]</a> }
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.PaymentsManage)) { <a class="@NavClass("Payments")" aria-current="@NavCurrent("Payments")" asp-controller="Payments" asp-action="Index">@L["MonthlyPayments"]</a> }
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.ReportsView)) { <a class="@NavClass("Reports")" aria-current="@NavCurrent("Reports")" asp-controller="Reports" asp-action="Index">@L["Reports"]</a> }
+                <a class="@NavClass("Account")" aria-current="@NavCurrent("Account")" asp-controller="Account" asp-action="ResetPassword">@L["ChangePassword"]</a>
                 <a class="nav-link" asp-controller="Account" asp-action="Logout">@L["Logout"]</a>
             </nav>
         </aside>
@@ -81,6 +82,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/datatables-helper.js" asp-append-version="true"></script>
     <script src="~/js/theme.js" asp-append-version="true"></script>
+    <script src="~/js/password-toggle.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

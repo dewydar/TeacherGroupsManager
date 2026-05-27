@@ -5,6 +5,9 @@ public static class AppConstants
     public const int MaxStringLength = 500;
     public const int MobileMaxLength = 11;
     public const string EmailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+    public const string PasswordRegex = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).+$";
+    public const string FullNameRegex = @"^\S+(?:\s+\S+){2,}$";
+    public const string UsernameRegex = @"^[A-Za-z0-9-]+$";
     public const string ArabicCulture = "ar-EG";
     public const string AdminRole = "Admin";
     public const string SystemAdminUsername = "admin";

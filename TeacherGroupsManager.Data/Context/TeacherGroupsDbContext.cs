@@ -41,6 +41,7 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         }
 
         modelBuilder.Entity<Employee>().Property(x => x.Mobile).HasMaxLength(AppConstants.MobileMaxLength);
+        modelBuilder.Entity<Employee>().Property(x => x.Username).HasMaxLength(450);
         modelBuilder.Entity<Student>().Property(x => x.Mobile).HasMaxLength(AppConstants.MobileMaxLength);
         modelBuilder.Entity<Student>().Property(x => x.ParentMobile).HasMaxLength(AppConstants.MobileMaxLength);
 

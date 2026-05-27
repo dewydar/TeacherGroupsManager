@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.RegularExpressions;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Data.Repositories;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Services.Interfaces;
 using TeacherGroupsManager.Services.Mapping;
-using TeacherGroupsManager.Services.Security;
 using TeacherGroupsManager.Shared.Localization;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Services;
 
-public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPasswordHasher passwordHasher, IStringLocalizer<SharedResource> localizer) : IEmployeeService
+public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocalizer<SharedResource> localizer) : IEmployeeService
 {
     public async Task<IReadOnlyList<EmployeeDto>> GetAllAsync(CancellationToken cancellationToken = default) =>
         mapper.Map(await VisibleEmployeesQuery().OrderBy(x => x.FullName).ToListAsync(cancellationToken));
@@ -32,8 +32,19 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
 
     public async Task<OperationResult> CreateAsync(CreateEmployeeDto dto, CancellationToken cancellationToken = default)
     {
-        var username = dto.Username.Trim();
+        if (!IsValidUsername(dto.Username))
+        {
+            return OperationResult.Failure(localizer["UsernameFormatInvalid"]);
+        }
+
+        var username = dto.Username;
         var mobile = dto.Mobile.Trim();
+        var fullName = dto.FullName.Trim();
+        if (!HasThreeNameParts(fullName))
+        {
+            return OperationResult.Failure(localizer["FullNameMustContainThreeNames"]);
+        }
+
         var normalizedUsername = username.ToLower();
         if (IsSystemAdminUsername(normalizedUsername))
         {
@@ -57,13 +68,13 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
 
         await unitOfWork.Repository<Employee>().AddAsync(new Employee
         {
-            FullName = dto.FullName.Trim(),
+            FullName = fullName,
             Mobile = mobile,
             Email = dto.Email?.Trim(),
             Username = username,
-            PasswordHash = passwordHasher.Hash(dto.Password),
+            PasswordHash = string.Empty,
             RoleId = dto.RoleId,
-            IsActive = dto.IsActive
+            IsActive = false
         }, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -75,8 +86,19 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
         var employee = await unitOfWork.Repository<Employee>().GetByIdAsync(dto.Id, cancellationToken);
         if (employee is null) return OperationResult.Failure(localizer["EmployeeNotFound"]);
         if (IsSystemAdmin(employee)) return OperationResult.Failure(localizer["SystemAdminProtected"]);
-        var username = dto.Username.Trim();
+        if (!IsValidUsername(dto.Username))
+        {
+            return OperationResult.Failure(localizer["UsernameFormatInvalid"]);
+        }
+
+        var username = dto.Username;
         var mobile = dto.Mobile.Trim();
+        var fullName = dto.FullName.Trim();
+        if (!HasThreeNameParts(fullName))
+        {
+            return OperationResult.Failure(localizer["FullNameMustContainThreeNames"]);
+        }
+
         var normalizedUsername = username.ToLower();
         if (IsSystemAdminUsername(normalizedUsername))
         {
@@ -97,16 +119,12 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
             return OperationResult.Failure(localizer["DuplicateMobile"]);
         }
 
-        employee.FullName = dto.FullName.Trim();
+        employee.FullName = fullName;
         employee.Mobile = mobile;
         employee.Email = dto.Email?.Trim();
         employee.Username = username;
         employee.RoleId = dto.RoleId;
         employee.IsActive = dto.IsActive;
-        if (!string.IsNullOrWhiteSpace(dto.Password))
-        {
-            employee.PasswordHash = passwordHasher.Hash(dto.Password);
-        }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success(localizer["EmployeeUpdated"]);
@@ -136,6 +154,12 @@ public class EmployeeService(IUnitOfWork unitOfWork, AppMapper mapper, IPassword
 
     private static bool IsSystemAdminUsername(string normalizedUsername) =>
         normalizedUsername == AppConstants.SystemAdminUsername;
+
+    private static bool HasThreeNameParts(string fullName) =>
+        fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3;
+
+    private static bool IsValidUsername(string username) =>
+        Regex.IsMatch(username, AppConstants.UsernameRegex);
 
     private static IQueryable<Employee> ApplyFilters(IQueryable<Employee> query, DataTableRequestDto request)
     {

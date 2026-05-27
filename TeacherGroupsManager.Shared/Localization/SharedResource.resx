@@ -627,4 +627,43 @@
   <data name="StudentsLabel" xml:space="preserve">
     <value>Students</value>
   </data>
+  <data name="PasswordSetup" xml:space="preserve">
+    <value>Set Password</value>
+  </data>
+  <data name="PasswordSetupRequired" xml:space="preserve">
+    <value>Please set your password before signing in.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="PasswordMismatch" xml:space="preserve">
+    <value>Password and confirmation do not match</value>
+  </data>
+  <data name="PasswordComplexity" xml:space="preserve">
+    <value>Password must include lowercase, uppercase, number, and special character</value>
+  </data>
+  <data name="CurrentPasswordInvalid" xml:space="preserve">
+    <value>Current password is invalid</value>
+  </data>
+  <data name="PasswordUpdated" xml:space="preserve">
+    <value>Password updated successfully</value>
+  </data>
+  <data name="InactiveUserContactAdmin" xml:space="preserve">
+    <value>Your account is inactive. Please contact the system admin or your teacher.</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Show password</value>
+  </data>
+  <data name="FullNameMustContainThreeNames" xml:space="preserve">
+    <value>Full name must contain at least three names</value>
+  </data>
+  <data name="UsernameFormatInvalid" xml:space="preserve">
+    <value>Username cannot have whitespace. Use - instead of whitespace. Username can use only letters, numbers, and -</value>
+  </data>
 </root>

@@ -5,10 +5,10 @@ namespace TeacherGroupsManager.Dtos;
 
 public record EmployeeDto(
     int Id,
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.EmailRegex)] string? Email,
-    [StringLength(AppConstants.MaxStringLength)] string Username,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.UsernameRegex, ErrorMessage = "UsernameFormatInvalid")] string Username,
     int RoleId,
     [StringLength(AppConstants.MaxStringLength)] string RoleName,
     [StringLength(AppConstants.MaxStringLength)] string RoleArabicName,
@@ -20,21 +20,19 @@ public record EmployeeDto(
     [StringLength(AppConstants.MaxStringLength)] string? UpdatedByEmployeeName = null);
 
 public record CreateEmployeeDto(
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.EmailRegex)] string? Email,
-    [StringLength(AppConstants.MaxStringLength)] string Username,
-    [StringLength(AppConstants.MaxStringLength)] string Password,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.UsernameRegex, ErrorMessage = "UsernameFormatInvalid")] string Username,
     int RoleId,
-    bool IsActive = true);
+    bool IsActive = false);
 
 public record EditEmployeeDto(
     int Id,
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.EmailRegex)] string? Email,
-    [StringLength(AppConstants.MaxStringLength)] string Username,
-    [StringLength(AppConstants.MaxStringLength)] string? Password,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.UsernameRegex, ErrorMessage = "UsernameFormatInvalid")] string Username,
     int RoleId,
     bool IsActive = true);
 

@@ -627,4 +627,43 @@
   <data name="StudentsLabel" xml:space="preserve">
     <value>Etudiants</value>
   </data>
+  <data name="PasswordSetup" xml:space="preserve">
+    <value>Definir le mot de passe</value>
+  </data>
+  <data name="PasswordSetupRequired" xml:space="preserve">
+    <value>Veuillez definir votre mot de passe avant de vous connecter.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Changer le mot de passe</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Mot de passe actuel</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmer le mot de passe</value>
+  </data>
+  <data name="PasswordMismatch" xml:space="preserve">
+    <value>Le mot de passe et la confirmation ne correspondent pas</value>
+  </data>
+  <data name="PasswordComplexity" xml:space="preserve">
+    <value>Le mot de passe doit inclure minuscule, majuscule, chiffre et caractere special</value>
+  </data>
+  <data name="CurrentPasswordInvalid" xml:space="preserve">
+    <value>Le mot de passe actuel est invalide</value>
+  </data>
+  <data name="PasswordUpdated" xml:space="preserve">
+    <value>Mot de passe mis a jour avec succes</value>
+  </data>
+  <data name="InactiveUserContactAdmin" xml:space="preserve">
+    <value>Votre compte est inactif. Veuillez contacter l'administrateur systeme ou votre enseignant.</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Afficher le mot de passe</value>
+  </data>
+  <data name="FullNameMustContainThreeNames" xml:space="preserve">
+    <value>Le nom complet doit contenir au moins trois noms</value>
+  </data>
+  <data name="UsernameFormatInvalid" xml:space="preserve">
+    <value>Le nom d'utilisateur ne peut pas contenir d'espaces. Utilisez - a la place des espaces. Le nom d'utilisateur utilise uniquement des lettres, des chiffres et -</value>
+  </data>
 </root>

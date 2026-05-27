@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Localization;
+using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Dtos;
 using TeacherGroupsManager.Shared.Localization;
 
@@ -19,9 +20,10 @@ public class CreateEmployeeDtoValidator : AbstractValidator<CreateEmployeeDto>
     public CreateEmployeeDtoValidator(IStringLocalizer<SharedResource> localizer)
     {
         RuleFor(x => x.FullName).NotEmpty().WithMessage(localizer["RequiredEmployeeName"]);
+        RuleFor(x => x.FullName).Matches(AppConstants.FullNameRegex).WithMessage(localizer["FullNameMustContainThreeNames"]);
         RuleFor(x => x.Mobile).NotEmpty().WithMessage(localizer["RequiredMobile"]);
         RuleFor(x => x.Username).NotEmpty().WithMessage(localizer["RequiredUsername"]);
-        RuleFor(x => x.Password).MinimumLength(8).WithMessage(localizer["PasswordMinLength"]);
+        RuleFor(x => x.Username).Matches(AppConstants.UsernameRegex).WithMessage(localizer["UsernameFormatInvalid"]);
         RuleFor(x => x.RoleId).GreaterThan(0).WithMessage(localizer["RequiredRole"]);
     }
 }
@@ -55,6 +57,7 @@ public class CreateStudentDtoValidator : AbstractValidator<CreateStudentDto>
     public CreateStudentDtoValidator(IStringLocalizer<SharedResource> localizer)
     {
         RuleFor(x => x.FullName).NotEmpty().WithMessage(localizer["RequiredStudentName"]);
+        RuleFor(x => x.FullName).Matches(AppConstants.FullNameRegex).WithMessage(localizer["FullNameMustContainThreeNames"]);
         RuleFor(x => x.AcademicYearId).GreaterThan(0).WithMessage(localizer["RequiredAcademicYear"]);
         RuleFor(x => x.GroupId).GreaterThan(0).WithMessage(localizer["RequiredGroup"]);
     }

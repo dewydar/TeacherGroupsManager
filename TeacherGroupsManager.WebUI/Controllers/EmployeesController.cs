@@ -30,7 +30,7 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
-        return View(new CreateEmployeeDto(string.Empty, string.Empty, null, string.Empty, string.Empty, 0));
+        return View(new CreateEmployeeDto(string.Empty, string.Empty, null, string.Empty, 0));
     }
 
     [HttpPost]
@@ -61,7 +61,7 @@ public class EmployeesController(IEmployeeService employeeService, IRoleService 
         var employee = await employeeService.GetByIdAsync(id, cancellationToken);
         if (employee is null) return NotFound();
         ViewBag.Roles = await roleService.GetAllAsync(cancellationToken);
-        return View(new EditEmployeeDto(employee.Id, employee.FullName, employee.Mobile, employee.Email, employee.Username, null, employee.RoleId, employee.IsActive));
+        return View(new EditEmployeeDto(employee.Id, employee.FullName, employee.Mobile, employee.Email, employee.Username, employee.RoleId, employee.IsActive));
     }
 
     [HttpPost]

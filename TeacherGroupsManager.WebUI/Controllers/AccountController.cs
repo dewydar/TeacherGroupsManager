@@ -27,15 +27,69 @@ public class AccountController(IAuthService authService, IStringLocalizer<Shared
             return View(dto);
         }
 
+        if (result.Data.RequiresPasswordSetup)
+        {
+            return RedirectToAction(nameof(ResetPassword), new { username = result.Data.Username, firstTime = true });
+        }
+
+        if (result.Data.Employee is null)
+        {
+            ViewBag.Error = localizer["FailureDefault"];
+            return View(dto);
+        }
+
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, result.Data.Id.ToString()),
-            new(ClaimTypes.Name, result.Data.FullName),
-            new(ClaimTypes.Role, result.Data.RoleName)
+            new(ClaimTypes.NameIdentifier, result.Data.Employee.Id.ToString()),
+            new(ClaimTypes.Name, result.Data.Employee.FullName),
+            new(ClaimTypes.Role, result.Data.Employee.RoleName)
         };
-        claims.AddRange(result.Data.Permissions.Select(x => new Claim("Permission", x)));
+        claims.AddRange(result.Data.Employee.Permissions.Select(x => new Claim("Permission", x)));
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)), new AuthenticationProperties { IsPersistent = dto.RememberMe });
+        return RedirectToAction("Index", "Dashboard");
+    }
+
+    [AllowAnonymous]
+    public IActionResult ResetPassword(string? username = null, bool firstTime = false)
+    {
+        if (!firstTime && User.Identity?.IsAuthenticated != true)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        return View(new ResetPasswordDto(username, null, string.Empty, string.Empty, firstTime));
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto dto, CancellationToken cancellationToken)
+    {
+        if (!dto.IsFirstTime && User.Identity?.IsAuthenticated != true)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(dto);
+        }
+
+        var currentEmployeeId = dto.IsFirstTime ? null : GetCurrentEmployeeId();
+        var result = await authService.ResetPasswordAsync(dto, currentEmployeeId, cancellationToken);
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError(string.Empty, string.Join(", ", result.Errors));
+            return View(dto);
+        }
+
+        TempData["Success"] = result.Message;
+        if (dto.IsFirstTime)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
         return RedirectToAction("Index", "Dashboard");
     }
 
@@ -48,5 +102,8 @@ public class AccountController(IAuthService authService, IStringLocalizer<Shared
 
     [AllowAnonymous]
     public IActionResult AccessDenied() => View();
+
+    private int? GetCurrentEmployeeId() =>
+        int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var employeeId) ? employeeId : null;
 }
 

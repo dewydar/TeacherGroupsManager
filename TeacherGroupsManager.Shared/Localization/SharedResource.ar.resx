@@ -1,630 +1,669 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AppName" xml:space="preserve">
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="AppName" xml:space="preserve">
     <value>إدارة مجموعات المدرس</value>
   </data>
-  <data name="Home" xml:space="preserve">
+	<data name="Home" xml:space="preserve">
     <value>الرئيسية</value>
   </data>
-  <data name="Dashboard" xml:space="preserve">
+	<data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
   </data>
-  <data name="RolesManagement" xml:space="preserve">
+	<data name="RolesManagement" xml:space="preserve">
     <value>إدارة الأدوار</value>
   </data>
-  <data name="EmployeesManagement" xml:space="preserve">
+	<data name="EmployeesManagement" xml:space="preserve">
     <value>إدارة الموظفين</value>
   </data>
-  <data name="AcademicYears" xml:space="preserve">
+	<data name="AcademicYears" xml:space="preserve">
     <value>السنوات الدراسية</value>
   </data>
-  <data name="Groups" xml:space="preserve">
+	<data name="Groups" xml:space="preserve">
     <value>المجموعات</value>
   </data>
-  <data name="Students" xml:space="preserve">
+	<data name="Students" xml:space="preserve">
     <value>الطلاب</value>
   </data>
-  <data name="Lessons" xml:space="preserve">
+	<data name="Lessons" xml:space="preserve">
     <value>الدروس</value>
   </data>
-  <data name="MonthlyPayments" xml:space="preserve">
+	<data name="MonthlyPayments" xml:space="preserve">
     <value>المدفوعات الشهرية</value>
   </data>
-  <data name="Reports" xml:space="preserve">
+	<data name="Reports" xml:space="preserve">
     <value>التقارير</value>
   </data>
-  <data name="Logout" xml:space="preserve">
+	<data name="Logout" xml:space="preserve">
     <value>تسجيل الخروج</value>
   </data>
-  <data name="Login" xml:space="preserve">
+	<data name="Login" xml:space="preserve">
     <value>تسجيل الدخول</value>
   </data>
-  <data name="Username" xml:space="preserve">
+	<data name="Username" xml:space="preserve">
     <value>اسم المستخدم</value>
   </data>
-  <data name="Password" xml:space="preserve">
+	<data name="Password" xml:space="preserve">
     <value>كلمة المرور</value>
   </data>
-  <data name="RememberMe" xml:space="preserve">
+	<data name="RememberMe" xml:space="preserve">
     <value>تذكرني</value>
   </data>
-  <data name="Language" xml:space="preserve">
+	<data name="Language" xml:space="preserve">
     <value>اللغة</value>
   </data>
-  <data name="Theme" xml:space="preserve">
+	<data name="Theme" xml:space="preserve">
     <value>المظهر</value>
   </data>
-  <data name="LightTheme" xml:space="preserve">
+	<data name="LightTheme" xml:space="preserve">
     <value>فاتح</value>
   </data>
-  <data name="DarkTheme" xml:space="preserve">
+	<data name="DarkTheme" xml:space="preserve">
     <value>داكن</value>
   </data>
-  <data name="Arabic" xml:space="preserve">
+	<data name="Arabic" xml:space="preserve">
     <value>العربية</value>
   </data>
-  <data name="English" xml:space="preserve">
+	<data name="English" xml:space="preserve">
     <value>الإنجليزية</value>
   </data>
-  <data name="French" xml:space="preserve">
+	<data name="French" xml:space="preserve">
     <value>الفرنسية</value>
   </data>
-  <data name="Add" xml:space="preserve">
+	<data name="Add" xml:space="preserve">
     <value>إضافة</value>
   </data>
-  <data name="Save" xml:space="preserve">
+	<data name="Save" xml:space="preserve">
     <value>حفظ</value>
   </data>
-  <data name="Search" xml:space="preserve">
+	<data name="Search" xml:space="preserve">
     <value>بحث</value>
   </data>
-  <data name="Reset" xml:space="preserve">
+	<data name="Reset" xml:space="preserve">
     <value>إعادة تعيين</value>
   </data>
-  <data name="Reload" xml:space="preserve">
+	<data name="Reload" xml:space="preserve">
     <value>تحديث</value>
   </data>
-  <data name="Edit" xml:space="preserve">
+	<data name="Edit" xml:space="preserve">
     <value>تعديل</value>
   </data>
-  <data name="Delete" xml:space="preserve">
+	<data name="Delete" xml:space="preserve">
     <value>حذف</value>
   </data>
-  <data name="Details" xml:space="preserve">
+	<data name="Details" xml:space="preserve">
     <value>تفاصيل</value>
   </data>
-  <data name="Name" xml:space="preserve">
+	<data name="Name" xml:space="preserve">
     <value>الاسم</value>
   </data>
-  <data name="ArabicName" xml:space="preserve">
+	<data name="ArabicName" xml:space="preserve">
     <value>الاسم العربي</value>
   </data>
-  <data name="FullName" xml:space="preserve">
+	<data name="FullName" xml:space="preserve">
     <value>الاسم بالكامل</value>
   </data>
-  <data name="Mobile" xml:space="preserve">
+	<data name="Mobile" xml:space="preserve">
     <value>الجوال</value>
   </data>
-  <data name="Email" xml:space="preserve">
+	<data name="Email" xml:space="preserve">
     <value>البريد الإلكتروني</value>
   </data>
-  <data name="Role" xml:space="preserve">
+	<data name="Role" xml:space="preserve">
     <value>الدور</value>
   </data>
-  <data name="Status" xml:space="preserve">
+	<data name="Status" xml:space="preserve">
     <value>الحالة</value>
   </data>
-  <data name="Active" xml:space="preserve">
+	<data name="Active" xml:space="preserve">
     <value>نشط</value>
   </data>
-  <data name="Inactive" xml:space="preserve">
+	<data name="Inactive" xml:space="preserve">
     <value>غير نشط</value>
   </data>
-  <data name="AcademicYear" xml:space="preserve">
+	<data name="AcademicYear" xml:space="preserve">
     <value>السنة الدراسية</value>
   </data>
-  <data name="Group" xml:space="preserve">
+	<data name="Group" xml:space="preserve">
     <value>المجموعة</value>
   </data>
-  <data name="Student" xml:space="preserve">
+	<data name="Student" xml:space="preserve">
     <value>الطالب</value>
   </data>
-  <data name="Teacher" xml:space="preserve">
+	<data name="Teacher" xml:space="preserve">
     <value>مدرس</value>
   </data>
-  <data name="AssistantTeacher" xml:space="preserve">
+	<data name="AssistantTeacher" xml:space="preserve">
     <value>مساعد مدرس</value>
   </data>
-  <data name="Day" xml:space="preserve">
+	<data name="Day" xml:space="preserve">
     <value>اليوم</value>
   </data>
-  <data name="Time" xml:space="preserve">
+	<data name="Time" xml:space="preserve">
     <value>الوقت</value>
   </data>
-  <data name="Price" xml:space="preserve">
+	<data name="Price" xml:space="preserve">
     <value>السعر</value>
   </data>
-  <data name="Year" xml:space="preserve">
+	<data name="Year" xml:space="preserve">
     <value>السنة</value>
   </data>
-  <data name="Month" xml:space="preserve">
+	<data name="Month" xml:space="preserve">
     <value>الشهر</value>
   </data>
-  <data name="RequiredAmount" xml:space="preserve">
+	<data name="RequiredAmount" xml:space="preserve">
     <value>المطلوب</value>
   </data>
-  <data name="PaidAmount" xml:space="preserve">
+	<data name="PaidAmount" xml:space="preserve">
     <value>المدفوع</value>
   </data>
-  <data name="RemainingAmount" xml:space="preserve">
+	<data name="RemainingAmount" xml:space="preserve">
     <value>المتبقي</value>
   </data>
-  <data name="PaymentStatus" xml:space="preserve">
+	<data name="PaymentStatus" xml:space="preserve">
     <value>حالة الدفع</value>
   </data>
-  <data name="TotalStudents" xml:space="preserve">
+	<data name="TotalStudents" xml:space="preserve">
     <value>عدد الطلاب</value>
   </data>
-  <data name="TotalGroups" xml:space="preserve">
+	<data name="TotalGroups" xml:space="preserve">
     <value>عدد المجموعات</value>
   </data>
-  <data name="PrivateGroups" xml:space="preserve">
+	<data name="PrivateGroups" xml:space="preserve">
     <value>عدد المجموعات الخاصة</value>
   </data>
-  <data name="PublicGroups" xml:space="preserve">
+	<data name="PublicGroups" xml:space="preserve">
     <value>عدد المجموعات العامة</value>
   </data>
-  <data name="TotalTeachers" xml:space="preserve">
+	<data name="TotalTeachers" xml:space="preserve">
     <value>عدد المدرسين</value>
   </data>
-  <data name="TotalAssistants" xml:space="preserve">
+	<data name="TotalAssistants" xml:space="preserve">
     <value>عدد المساعدين</value>
   </data>
-  <data name="PaidStudentsThisMonth" xml:space="preserve">
+	<data name="PaidStudentsThisMonth" xml:space="preserve">
     <value>عدد الطلاب الذين دفعوا هذا الشهر</value>
   </data>
-  <data name="UnpaidStudentsThisMonth" xml:space="preserve">
+	<data name="UnpaidStudentsThisMonth" xml:space="preserve">
     <value>عدد الطلاب الذين لم يدفعوا هذا الشهر</value>
   </data>
-  <data name="MonthlyPaymentsSummary" xml:space="preserve">
+	<data name="MonthlyPaymentsSummary" xml:space="preserve">
     <value>ملخص المدفوعات الشهرية</value>
   </data>
-  <data name="GroupsByDay" xml:space="preserve">
+	<data name="GroupsByDay" xml:space="preserve">
     <value>المجموعات حسب اليوم</value>
   </data>
-  <data name="EachGroupSummary" xml:space="preserve">
+	<data name="EachGroupSummary" xml:space="preserve">
     <value>ملخص كل مجموعة</value>
   </data>
-  <data name="AccessDenied" xml:space="preserve">
+	<data name="AccessDenied" xml:space="preserve">
     <value>غير مصرح</value>
   </data>
-  <data name="AccessDeniedMessage" xml:space="preserve">
+	<data name="AccessDeniedMessage" xml:space="preserve">
     <value>ليس لديك صلاحية للوصول إلى هذه الصفحة.</value>
   </data>
-  <data name="All" xml:space="preserve">
+	<data name="All" xml:space="preserve">
     <value>الكل</value>
   </data>
-  <data name="StartDate" xml:space="preserve">
+	<data name="StartDate" xml:space="preserve">
     <value>تاريخ البداية</value>
   </data>
-  <data name="EndDate" xml:space="preserve">
+	<data name="EndDate" xml:space="preserve">
     <value>تاريخ النهاية</value>
   </data>
-  <data name="StartDateFrom" xml:space="preserve">
+	<data name="StartDateFrom" xml:space="preserve">
     <value>البداية من</value>
   </data>
-  <data name="EndDateTo" xml:space="preserve">
+	<data name="EndDateTo" xml:space="preserve">
     <value>النهاية إلى</value>
   </data>
-  <data name="ParentMobile" xml:space="preserve">
+	<data name="ParentMobile" xml:space="preserve">
     <value>جوال ولي الأمر</value>
   </data>
-  <data name="Title" xml:space="preserve">
+	<data name="Title" xml:space="preserve">
     <value>العنوان</value>
   </data>
-  <data name="LessonTitle" xml:space="preserve">
+	<data name="LessonTitle" xml:space="preserve">
     <value>عنوان الدرس</value>
   </data>
-  <data name="LessonType" xml:space="preserve">
+	<data name="LessonType" xml:space="preserve">
     <value>نوع الدرس</value>
   </data>
-  <data name="LessonDate" xml:space="preserve">
+	<data name="LessonDate" xml:space="preserve">
     <value>تاريخ الدرس</value>
   </data>
-  <data name="Description" xml:space="preserve">
+	<data name="Description" xml:space="preserve">
     <value>الوصف</value>
   </data>
-  <data name="Notes" xml:space="preserve">
+	<data name="Notes" xml:space="preserve">
     <value>ملاحظات</value>
   </data>
-  <data name="PaymentDate" xml:space="preserve">
+	<data name="PaymentDate" xml:space="preserve">
     <value>تاريخ الدفع</value>
   </data>
-  <data name="PaymentDateFrom" xml:space="preserve">
+	<data name="PaymentDateFrom" xml:space="preserve">
     <value>تاريخ الدفع من</value>
   </data>
-  <data name="PaymentDateTo" xml:space="preserve">
+	<data name="PaymentDateTo" xml:space="preserve">
     <value>تاريخ الدفع إلى</value>
   </data>
-  <data name="SelectRole" xml:space="preserve">
+	<data name="SelectRole" xml:space="preserve">
     <value>اختر الدور</value>
   </data>
-  <data name="SelectAcademicYear" xml:space="preserve">
+	<data name="SelectAcademicYear" xml:space="preserve">
     <value>اختر السنة الدراسية</value>
   </data>
-  <data name="SelectGroup" xml:space="preserve">
+	<data name="SelectGroup" xml:space="preserve">
     <value>اختر المجموعة</value>
   </data>
-  <data name="SelectStudent" xml:space="preserve">
+	<data name="SelectStudent" xml:space="preserve">
     <value>اختر الطالب</value>
   </data>
-  <data name="PrivateLesson" xml:space="preserve">
+	<data name="PrivateLesson" xml:space="preserve">
     <value>درس خاص</value>
   </data>
-  <data name="PublicGroup" xml:space="preserve">
+	<data name="PublicGroup" xml:space="preserve">
     <value>مجموعة عامة</value>
   </data>
-  <data name="GroupLesson" xml:space="preserve">
+	<data name="GroupLesson" xml:space="preserve">
     <value>درس للمجموعة بالكامل</value>
   </data>
-  <data name="Paid" xml:space="preserve">
+	<data name="Paid" xml:space="preserve">
     <value>مدفوع</value>
   </data>
-  <data name="PartiallyPaid" xml:space="preserve">
+	<data name="PartiallyPaid" xml:space="preserve">
     <value>مدفوع جزئي</value>
   </data>
-  <data name="Unpaid" xml:space="preserve">
+	<data name="Unpaid" xml:space="preserve">
     <value>غير مدفوع</value>
   </data>
-  <data name="Back" xml:space="preserve">
+	<data name="Back" xml:space="preserve">
     <value>رجوع</value>
   </data>
-  <data name="Permissions" xml:space="preserve">
+	<data name="Permissions" xml:space="preserve">
     <value>الصلاحيات</value>
   </data>
-  <data name="StudentsReport" xml:space="preserve">
+	<data name="StudentsReport" xml:space="preserve">
     <value>تقرير الطلاب</value>
   </data>
-  <data name="GroupsReport" xml:space="preserve">
+	<data name="GroupsReport" xml:space="preserve">
     <value>تقرير المجموعات</value>
   </data>
-  <data name="MonthlyPaymentsReport" xml:space="preserve">
+	<data name="MonthlyPaymentsReport" xml:space="preserve">
     <value>تقرير المدفوعات الشهرية</value>
   </data>
-  <data name="UnpaidStudentsReport" xml:space="preserve">
+	<data name="UnpaidStudentsReport" xml:space="preserve">
     <value>تقرير الطلاب غير المدفوعين</value>
   </data>
-  <data name="LessonsReport" xml:space="preserve">
+	<data name="LessonsReport" xml:space="preserve">
     <value>تقرير الدروس</value>
   </data>
-  <data name="TeacherRevenueReport" xml:space="preserve">
+	<data name="TeacherRevenueReport" xml:space="preserve">
     <value>تقرير إيرادات المدرس</value>
   </data>
-  <data name="StudentsByYearAndGroup" xml:space="preserve">
+	<data name="StudentsByYearAndGroup" xml:space="preserve">
     <value>عرض الطلاب حسب السنة والمجموعة</value>
   </data>
-  <data name="GroupsActiveAndTypes" xml:space="preserve">
+	<data name="GroupsActiveAndTypes" xml:space="preserve">
     <value>عرض المجموعات النشطة وأنواعها</value>
   </data>
-  <data name="PaidAndUnpaidView" xml:space="preserve">
+	<data name="PaidAndUnpaidView" xml:space="preserve">
     <value>عرض المدفوع وغير المدفوع</value>
   </data>
-  <data name="TrackRemainingPayments" xml:space="preserve">
+	<data name="TrackRemainingPayments" xml:space="preserve">
     <value>متابعة المتبقيات الشهرية</value>
   </data>
-  <data name="LessonsByGroupAndMonth" xml:space="preserve">
+	<data name="LessonsByGroupAndMonth" xml:space="preserve">
     <value>عرض الدروس حسب المجموعة والشهر</value>
   </data>
-  <data name="RevenueSummary" xml:space="preserve">
+	<data name="RevenueSummary" xml:space="preserve">
     <value>ملخص التحصيل والمتبقي</value>
   </data>
-  <data name="SuccessDefault" xml:space="preserve">
+	<data name="SuccessDefault" xml:space="preserve">
     <value>تم تنفيذ العملية بنجاح</value>
   </data>
-  <data name="FailureDefault" xml:space="preserve">
+	<data name="FailureDefault" xml:space="preserve">
     <value>تعذر تنفيذ العملية</value>
   </data>
-  <data name="InvalidUsernameOrPassword" xml:space="preserve">
+	<data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>اسم المستخدم أو كلمة المرور غير صحيحة</value>
   </data>
-  <data name="LoginSuccess" xml:space="preserve">
+	<data name="LoginSuccess" xml:space="preserve">
     <value>تم تسجيل الدخول بنجاح</value>
   </data>
-  <data name="DuplicateAcademicYear" xml:space="preserve">
+	<data name="DuplicateAcademicYear" xml:space="preserve">
     <value>السنة الدراسية موجودة من قبل</value>
   </data>
-  <data name="AcademicYearSaved" xml:space="preserve">
+	<data name="AcademicYearSaved" xml:space="preserve">
     <value>تم حفظ السنة الدراسية بنجاح</value>
   </data>
-  <data name="AcademicYearUpdated" xml:space="preserve">
+	<data name="AcademicYearUpdated" xml:space="preserve">
     <value>تم تعديل السنة الدراسية بنجاح</value>
   </data>
-  <data name="AcademicYearDeleted" xml:space="preserve">
+	<data name="AcademicYearDeleted" xml:space="preserve">
     <value>تم حذف السنة الدراسية بنجاح</value>
   </data>
-  <data name="AcademicYearNotFound" xml:space="preserve">
+	<data name="AcademicYearNotFound" xml:space="preserve">
     <value>السنة الدراسية غير موجودة</value>
   </data>
-  <data name="CannotDeleteLinkedRecord" xml:space="preserve">
+	<data name="CannotDeleteLinkedRecord" xml:space="preserve">
     <value>لا يمكن حذف سجل مرتبط ببيانات أخرى</value>
   </data>
-  <data name="RoleNotFound" xml:space="preserve">
+	<data name="RoleNotFound" xml:space="preserve">
     <value>الدور غير موجود</value>
   </data>
-  <data name="DuplicateUsername" xml:space="preserve">
+	<data name="DuplicateUsername" xml:space="preserve">
     <value>اسم المستخدم مستخدم من قبل</value>
   </data>
-  <data name="DuplicateMobile" xml:space="preserve">
+	<data name="DuplicateMobile" xml:space="preserve">
     <value>رقم الموبايل مستخدم من قبل</value>
   </data>
-  <data name="EmployeeSaved" xml:space="preserve">
+	<data name="EmployeeSaved" xml:space="preserve">
     <value>تم حفظ الموظف بنجاح</value>
   </data>
-  <data name="EmployeeUpdated" xml:space="preserve">
+	<data name="EmployeeUpdated" xml:space="preserve">
     <value>تم تعديل الموظف بنجاح</value>
   </data>
-  <data name="EmployeeDeleted" xml:space="preserve">
+	<data name="EmployeeDeleted" xml:space="preserve">
     <value>تم حذف الموظف بنجاح</value>
   </data>
-  <data name="EmployeeNotFound" xml:space="preserve">
+	<data name="EmployeeNotFound" xml:space="preserve">
     <value>الموظف غير موجود</value>
   </data>
-  <data name="SystemAdminProtected" xml:space="preserve">
+	<data name="SystemAdminProtected" xml:space="preserve">
     <value>Ù„Ø§ ÙŠÙ…ÙƒÙ† ØªØ¹Ø¯ÙŠÙ„ Ø£Ùˆ Ø­Ø°Ù Ù…Ø³ØªØ®Ø¯Ù… Ù…Ø¯ÙŠØ± Ø§Ù„Ù†Ø¸Ø§Ù…</value>
   </data>
-  <data name="DuplicateGroup" xml:space="preserve">
+	<data name="DuplicateGroup" xml:space="preserve">
     <value>المجموعة موجودة من قبل</value>
   </data>
-  <data name="GroupSaved" xml:space="preserve">
+	<data name="GroupSaved" xml:space="preserve">
     <value>تم حفظ المجموعة بنجاح</value>
   </data>
-  <data name="GroupUpdated" xml:space="preserve">
+	<data name="GroupUpdated" xml:space="preserve">
     <value>تم تعديل المجموعة بنجاح</value>
   </data>
-  <data name="GroupDeleted" xml:space="preserve">
+	<data name="GroupDeleted" xml:space="preserve">
     <value>تم حذف المجموعة بنجاح</value>
   </data>
-  <data name="GroupNotFound" xml:space="preserve">
+	<data name="GroupNotFound" xml:space="preserve">
     <value>المجموعة غير موجودة</value>
   </data>
-  <data name="TeacherNotFound" xml:space="preserve">
+	<data name="TeacherNotFound" xml:space="preserve">
     <value>المدرس غير موجود</value>
   </data>
-  <data name="AssistantTeacherNotFound" xml:space="preserve">
+	<data name="AssistantTeacherNotFound" xml:space="preserve">
     <value>المدرس المساعد غير موجود</value>
   </data>
-  <data name="RequiredUsername" xml:space="preserve">
+	<data name="RequiredUsername" xml:space="preserve">
     <value>اسم المستخدم مطلوب</value>
   </data>
-  <data name="RequiredPassword" xml:space="preserve">
+	<data name="RequiredPassword" xml:space="preserve">
     <value>كلمة المرور مطلوبة</value>
   </data>
-  <data name="RequiredEmployeeName" xml:space="preserve">
+	<data name="RequiredEmployeeName" xml:space="preserve">
     <value>اسم الموظف مطلوب</value>
   </data>
-  <data name="RequiredMobile" xml:space="preserve">
+	<data name="RequiredMobile" xml:space="preserve">
     <value>رقم الجوال مطلوب</value>
   </data>
-  <data name="PasswordMinLength" xml:space="preserve">
+	<data name="PasswordMinLength" xml:space="preserve">
     <value>كلمة المرور يجب ألا تقل عن 8 أحرف</value>
   </data>
-  <data name="RequiredRole" xml:space="preserve">
+	<data name="RequiredRole" xml:space="preserve">
     <value>يجب اختيار الدور</value>
   </data>
-  <data name="RequiredAcademicYearName" xml:space="preserve">
+	<data name="RequiredAcademicYearName" xml:space="preserve">
     <value>اسم السنة الدراسية مطلوب</value>
   </data>
-  <data name="EndDateAfterStartDate" xml:space="preserve">
+	<data name="EndDateAfterStartDate" xml:space="preserve">
     <value>تاريخ النهاية يجب أن يكون بعد تاريخ البداية</value>
   </data>
-  <data name="RequiredGroupName" xml:space="preserve">
+	<data name="RequiredGroupName" xml:space="preserve">
     <value>اسم المجموعة مطلوب</value>
   </data>
-  <data name="RequiredAcademicYear" xml:space="preserve">
+	<data name="RequiredAcademicYear" xml:space="preserve">
     <value>يجب اختيار السنة الدراسية</value>
   </data>
-  <data name="PriceGreaterThanZero" xml:space="preserve">
+	<data name="PriceGreaterThanZero" xml:space="preserve">
     <value>السعر يجب أن يكون أكبر من صفر</value>
   </data>
-  <data name="EndTimeAfterStartTime" xml:space="preserve">
+	<data name="EndTimeAfterStartTime" xml:space="preserve">
     <value>وقت النهاية يجب أن يكون بعد وقت البداية</value>
   </data>
-  <data name="RequiredStudentName" xml:space="preserve">
+	<data name="RequiredStudentName" xml:space="preserve">
     <value>اسم الطالب مطلوب</value>
   </data>
-  <data name="RequiredGroup" xml:space="preserve">
+	<data name="RequiredGroup" xml:space="preserve">
     <value>يجب اختيار المجموعة</value>
   </data>
-  <data name="RequiredLessonTitle" xml:space="preserve">
+	<data name="RequiredLessonTitle" xml:space="preserve">
     <value>عنوان الدرس مطلوب</value>
   </data>
-  <data name="MonthBetween1And12" xml:space="preserve">
+	<data name="MonthBetween1And12" xml:space="preserve">
     <value>الشهر يجب أن يكون بين 1 و 12</value>
   </data>
-  <data name="InvalidYear" xml:space="preserve">
+	<data name="InvalidYear" xml:space="preserve">
     <value>السنة غير صحيحة</value>
   </data>
-  <data name="RequiredStudent" xml:space="preserve">
+	<data name="RequiredStudent" xml:space="preserve">
     <value>يجب اختيار الطالب</value>
   </data>
-  <data name="RequiredAmountGreaterThanZero" xml:space="preserve">
+	<data name="RequiredAmountGreaterThanZero" xml:space="preserve">
     <value>المبلغ المطلوب يجب أن يكون أكبر من صفر</value>
   </data>
-  <data name="PaidAmountCannotExceedRequired" xml:space="preserve">
+	<data name="PaidAmountCannotExceedRequired" xml:space="preserve">
     <value>المبلغ المدفوع لا يمكن أن يكون أكبر من المطلوب</value>
   </data>
-  <data name="DuplicateLesson" xml:space="preserve">
+	<data name="DuplicateLesson" xml:space="preserve">
     <value>الدرس موجود من قبل</value>
   </data>
-  <data name="LessonSaved" xml:space="preserve">
+	<data name="LessonSaved" xml:space="preserve">
     <value>تم حفظ الدرس بنجاح</value>
   </data>
-  <data name="LessonUpdated" xml:space="preserve">
+	<data name="LessonUpdated" xml:space="preserve">
     <value>تم تعديل الدرس بنجاح</value>
   </data>
-  <data name="LessonDeleted" xml:space="preserve">
+	<data name="LessonDeleted" xml:space="preserve">
     <value>تم حذف الدرس بنجاح</value>
   </data>
-  <data name="LessonNotFound" xml:space="preserve">
+	<data name="LessonNotFound" xml:space="preserve">
     <value>الدرس غير موجود</value>
   </data>
-  <data name="SomeStudentsNotFound" xml:space="preserve">
+	<data name="SomeStudentsNotFound" xml:space="preserve">
     <value>يوجد طلاب غير موجودين</value>
   </data>
-  <data name="DuplicatePaymentForMonth" xml:space="preserve">
+	<data name="DuplicatePaymentForMonth" xml:space="preserve">
     <value>المدفوعة موجودة من قبل لهذا الشهر</value>
   </data>
-  <data name="PaymentSaved" xml:space="preserve">
+	<data name="PaymentSaved" xml:space="preserve">
     <value>تم حفظ المدفوعة بنجاح</value>
   </data>
-  <data name="PaymentUpdated" xml:space="preserve">
+	<data name="PaymentUpdated" xml:space="preserve">
     <value>تم تعديل المدفوعة بنجاح</value>
   </data>
-  <data name="PaymentDeleted" xml:space="preserve">
+	<data name="PaymentDeleted" xml:space="preserve">
     <value>تم حذف المدفوعة بنجاح</value>
   </data>
-  <data name="PaymentNotFound" xml:space="preserve">
+	<data name="PaymentNotFound" xml:space="preserve">
     <value>المدفوعة غير موجودة</value>
   </data>
-  <data name="StudentNotFound" xml:space="preserve">
+	<data name="StudentNotFound" xml:space="preserve">
     <value>الطالب غير موجود</value>
   </data>
-  <data name="DuplicateRole" xml:space="preserve">
+	<data name="DuplicateRole" xml:space="preserve">
     <value>الدور موجود من قبل</value>
   </data>
-  <data name="RoleSaved" xml:space="preserve">
+	<data name="RoleSaved" xml:space="preserve">
     <value>تم حفظ الدور بنجاح</value>
   </data>
-  <data name="RoleUpdated" xml:space="preserve">
+	<data name="RoleUpdated" xml:space="preserve">
     <value>تم تعديل الدور بنجاح</value>
   </data>
-  <data name="RoleDeleted" xml:space="preserve">
+	<data name="RoleDeleted" xml:space="preserve">
     <value>تم حذف الدور بنجاح</value>
   </data>
-  <data name="CannotDeleteRoleWithEmployees" xml:space="preserve">
+	<data name="CannotDeleteRoleWithEmployees" xml:space="preserve">
     <value>لا يمكن حذف دور مرتبط بموظفين</value>
   </data>
-  <data name="PermissionsNotFound" xml:space="preserve">
+	<data name="PermissionsNotFound" xml:space="preserve">
     <value>توجد صلاحيات غير موجودة</value>
   </data>
-  <data name="RolePermissionsUpdated" xml:space="preserve">
+	<data name="RolePermissionsUpdated" xml:space="preserve">
     <value>تم تحديث صلاحيات الدور بنجاح</value>
   </data>
-  <data name="DuplicateStudent" xml:space="preserve">
+	<data name="DuplicateStudent" xml:space="preserve">
     <value>الطالب موجود من قبل</value>
   </data>
-  <data name="StudentSaved" xml:space="preserve">
+	<data name="StudentSaved" xml:space="preserve">
     <value>تم حفظ الطالب بنجاح</value>
   </data>
-  <data name="StudentUpdated" xml:space="preserve">
+	<data name="StudentUpdated" xml:space="preserve">
     <value>تم تعديل الطالب بنجاح</value>
   </data>
-  <data name="StudentDeleted" xml:space="preserve">
+	<data name="StudentDeleted" xml:space="preserve">
     <value>تم حذف الطالب بنجاح</value>
   </data>
-  <data name="SelectStudentAgainForGroupAndYear" xml:space="preserve">
+	<data name="SelectStudentAgainForGroupAndYear" xml:space="preserve">
     <value>اختر الطالب مرة أخرى لتحديد المجموعة والسنة الدراسية</value>
   </data>
-  <data name="DefaultLessonPrice" xml:space="preserve">
+	<data name="DefaultLessonPrice" xml:space="preserve">
     <value>سعر الدرس الافتراضي</value>
   </data>
-  <data name="UpdatedAt" xml:space="preserve">
+	<data name="UpdatedAt" xml:space="preserve">
     <value>تاريخ آخر تعديل</value>
   </data>
-  <data name="Sunday" xml:space="preserve">
+	<data name="Sunday" xml:space="preserve">
     <value>الأحد</value>
   </data>
-  <data name="MonthlyPaymentRequired" xml:space="preserve">
+	<data name="MonthlyPaymentRequired" xml:space="preserve">
     <value>مطلوب في المدفوعات الشهرية</value>
   </data>
-  <data name="NewPassword" xml:space="preserve">
+	<data name="NewPassword" xml:space="preserve">
     <value>كلمة المرور الجديدة</value>
   </data>
-  <data name="ArabicRoleName" xml:space="preserve">
+	<data name="ArabicRoleName" xml:space="preserve">
     <value>اسم الدور بالعربية</value>
   </data>
-  <data name="StudentMobile" xml:space="preserve">
+	<data name="StudentMobile" xml:space="preserve">
     <value>جوال الطالب</value>
   </data>
-  <data name="Wednesday" xml:space="preserve">
+	<data name="Wednesday" xml:space="preserve">
     <value>الأربعاء</value>
   </data>
-  <data name="UnpaidStudentsLabel" xml:space="preserve">
+	<data name="UnpaidStudentsLabel" xml:space="preserve">
     <value>لم يدفعوا</value>
   </data>
-  <data name="GroupName" xml:space="preserve">
+	<data name="GroupName" xml:space="preserve">
     <value>اسم المجموعة</value>
   </data>
-  <data name="CollectedAmount" xml:space="preserve">
+	<data name="CollectedAmount" xml:space="preserve">
     <value>المحصل</value>
   </data>
-  <data name="Thursday" xml:space="preserve">
+	<data name="Thursday" xml:space="preserve">
     <value>الخميس</value>
   </data>
-  <data name="Tuesday" xml:space="preserve">
+	<data name="Tuesday" xml:space="preserve">
     <value>الثلاثاء</value>
   </data>
-  <data name="Friday" xml:space="preserve">
+	<data name="Friday" xml:space="preserve">
     <value>الجمعة</value>
   </data>
-  <data name="LessonAmount" xml:space="preserve">
+	<data name="LessonAmount" xml:space="preserve">
     <value>المبلغ</value>
   </data>
-  <data name="DateFrom" xml:space="preserve">
+	<data name="DateFrom" xml:space="preserve">
     <value>التاريخ من</value>
   </data>
-  <data name="EndTime" xml:space="preserve">
+	<data name="EndTime" xml:space="preserve">
     <value>وقت النهاية</value>
   </data>
-  <data name="Monday" xml:space="preserve">
+	<data name="Monday" xml:space="preserve">
     <value>الإثنين</value>
   </data>
-  <data name="UpdatedBy" xml:space="preserve">
+	<data name="UpdatedBy" xml:space="preserve">
     <value>آخر تعديل بواسطة</value>
   </data>
-  <data name="CreatedBy" xml:space="preserve">
+	<data name="CreatedBy" xml:space="preserve">
     <value>أنشئ بواسطة</value>
   </data>
-  <data name="PaidStudentsLabel" xml:space="preserve">
+	<data name="PaidStudentsLabel" xml:space="preserve">
     <value>دفعوا</value>
   </data>
-  <data name="Saturday" xml:space="preserve">
+	<data name="Saturday" xml:space="preserve">
     <value>السبت</value>
   </data>
-  <data name="CreatedAt" xml:space="preserve">
+	<data name="CreatedAt" xml:space="preserve">
     <value>تاريخ الإنشاء</value>
   </data>
-  <data name="StudentName" xml:space="preserve">
+	<data name="StudentName" xml:space="preserve">
     <value>اسم الطالب</value>
   </data>
-  <data name="EnglishRoleName" xml:space="preserve">
+	<data name="EnglishRoleName" xml:space="preserve">
     <value>اسم الدور بالإنجليزية</value>
   </data>
-  <data name="GroupType" xml:space="preserve">
+	<data name="GroupType" xml:space="preserve">
     <value>نوع المجموعة</value>
   </data>
-  <data name="ChartAmount" xml:space="preserve">
+	<data name="ChartAmount" xml:space="preserve">
     <value>المبلغ</value>
   </data>
-  <data name="StartTime" xml:space="preserve">
+	<data name="StartTime" xml:space="preserve">
     <value>وقت البداية</value>
   </data>
-  <data name="DateTo" xml:space="preserve">
+	<data name="DateTo" xml:space="preserve">
     <value>التاريخ إلى</value>
   </data>
-  <data name="StudentsLabel" xml:space="preserve">
+	<data name="StudentsLabel" xml:space="preserve">
     <value>طلاب</value>
+  </data>
+	<data name="PasswordSetup" xml:space="preserve">
+    <value>تعيين كلمة المرور</value>
+  </data>
+	<data name="PasswordSetupRequired" xml:space="preserve">
+    <value>يرجى تعيين كلمة المرور قبل تسجيل الدخول.</value>
+  </data>
+	<data name="ChangePassword" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+	<data name="CurrentPassword" xml:space="preserve">
+    <value>كلمة المرور الحالية</value>
+  </data>
+	<data name="ConfirmPassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور</value>
+  </data>
+	<data name="PasswordMismatch" xml:space="preserve">
+    <value>كلمة المرور وتأكيدها غير متطابقين</value>
+  </data>
+	<data name="PasswordComplexity" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على حرف صغير وحرف كبير ورقم ورمز خاص</value>
+  </data>
+	<data name="CurrentPasswordInvalid" xml:space="preserve">
+    <value>كلمة المرور الحالية غير صحيحة</value>
+  </data>
+	<data name="PasswordUpdated" xml:space="preserve">
+    <value>تم تحديث كلمة المرور بنجاح</value>
+  </data>
+  <data name="InactiveUserContactAdmin" xml:space="preserve">
+    <value>حسابك غير نشط. يرجى التواصل مع مسؤول النظام أو معلمك.</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>إظهار كلمة المرور</value>
+  </data>
+  <data name="FullNameMustContainThreeNames" xml:space="preserve">
+    <value>يجب أن يحتوي الاسم الكامل على ثلاثة أسماء على الأقل</value>
+  </data>
+  <data name="UsernameFormatInvalid" xml:space="preserve">
+    <value>لا يمكن أن يحتوي اسم المستخدم على مسافات. استخدم - بدلا من المسافات. اسم المستخدم يستخدم حروفا وأرقاما و - فقط</value>
   </data>
 </root>

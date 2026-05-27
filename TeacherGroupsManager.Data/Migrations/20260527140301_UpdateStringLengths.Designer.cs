@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeacherGroupsManager.Data.Context;
 
@@ -11,9 +12,11 @@ using TeacherGroupsManager.Data.Context;
 namespace TeacherGroupsManager.Data.Migrations
 {
     [DbContext(typeof(TeacherGroupsDbContext))]
-    partial class TeacherGroupsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260527140301_UpdateStringLengths")]
+    partial class UpdateStringLengths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

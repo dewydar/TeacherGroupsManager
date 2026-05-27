@@ -5,7 +5,8 @@ namespace TeacherGroupsManager.Services.Interfaces;
 
 public interface IAuthService
 {
-    Task<OperationResult<EmployeeDto>> LoginAsync(LoginDto dto, CancellationToken cancellationToken = default);
+    Task<OperationResult<LoginResultDto>> LoginAsync(LoginDto dto, CancellationToken cancellationToken = default);
+    Task<OperationResult> ResetPasswordAsync(ResetPasswordDto dto, int? currentEmployeeId = null, CancellationToken cancellationToken = default);
 }
 
 public interface IRoleService

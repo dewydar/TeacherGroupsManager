@@ -254,6 +254,23 @@ body {
     width: min(420px, 100%);
 }
 
+.password-toggle {
+    width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
 .text-muted {
     color: var(--muted) !important;
 }

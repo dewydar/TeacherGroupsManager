@@ -7,7 +7,6 @@
         <div class="col-md-6"><label class="form-label">@L["Mobile"]</label><input class="form-control" name="Mobile" value="@Model.Mobile" /></div>
         <div class="col-md-6"><label class="form-label">@L["Email"]</label><input class="form-control" name="Email" value="@Model.Email" /></div>
         <div class="col-md-6"><label class="form-label">@L["Username"]</label><input class="form-control" name="Username" value="@Model.Username" /></div>
-        <div class="col-md-6"><label class="form-label">@L["Password"]</label><input class="form-control" type="password" name="Password" /></div>
         <div class="col-md-6"><label class="form-label">@L["Role"]</label><select class="form-select" name="RoleId"><option value="0">@L["SelectRole"]</option>@foreach (var role in (IReadOnlyList<TeacherGroupsManager.Dtos.RoleDto>)ViewBag.Roles){<option value="@role.Id">@role.ArabicName</option>}</select></div>
     </div>
     <button class="btn btn-primary mt-3">@L["Save"]</button>

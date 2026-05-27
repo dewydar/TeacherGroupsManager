@@ -33,6 +33,11 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoc
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var fullName = dto.FullName.Trim();
+        if (!HasThreeNameParts(fullName))
+        {
+            return OperationResult.Failure(localizer["FullNameMustContainThreeNames"]);
+        }
+
         var mobile = dto.Mobile.Trim();
         var normalizedFullName = fullName.ToLower();
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Mobile.Trim() == mobile, cancellationToken))
@@ -56,6 +61,11 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoc
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, dto.GroupId, cancellationToken);
         if (!validation.Succeeded) return validation;
         var fullName = dto.FullName.Trim();
+        if (!HasThreeNameParts(fullName))
+        {
+            return OperationResult.Failure(localizer["FullNameMustContainThreeNames"]);
+        }
+
         var mobile = dto.Mobile.Trim();
         var normalizedFullName = fullName.ToLower();
         if (await unitOfWork.Repository<Student>().AnyAsync(x => x.Id != dto.Id && x.Mobile.Trim() == mobile, cancellationToken))
@@ -142,4 +152,7 @@ public class StudentService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoc
         }
         return OperationResult.Success();
     }
+
+    private static bool HasThreeNameParts(string fullName) =>
+        fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3;
 }

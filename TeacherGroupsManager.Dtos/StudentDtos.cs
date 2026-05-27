@@ -5,7 +5,7 @@ namespace TeacherGroupsManager.Dtos;
 
 public record StudentDto(
     int Id,
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MobileMaxLength)] string? ParentMobile,
     int AcademicYearId,
@@ -20,7 +20,7 @@ public record StudentDto(
     [StringLength(AppConstants.MaxStringLength)] string? UpdatedByEmployeeName = null);
 
 public record CreateStudentDto(
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MobileMaxLength)] string? ParentMobile,
     int AcademicYearId,
@@ -30,7 +30,7 @@ public record CreateStudentDto(
 
 public record EditStudentDto(
     int Id,
-    [StringLength(AppConstants.MaxStringLength)] string FullName,
+    [StringLength(AppConstants.MaxStringLength), RegularExpression(AppConstants.FullNameRegex, ErrorMessage = "FullNameMustContainThreeNames")] string FullName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     [StringLength(AppConstants.MobileMaxLength)] string? ParentMobile,
     int AcademicYearId,

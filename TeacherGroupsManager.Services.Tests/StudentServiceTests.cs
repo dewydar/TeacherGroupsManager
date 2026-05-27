@@ -14,10 +14,10 @@ public class StudentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var result = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", "01011111111", 1, 1, null));
+        var result = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed Ali", "01000000000", "01011111111", 1, 1, null));
 
         Assert.True(result.Succeeded);
-        Assert.Equal("Ahmed Mohamed", (await context.Students.FirstAsync()).FullName);
+        Assert.Equal("Ahmed Mohamed Ali", (await context.Students.FirstAsync()).FullName);
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class StudentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var result = await service.CreateAsync(new CreateStudentDto("Missing Group", "01000000000", null, 1, 999, null));
+        var result = await service.CreateAsync(new CreateStudentDto("Missing Group Student", "01000000000", null, 1, 999, null));
 
         Assert.False(result.Succeeded);
         Assert.Empty(context.Students);
@@ -46,7 +46,7 @@ public class StudentServiceTests : TestBase
         await context.SaveChangesAsync();
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var result = await service.CreateAsync(new CreateStudentDto("Wrong Group", "01000000000", null, 500, 1, null));
+        var result = await service.CreateAsync(new CreateStudentDto("Wrong Group Student", "01000000000", null, 500, 1, null));
 
         Assert.False(result.Succeeded);
         Assert.Empty(context.Students);
@@ -58,8 +58,8 @@ public class StudentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
-        var duplicate = await service.CreateAsync(new CreateStudentDto("Different Student", "01000000000", null, 1, 1, null));
+        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed Ali", "01000000000", null, 1, 1, null));
+        var duplicate = await service.CreateAsync(new CreateStudentDto("Different Test Student", "01000000000", null, 1, 1, null));
 
         Assert.True(first.Succeeded);
         Assert.False(duplicate.Succeeded);
@@ -72,8 +72,8 @@ public class StudentServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new StudentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed", "01000000000", null, 1, 1, null));
-        var duplicate = await service.CreateAsync(new CreateStudentDto(" ahmed mohamed ", "01000000001", null, 1, 1, null));
+        var first = await service.CreateAsync(new CreateStudentDto("Ahmed Mohamed Ali", "01000000000", null, 1, 1, null));
+        var duplicate = await service.CreateAsync(new CreateStudentDto(" ahmed mohamed ali ", "01000000001", null, 1, 1, null));
 
         Assert.True(first.Succeeded);
         Assert.False(duplicate.Succeeded);
@@ -87,10 +87,10 @@ public class StudentServiceTests : TestBase
         var unitOfWork = new UnitOfWork(context, new TestCurrentUserContext(42));
         var service = new StudentService(unitOfWork, mapper, TestLocalizer.Instance);
 
-        var create = await service.CreateAsync(new CreateStudentDto("Audit Student", "01000000000", null, 1, 1, null));
+        var create = await service.CreateAsync(new CreateStudentDto("Audit Test Student", "01000000000", null, 1, 1, null));
 
         Assert.True(create.Succeeded);
-        var student = await context.Students.SingleAsync(x => x.FullName == "Audit Student");
+        var student = await context.Students.SingleAsync(x => x.FullName == "Audit Test Student");
         Assert.NotNull(student.CreatedAt);
         Assert.Equal(42, student.CreatedByEmployeeId);
         Assert.Null(student.UpdatedAt);
