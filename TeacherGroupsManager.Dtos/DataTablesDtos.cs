@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations;
+using TeacherGroupsManager.Core.Constants;
+
 namespace TeacherGroupsManager.Dtos;
 
 public class DataTableRequestDto
@@ -5,8 +8,11 @@ public class DataTableRequestDto
     public int Draw { get; set; }
     public int Start { get; set; }
     public int Length { get; set; } = 10;
+    [StringLength(AppConstants.MaxStringLength)]
     public string? SearchValue { get; set; }
+    [StringLength(AppConstants.MaxStringLength)]
     public string? SortColumn { get; set; }
+    [StringLength(AppConstants.MaxStringLength)]
     public string? SortDirection { get; set; }
     public Dictionary<string, string?> Filters { get; set; } = [];
 }
@@ -18,3 +24,4 @@ public class DataTableResponseDto<T>
     public int RecordsFiltered { get; set; }
     public List<T> Data { get; set; } = [];
 }
+

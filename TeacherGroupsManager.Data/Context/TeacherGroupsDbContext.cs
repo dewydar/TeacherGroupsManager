@@ -33,6 +33,17 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RemainingAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Employee>().HasIndex(x => x.Username).IsUnique();
 
+        foreach (var property in modelBuilder.Model.GetEntityTypes()
+            .SelectMany(entityType => entityType.GetProperties())
+            .Where(property => property.ClrType == typeof(string)))
+        {
+            property.SetMaxLength(AppConstants.MaxStringLength);
+        }
+
+        modelBuilder.Entity<Employee>().Property(x => x.Mobile).HasMaxLength(AppConstants.MobileMaxLength);
+        modelBuilder.Entity<Student>().Property(x => x.Mobile).HasMaxLength(AppConstants.MobileMaxLength);
+        modelBuilder.Entity<Student>().Property(x => x.ParentMobile).HasMaxLength(AppConstants.MobileMaxLength);
+
         foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(x => typeof(IAuditableEntity).IsAssignableFrom(x.ClrType)))
         {
             modelBuilder.Entity(entityType.ClrType)

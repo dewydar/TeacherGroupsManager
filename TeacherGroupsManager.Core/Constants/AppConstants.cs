@@ -2,6 +2,9 @@ namespace TeacherGroupsManager.Core.Constants;
 
 public static class AppConstants
 {
+    public const int MaxStringLength = 500;
+    public const int MobileMaxLength = 11;
+    public const string EmailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
     public const string ArabicCulture = "ar-EG";
     public const string AdminRole = "Admin";
     public const string SystemAdminUsername = "admin";
