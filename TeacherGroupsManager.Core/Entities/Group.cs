@@ -13,6 +13,7 @@ public class Group : BaseEntity
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public decimal DefaultLessonPrice { get; set; }
+    public decimal? MonthlyPrice { get; set; }
     public bool IsActive { get; set; } = true;
     public ICollection<GroupSchedule> Schedules { get; set; } = new List<GroupSchedule>();
     public ICollection<Student> Students { get; set; } = new List<Student>();

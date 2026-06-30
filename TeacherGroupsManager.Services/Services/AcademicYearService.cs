@@ -31,13 +31,14 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper, IStri
     public async Task<OperationResult> CreateAsync(CreateAcademicYearDto dto, CancellationToken cancellationToken = default)
     {
         var name = dto.Name.Trim();
+        if (dto.MonthlyPrice < 0) return OperationResult.Failure(localizer["MonthlyPriceCannotBeNegative"]);
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
             return OperationResult.Failure(localizer["DuplicateAcademicYear"]);
         }
 
-        await unitOfWork.Repository<AcademicYear>().AddAsync(new AcademicYear { Name = name, StartDate = dto.StartDate, EndDate = dto.EndDate, IsActive = dto.IsActive }, cancellationToken);
+        await unitOfWork.Repository<AcademicYear>().AddAsync(new AcademicYear { Name = name, StartDate = dto.StartDate, EndDate = dto.EndDate, MonthlyPrice = dto.MonthlyPrice, IsActive = dto.IsActive }, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success(localizer["AcademicYearSaved"]);
     }
@@ -66,6 +67,7 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper, IStri
             "name" => desc ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
             "startDate" => desc ? query.OrderByDescending(x => x.StartDate) : query.OrderBy(x => x.StartDate),
             "endDate" => desc ? query.OrderByDescending(x => x.EndDate) : query.OrderBy(x => x.EndDate),
+            "monthlyPrice" => desc ? query.OrderByDescending(x => x.MonthlyPrice) : query.OrderBy(x => x.MonthlyPrice),
             "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
             _ => query.OrderByDescending(x => x.StartDate)
         };
@@ -76,6 +78,7 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper, IStri
         var year = await unitOfWork.Repository<AcademicYear>().GetByIdAsync(dto.Id, cancellationToken);
         if (year is null) return OperationResult.Failure(localizer["AcademicYearNotFound"]);
         var name = dto.Name.Trim();
+        if (dto.MonthlyPrice < 0) return OperationResult.Failure(localizer["MonthlyPriceCannotBeNegative"]);
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<AcademicYear>().AnyAsync(x => x.Id != dto.Id && x.Name.Trim().ToLower() == normalizedName, cancellationToken))
         {
@@ -85,6 +88,7 @@ public class AcademicYearService(IUnitOfWork unitOfWork, AppMapper mapper, IStri
         year.Name = name;
         year.StartDate = dto.StartDate;
         year.EndDate = dto.EndDate;
+        year.MonthlyPrice = dto.MonthlyPrice;
         year.IsActive = dto.IsActive;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return OperationResult.Success(localizer["AcademicYearUpdated"]);

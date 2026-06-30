@@ -34,6 +34,7 @@ public class CreateAcademicYearDtoValidator : AbstractValidator<CreateAcademicYe
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage(localizer["RequiredAcademicYearName"]);
         RuleFor(x => x.EndDate).GreaterThan(x => x.StartDate).WithMessage(localizer["EndDateAfterStartDate"]);
+        RuleFor(x => x.MonthlyPrice).GreaterThanOrEqualTo(0).WithMessage(localizer["MonthlyPriceCannotBeNegative"]);
     }
 }
 
@@ -44,6 +45,7 @@ public class CreateGroupDtoValidator : AbstractValidator<CreateGroupDto>
         RuleFor(x => x.Name).NotEmpty().WithMessage(localizer["RequiredGroupName"]);
         RuleFor(x => x.AcademicYearId).GreaterThan(0).WithMessage(localizer["RequiredAcademicYear"]);
         RuleFor(x => x.DefaultLessonPrice).GreaterThan(0).WithMessage(localizer["PriceGreaterThanZero"]);
+        RuleFor(x => x.MonthlyPrice).GreaterThanOrEqualTo(0).When(x => x.MonthlyPrice.HasValue).WithMessage(localizer["MonthlyPriceCannotBeNegative"]);
         RuleFor(x => x.EndTime).GreaterThan(x => x.StartTime).WithMessage(localizer["EndTimeAfterStartTime"]);
         RuleForEach(x => x.Schedules).ChildRules(schedule =>
         {
@@ -83,7 +85,6 @@ public class CreateMonthlyPaymentDtoValidator : AbstractValidator<CreateMonthlyP
         RuleFor(x => x.GroupId).GreaterThan(0).WithMessage(localizer["RequiredGroup"]);
         RuleFor(x => x.AcademicYearId).GreaterThan(0).WithMessage(localizer["RequiredAcademicYear"]);
         RuleFor(x => x.Month).InclusiveBetween(1, 12).WithMessage(localizer["MonthBetween1And12"]);
-        RuleFor(x => x.RequiredAmount).GreaterThan(0).WithMessage(localizer["RequiredAmountGreaterThanZero"]);
-        RuleFor(x => x.PaidAmount).LessThanOrEqualTo(x => x.RequiredAmount).WithMessage(localizer["PaidAmountCannotExceedRequired"]);
+        RuleFor(x => x.PaidAmount).GreaterThanOrEqualTo(0).WithMessage(localizer["PaidAmountCannotBeNegative"]);
     }
 }

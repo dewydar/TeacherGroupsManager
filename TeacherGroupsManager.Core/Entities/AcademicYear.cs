@@ -7,6 +7,7 @@ public class AcademicYear : BaseEntity
     public string Name { get; set; } = string.Empty;
     public DateOnly StartDate { get; set; }
     public DateOnly EndDate { get; set; }
+    public decimal MonthlyPrice { get; set; }
     public bool IsActive { get; set; } = true;
     public ICollection<Group> Groups { get; set; } = new List<Group>();
 }

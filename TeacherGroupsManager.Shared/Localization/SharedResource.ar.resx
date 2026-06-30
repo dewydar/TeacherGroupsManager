@@ -693,4 +693,40 @@
   <data name="NoAvailableLessonDates" xml:space="preserve">
     <value>&#x0644;&#x0627; &#x062A;&#x0648;&#x062C;&#x062F; &#x062A;&#x0648;&#x0627;&#x0631;&#x064A;&#x062E; &#x0645;&#x062A;&#x0627;&#x062D;&#x0629;</value>
   </data>
+  <data name="AttendingStudents" xml:space="preserve">
+    <value>&#x0627;&#x0644;&#x0637;&#x0644;&#x0627;&#x0628; &#x0627;&#x0644;&#x062D;&#x0627;&#x0636;&#x0631;&#x0648;&#x0646;</value>
+  </data>
+  <data name="AllStudents" xml:space="preserve">
+    <value>&#x0643;&#x0644; &#x0627;&#x0644;&#x0637;&#x0644;&#x0627;&#x0628;</value>
+  </data>
+  <data name="FilterByName" xml:space="preserve">
+    <value>&#x0628;&#x062D;&#x062B; &#x0628;&#x0627;&#x0644;&#x0627;&#x0633;&#x0645;</value>
+  </data>
+  <data name="NoAttendingStudents" xml:space="preserve">
+    <value>&#x0644;&#x0645; &#x064A;&#x062A;&#x0645; &#x062A;&#x062D;&#x062F;&#x064A;&#x062F; &#x0637;&#x0644;&#x0627;&#x0628;</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>&#x0625;&#x0632;&#x0627;&#x0644;&#x0629;</value>
+  </data>
+  <data name="MonthlyPrice" xml:space="preserve">
+    <value>&#x0627;&#x0644;&#x0633;&#x0639;&#x0631; &#x0627;&#x0644;&#x0634;&#x0647;&#x0631;&#x064A;</value>
+  </data>
+  <data name="MonthlyPriceGreaterThanZero" xml:space="preserve">
+    <value>&#x0627;&#x0644;&#x0633;&#x0639;&#x0631; &#x0627;&#x0644;&#x0634;&#x0647;&#x0631;&#x064A; &#x064A;&#x062C;&#x0628; &#x0623;&#x0646; &#x064A;&#x0643;&#x0648;&#x0646; &#x0623;&#x0643;&#x0628;&#x0631; &#x0645;&#x0646; &#x0635;&#x0641;&#x0631;</value>
+  </data>
+  <data name="MonthlyPriceCannotBeNegative" xml:space="preserve">
+    <value>&#x0627;&#x0644;&#x0633;&#x0639;&#x0631; &#x0627;&#x0644;&#x0634;&#x0647;&#x0631;&#x064A; &#x0644;&#x0627; &#x064A;&#x0645;&#x0643;&#x0646; &#x0623;&#x0646; &#x064A;&#x0643;&#x0648;&#x0646; &#x0633;&#x0627;&#x0644;&#x0628;&#x0627;</value>
+  </data>
+  <data name="PaidAmountCannotBeNegative" xml:space="preserve">
+    <value>&#x0627;&#x0644;&#x0645;&#x0628;&#x0644;&#x063A; &#x0627;&#x0644;&#x0645;&#x062F;&#x0641;&#x0648;&#x0639; &#x0644;&#x0627; &#x064A;&#x0645;&#x0643;&#x0646; &#x0623;&#x0646; &#x064A;&#x0643;&#x0648;&#x0646; &#x0633;&#x0627;&#x0644;&#x0628;&#x0627;</value>
+  </data>
+  <data name="MonthlyPaymentsGenerated" xml:space="preserve">
+    <value>&#x062A;&#x0645; &#x0625;&#x0646;&#x0634;&#x0627;&#x0621; &#x0627;&#x0644;&#x0645;&#x062F;&#x0641;&#x0648;&#x0639;&#x0627;&#x062A; &#x0627;&#x0644;&#x0634;&#x0647;&#x0631;&#x064A;&#x0629; &#x0628;&#x0646;&#x062C;&#x0627;&#x062D;</value>
+  </data>
+  <data name="PaymentMarkedPaid" xml:space="preserve">
+    <value>&#x062A;&#x0645; &#x062A;&#x062D;&#x062F;&#x064A;&#x062F; &#x0627;&#x0644;&#x0645;&#x062F;&#x0641;&#x0648;&#x0639;&#x0629; &#x0643;&#x0645;&#x062F;&#x0641;&#x0648;&#x0639;&#x0629; &#x0628;&#x0646;&#x062C;&#x0627;&#x062D;</value>
+  </data>
+  <data name="PaymentMarkedUnpaid" xml:space="preserve">
+    <value>&#x062A;&#x0645; &#x0625;&#x0639;&#x0627;&#x062F;&#x0629; &#x0627;&#x0644;&#x0645;&#x062F;&#x0641;&#x0648;&#x0639;&#x0629; &#x0643;&#x063A;&#x064A;&#x0631; &#x0645;&#x062F;&#x0641;&#x0648;&#x0639;&#x0629; &#x0628;&#x0646;&#x062C;&#x0627;&#x062D;</value>
+  </data>
 </root>

@@ -19,6 +19,7 @@ public record GroupDto(
     TimeOnly StartTime,
     TimeOnly EndTime,
     decimal DefaultLessonPrice,
+    decimal? MonthlyPrice,
     bool IsActive,
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null,
@@ -34,6 +35,7 @@ public record CreateGroupDto(
     TimeOnly StartTime,
     TimeOnly EndTime,
     decimal DefaultLessonPrice,
+    decimal? MonthlyPrice,
     bool IsActive = true,
     List<GroupScheduleDto>? Schedules = null);
 
@@ -46,6 +48,7 @@ public record EditGroupDto(
     TimeOnly StartTime,
     TimeOnly EndTime,
     decimal DefaultLessonPrice,
+    decimal? MonthlyPrice,
     bool IsActive = true,
     List<GroupScheduleDto>? Schedules = null);
 

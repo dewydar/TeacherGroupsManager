@@ -26,12 +26,15 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<LessonStudent>().HasKey(x => new { x.LessonId, x.StudentId });
 
         modelBuilder.Entity<Group>().Property(x => x.DefaultLessonPrice).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<Group>().Property(x => x.MonthlyPrice).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<AcademicYear>().Property(x => x.MonthlyPrice).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<GroupSchedule>().HasIndex(x => new { x.GroupId, x.DayOfWeek, x.StartTime });
         modelBuilder.Entity<Lesson>().Property(x => x.Price).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<LessonStudent>().Property(x => x.AttendanceStatus).HasDefaultValue(AttendanceStatus.Present);
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RequiredAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.PaidAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RemainingAmount).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<MonthlyPayment>().HasIndex(x => new { x.StudentId, x.Month, x.Year }).IsUnique();
         modelBuilder.Entity<Employee>().HasIndex(x => x.Username).IsUnique();
 
         foreach (var property in modelBuilder.Model.GetEntityTypes()
@@ -131,8 +134,8 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<RolePermission>().HasData(rolePermissions);
 
         modelBuilder.Entity<AcademicYear>().HasData(
-            new AcademicYear { Id = 1, Name = "الصف الأول الثانوي", StartDate = new DateOnly(2025, 9, 1), EndDate = new DateOnly(2026, 6, 30), IsActive = true },
-            new AcademicYear { Id = 2, Name = "الصف الثاني الثانوي", StartDate = new DateOnly(2025, 9, 1), EndDate = new DateOnly(2026, 6, 30), IsActive = true });
+            new AcademicYear { Id = 1, Name = "الصف الأول الثانوي", StartDate = new DateOnly(2025, 9, 1), EndDate = new DateOnly(2026, 6, 30), MonthlyPrice = 600, IsActive = true },
+            new AcademicYear { Id = 2, Name = "الصف الثاني الثانوي", StartDate = new DateOnly(2025, 9, 1), EndDate = new DateOnly(2026, 6, 30), MonthlyPrice = 600, IsActive = true });
 
         modelBuilder.Entity<Group>().HasData(
             new Group { Id = 1, Name = "مجموعة السبت مساء", AcademicYearId = 1, GroupType = GroupType.Public, DayOfWeek = DayOfWeek.Saturday, StartTime = new TimeOnly(18, 0), EndTime = new TimeOnly(20, 0), DefaultLessonPrice = 150, IsActive = true },

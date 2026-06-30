@@ -12,6 +12,7 @@ public record StudentDto(
     [StringLength(AppConstants.MaxStringLength)] string AcademicYearName,
     int GroupId,
     [StringLength(AppConstants.MaxStringLength)] string GroupName,
+    decimal MonthlyPrice,
     [StringLength(AppConstants.MaxStringLength)] string? Notes,
     bool IsActive,
     DateTime? CreatedAt = null,

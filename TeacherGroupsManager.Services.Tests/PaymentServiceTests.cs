@@ -13,6 +13,7 @@ public class PaymentServiceTests : TestBase
     public async Task CreateAsync_Calculates_Remaining_And_Status()
     {
         var (context, mapper) = CreateContext();
+        context.AcademicYears.Find(1)!.MonthlyPrice = 300;
         context.Students.Add(new Student { Id = 10, FullName = "Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
         await context.SaveChangesAsync();
         var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
@@ -23,6 +24,24 @@ public class PaymentServiceTests : TestBase
         var payment = await context.MonthlyPayments.FirstAsync();
         Assert.Equal(200, payment.RemainingAmount);
         Assert.Equal(PaymentStatus.PartiallyPaid, payment.PaymentStatus);
+    }
+
+    [Fact]
+    public async Task CreateAsync_Uses_Group_MonthlyPrice_When_Available()
+    {
+        var (context, mapper) = CreateContext();
+        context.AcademicYears.Find(1)!.MonthlyPrice = 300;
+        context.Groups.Find(1)!.MonthlyPrice = 450;
+        context.Students.Add(new Student { Id = 11, FullName = "Override Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
+        await context.SaveChangesAsync();
+        var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
+
+        var result = await service.CreateAsync(new CreateMonthlyPaymentDto(11, 1, 1, 5, 2026, 300, 100, PaymentStatus.PartiallyPaid, DateTime.Today, null, null));
+
+        Assert.True(result.Succeeded);
+        var payment = await context.MonthlyPayments.SingleAsync();
+        Assert.Equal(450, payment.RequiredAmount);
+        Assert.Equal(350, payment.RemainingAmount);
     }
 
     [Fact]
@@ -41,6 +60,7 @@ public class PaymentServiceTests : TestBase
     public async Task CreateAsync_Fails_When_Student_Month_And_Year_Already_Exist()
     {
         var (context, mapper) = CreateContext();
+        context.AcademicYears.Find(1)!.MonthlyPrice = 300;
         context.Students.Add(new Student { Id = 10, FullName = "Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
         await context.SaveChangesAsync();
         var service = new PaymentService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
@@ -57,6 +77,7 @@ public class PaymentServiceTests : TestBase
     public async Task UpdateAsync_Recalculates_Remaining_And_Status()
     {
         var (context, mapper) = CreateContext();
+        context.AcademicYears.Find(1)!.MonthlyPrice = 300;
         context.Students.Add(new Student { Id = 20, FullName = "Payment Student", Mobile = "1", AcademicYearId = 1, GroupId = 1 });
         context.MonthlyPayments.Add(new MonthlyPayment
         {

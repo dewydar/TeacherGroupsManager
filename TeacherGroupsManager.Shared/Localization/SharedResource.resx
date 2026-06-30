@@ -156,6 +156,9 @@
   <data name="Price" xml:space="preserve">
     <value>Price</value>
   </data>
+  <data name="MonthlyPrice" xml:space="preserve">
+    <value>Monthly Price</value>
+  </data>
   <data name="Year" xml:space="preserve">
     <value>Year</value>
   </data>
@@ -438,6 +441,12 @@
   <data name="PriceGreaterThanZero" xml:space="preserve">
     <value>Price must be greater than zero</value>
   </data>
+  <data name="MonthlyPriceGreaterThanZero" xml:space="preserve">
+    <value>Monthly price must be greater than zero</value>
+  </data>
+  <data name="MonthlyPriceCannotBeNegative" xml:space="preserve">
+    <value>Monthly price cannot be negative</value>
+  </data>
   <data name="EndTimeAfterStartTime" xml:space="preserve">
     <value>End time must be after start time</value>
   </data>
@@ -465,6 +474,9 @@
   <data name="PaidAmountCannotExceedRequired" xml:space="preserve">
     <value>Paid amount cannot be greater than required amount</value>
   </data>
+  <data name="PaidAmountCannotBeNegative" xml:space="preserve">
+    <value>Paid amount cannot be negative</value>
+  </data>
   <data name="DuplicateLesson" xml:space="preserve">
     <value>Lesson already exists</value>
   </data>
@@ -491,6 +503,15 @@
   </data>
   <data name="PaymentUpdated" xml:space="preserve">
     <value>Payment updated successfully</value>
+  </data>
+  <data name="MonthlyPaymentsGenerated" xml:space="preserve">
+    <value>Monthly payments generated successfully</value>
+  </data>
+  <data name="PaymentMarkedPaid" xml:space="preserve">
+    <value>Payment marked as paid successfully</value>
+  </data>
+  <data name="PaymentMarkedUnpaid" xml:space="preserve">
+    <value>Payment marked as unpaid successfully</value>
   </data>
   <data name="PaymentDeleted" xml:space="preserve">
     <value>Payment deleted successfully</value>
@@ -692,5 +713,20 @@
   </data>
   <data name="NoAvailableLessonDates" xml:space="preserve">
     <value>No available dates</value>
+  </data>
+  <data name="AttendingStudents" xml:space="preserve">
+    <value>Attending Students</value>
+  </data>
+  <data name="AllStudents" xml:space="preserve">
+    <value>All Students</value>
+  </data>
+  <data name="FilterByName" xml:space="preserve">
+    <value>Filter by name</value>
+  </data>
+  <data name="NoAttendingStudents" xml:space="preserve">
+    <value>No students selected</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
   </data>
 </root>

@@ -17,7 +17,7 @@
 </div>
 <div class="panel table-responsive">
     <table id="groupsTable" class="table align-middle w-100">
-        <thead><tr><th>@L["Name"]</th><th>@L["AcademicYear"]</th><th>@L["LessonType"]</th><th>@L["Day"]</th><th>@L["Time"]</th><th>@L["Price"]</th><th>@L["Status"]</th><th></th></tr></thead>
+        <thead><tr><th>@L["Name"]</th><th>@L["AcademicYear"]</th><th>@L["LessonType"]</th><th>@L["Day"]</th><th>@L["Time"]</th><th>@L["Price"]</th><th>@L["MonthlyPrice"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -39,6 +39,7 @@
                 { data: 'dayOfWeek', render: renderDayOfWeek },
                 { data: 'schedules', render: renderGroupSchedules },
                 { data: 'defaultLessonPrice', render: renderMoney },
+                { data: 'monthlyPrice', render: function (value) { return value == null ? '-' : renderMoney(value); } },
                 { data: 'isActive', render: renderBooleanStatus },
                 { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('Groups', id, true); } }
             ]

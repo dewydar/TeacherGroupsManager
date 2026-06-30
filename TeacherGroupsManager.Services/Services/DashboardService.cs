@@ -28,7 +28,8 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
             g.Name,
             g.Students.Count,
             g.Students.Count(s => s.MonthlyPayments.Any(p => p.Month == now.Month && p.Year == now.Year && p.PaymentStatus == PaymentStatus.Paid)),
-            g.Students.Count(s => !s.MonthlyPayments.Any(p => p.Month == now.Month && p.Year == now.Year && p.PaymentStatus == PaymentStatus.Paid)),
+            g.Students.Count(s => s.MonthlyPayments.Any(p => p.Month == now.Month && p.Year == now.Year && p.PaymentStatus == PaymentStatus.Unpaid)),
+            g.Students.Count(s => s.MonthlyPayments.Any(p => p.Month == now.Month && p.Year == now.Year && p.PaymentStatus == PaymentStatus.PartiallyPaid)),
             g.Students.SelectMany(s => s.MonthlyPayments).Where(p => p.Month == now.Month && p.Year == now.Year).Sum(p => p.PaidAmount),
             g.Students.SelectMany(s => s.MonthlyPayments).Where(p => p.Month == now.Month && p.Year == now.Year).Sum(p => p.RemainingAmount),
             $"/Groups/Details/{g.Id}")).ToListAsync(cancellationToken);
@@ -51,6 +52,7 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
             await payments.SumAsync(x => x.RemainingAmount, cancellationToken),
             await payments.CountAsync(x => x.PaymentStatus == PaymentStatus.Paid, cancellationToken),
             await payments.CountAsync(x => x.PaymentStatus == PaymentStatus.Unpaid, cancellationToken),
+            await payments.CountAsync(x => x.PaymentStatus == PaymentStatus.PartiallyPaid, cancellationToken),
             "/Students",
             "/Groups",
             "/Groups?type=Private",

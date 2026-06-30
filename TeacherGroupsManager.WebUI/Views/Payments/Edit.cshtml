@@ -4,10 +4,10 @@
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">@L["Student"]</label><select class="form-select" name="StudentId"><option value="0">@L["SelectStudent"]</option>@foreach (var student in (IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>)ViewBag.Students){<option value="@student.Id" data-group="@student.GroupId" data-year="@student.AcademicYearId" selected="@(student.Id == Model.StudentId)">@student.FullName - @student.GroupName</option>}</select></div>
+        <div class="col-md-6"><label class="form-label">@L["Student"]</label><select class="form-select" name="StudentId"><option value="0">@L["SelectStudent"]</option>@foreach (var student in (IReadOnlyList<TeacherGroupsManager.Dtos.StudentDto>)ViewBag.Students){<option value="@student.Id" data-group="@student.GroupId" data-year="@student.AcademicYearId" data-price="@student.MonthlyPrice" selected="@(student.Id == Model.StudentId)">@student.FullName - @student.GroupName</option>}</select></div>
         <div class="col-md-3"><label class="form-label">@L["Month"]</label><input class="form-control" type="number" name="Month" value="@Model.Month" /></div>
         <div class="col-md-3"><label class="form-label">@L["Year"]</label><input class="form-control" type="number" name="Year" value="@Model.Year" /></div>
-        <div class="col-md-4"><label class="form-label">@L["RequiredAmount"]</label><input class="form-control" type="number" step="0.01" name="RequiredAmount" value="@Model.RequiredAmount" /></div>
+        <div class="col-md-4"><label class="form-label">@L["RequiredAmount"]</label><input class="form-control" type="number" step="0.01" name="RequiredAmount" value="@Model.RequiredAmount" readonly /></div>
         <div class="col-md-4"><label class="form-label">@L["PaidAmount"]</label><input class="form-control" type="number" step="0.01" name="PaidAmount" value="@Model.PaidAmount" /></div>
         <div class="col-md-4"><label class="form-label">@L["PaymentDate"]</label><input class="form-control" type="date" name="PaymentDate" value="@Model.PaymentDate?.ToString("yyyy-MM-dd")" /></div>
         <div class="col-12"><label class="form-label">@L["Notes"]</label><textarea class="form-control" name="Notes">@Model.Notes</textarea></div>
@@ -19,11 +19,15 @@
 </form>
 @section Scripts {
 <script>
-document.querySelector('[name="StudentId"]').addEventListener('change', function () {
-    const option = this.options[this.selectedIndex];
+const studentSelect = document.querySelector('[name="StudentId"]');
+function syncStudentPaymentFields() {
+    const option = studentSelect.options[studentSelect.selectedIndex];
     document.getElementById('GroupId').value = option.dataset.group || '0';
     document.getElementById('AcademicYearId').value = option.dataset.year || '0';
-});
+    document.querySelector('[name="RequiredAmount"]').value = option.dataset.price || '0';
+}
+studentSelect.addEventListener('change', syncStudentPaymentFields);
+syncStudentPaymentFields();
 </script>
 }
 

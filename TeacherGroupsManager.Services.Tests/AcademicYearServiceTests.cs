@@ -13,8 +13,8 @@ public class AcademicYearServiceTests : TestBase
         var (context, mapper) = CreateContext();
         var service = new AcademicYearService(new UnitOfWork(context), mapper, TestLocalizer.Instance);
 
-        var first = await service.CreateAsync(new CreateAcademicYearDto("Year 2026", new DateOnly(2026, 9, 1), new DateOnly(2027, 6, 30)));
-        var duplicate = await service.CreateAsync(new CreateAcademicYearDto(" year 2026 ", new DateOnly(2027, 9, 1), new DateOnly(2028, 6, 30)));
+        var first = await service.CreateAsync(new CreateAcademicYearDto("Year 2026", new DateOnly(2026, 9, 1), new DateOnly(2027, 6, 30), 600));
+        var duplicate = await service.CreateAsync(new CreateAcademicYearDto(" year 2026 ", new DateOnly(2027, 9, 1), new DateOnly(2028, 6, 30), 600));
 
         Assert.True(first.Succeeded);
         Assert.False(duplicate.Succeeded);

@@ -20,6 +20,7 @@ else
                 }
             </dd>
             <dt class="col-sm-3">@L["Price"]</dt><dd class="col-sm-9">@Model.DefaultLessonPrice.ToString("N2")</dd>
+            <dt class="col-sm-3">@L["MonthlyPrice"]</dt><dd class="col-sm-9">@(Model.MonthlyPrice?.ToString("N2") ?? "-")</dd>
             <dt class="col-sm-3">@L["CreatedBy"]</dt><dd class="col-sm-9">@(Model.CreatedByEmployeeName ?? "-")</dd>
             <dt class="col-sm-3">@L["CreatedAt"]</dt><dd class="col-sm-9">@(Model.CreatedAt?.ToLocalTime().ToString("yyyy/MM/dd HH:mm") ?? "-")</dd>
             <dt class="col-sm-3">@L["UpdatedBy"]</dt><dd class="col-sm-9">@(Model.UpdatedByEmployeeName ?? "-")</dd>

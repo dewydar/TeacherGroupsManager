@@ -8,6 +8,7 @@ public record AcademicYearDto(
     [StringLength(AppConstants.MaxStringLength)] string Name,
     DateOnly StartDate,
     DateOnly EndDate,
+    decimal MonthlyPrice,
     bool IsActive,
     DateTime? CreatedAt = null,
     DateTime? UpdatedAt = null,
@@ -18,6 +19,7 @@ public record CreateAcademicYearDto(
     [StringLength(AppConstants.MaxStringLength)] string Name,
     DateOnly StartDate,
     DateOnly EndDate,
+    decimal MonthlyPrice,
     bool IsActive = true);
 
 public record EditAcademicYearDto(
@@ -25,5 +27,6 @@ public record EditAcademicYearDto(
     [StringLength(AppConstants.MaxStringLength)] string Name,
     DateOnly StartDate,
     DateOnly EndDate,
+    decimal MonthlyPrice,
     bool IsActive = true);
 

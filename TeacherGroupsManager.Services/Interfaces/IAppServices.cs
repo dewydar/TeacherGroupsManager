@@ -87,6 +87,10 @@ public interface IPaymentService
     Task<MonthlyPaymentDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<OperationResult> CreateAsync(CreateMonthlyPaymentDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAsync(EditMonthlyPaymentDto dto, CancellationToken cancellationToken = default);
+    Task<OperationResult> GenerateMonthlyPaymentsAsync(int academicYearId, int groupId, int month, int year, CancellationToken cancellationToken = default);
+    Task<OperationResult> MarkAsPaidAsync(int paymentId, CancellationToken cancellationToken = default);
+    Task<OperationResult> MarkAsUnpaidAsync(int paymentId, CancellationToken cancellationToken = default);
+    Task<OperationResult> UpdatePaidAmountAsync(int paymentId, decimal paidAmount, CancellationToken cancellationToken = default);
     Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 

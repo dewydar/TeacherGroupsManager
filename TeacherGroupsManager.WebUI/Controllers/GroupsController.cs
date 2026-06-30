@@ -35,7 +35,7 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
     {
         await FillLookups(cancellationToken);
         var schedules = new List<GroupScheduleDto> { new(DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0)) };
-        return View(new CreateGroupDto(string.Empty, 0, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 0, true, schedules));
+        return View(new CreateGroupDto(string.Empty, 0, GroupType.Public, DayOfWeek.Saturday, new TimeOnly(18, 0), new TimeOnly(20, 0), 0, null, true, schedules));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -65,7 +65,7 @@ public class GroupsController(IGroupService service, IAcademicYearService academ
         var group = await service.GetByIdAsync(id, cancellationToken);
         if (group is null) return NotFound();
         await FillLookups(cancellationToken);
-        return View(new EditGroupDto(group.Id, group.Name, group.AcademicYearId, group.GroupType, group.DayOfWeek, group.StartTime, group.EndTime, group.DefaultLessonPrice, group.IsActive, group.Schedules?.ToList()));
+        return View(new EditGroupDto(group.Id, group.Name, group.AcademicYearId, group.GroupType, group.DayOfWeek, group.StartTime, group.EndTime, group.DefaultLessonPrice, group.MonthlyPrice, group.IsActive, group.Schedules?.ToList()));
     }
 
     [HttpPost, ValidateAntiForgeryToken]

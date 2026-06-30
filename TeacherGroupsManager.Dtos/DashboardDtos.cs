@@ -16,6 +16,7 @@ public record DashboardSummaryDto(
     decimal CurrentMonthTotalRemainingAmount,
     int CurrentMonthPaidStudentsCount,
     int CurrentMonthUnpaidStudentsCount,
+    int CurrentMonthPartiallyPaidStudentsCount,
     [StringLength(AppConstants.MaxStringLength)] string StudentsUrl,
     [StringLength(AppConstants.MaxStringLength)] string GroupsUrl,
     [StringLength(AppConstants.MaxStringLength)] string PrivateGroupsUrl,
@@ -38,6 +39,7 @@ public record GroupPaymentSummaryDto(
     int TotalStudents,
     int PaidStudentsCount,
     int UnpaidStudentsCount,
+    int PartiallyPaidStudentsCount,
     decimal TotalCollectedAmount,
     decimal RemainingAmount,
     [StringLength(AppConstants.MaxStringLength)] string GroupDetailsUrl);

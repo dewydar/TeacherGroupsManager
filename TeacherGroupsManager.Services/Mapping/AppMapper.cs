@@ -36,13 +36,26 @@ public partial class AppMapper
 
     public partial List<GroupScheduleDto> Map(IEnumerable<GroupSchedule> schedules);
 
-    [MapProperty(nameof(@Student.AcademicYear.Name), nameof(StudentDto.AcademicYearName))]
-    [MapProperty(nameof(@Student.Group.Name), nameof(StudentDto.GroupName))]
-    [MapProperty(nameof(@Student.CreatedByEmployee.FullName), nameof(StudentDto.CreatedByEmployeeName))]
-    [MapProperty(nameof(@Student.UpdatedByEmployee.FullName), nameof(StudentDto.UpdatedByEmployeeName))]
-    public partial StudentDto Map(Student student);
+    public StudentDto Map(Student student) =>
+        new(
+            student.Id,
+            student.FullName,
+            student.Mobile,
+            student.ParentMobile,
+            student.AcademicYearId,
+            student.AcademicYear.Name,
+            student.GroupId,
+            student.Group.Name,
+            student.Group.MonthlyPrice ?? student.AcademicYear.MonthlyPrice,
+            student.Notes,
+            student.IsActive,
+            student.CreatedAt,
+            student.UpdatedAt,
+            student.CreatedByEmployee?.FullName,
+            student.UpdatedByEmployee?.FullName);
 
-    public partial List<StudentDto> Map(IEnumerable<Student> students);
+    public List<StudentDto> Map(IEnumerable<Student> students) =>
+        students.Select(Map).ToList();
 
     [MapProperty(nameof(@Lesson.Group.Name), nameof(LessonDto.GroupName))]
     [MapProperty(nameof(@Lesson.CreatedByEmployee.FullName), nameof(LessonDto.CreatedByEmployeeName))]

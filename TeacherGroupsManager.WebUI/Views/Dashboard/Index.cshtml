@@ -47,7 +47,7 @@
                     <div class="col-sm-6 col-xl-4">
                         <a class="card-stat" href="@group.GroupDetailsUrl">
                             <div class="fw-bold">@group.GroupName</div>
-                            <div class="small text-muted">@L["StudentsLabel"]: @group.TotalStudents | @L["PaidStudentsLabel"]: @group.PaidStudentsCount | @L["UnpaidStudentsLabel"]: @group.UnpaidStudentsCount</div>
+                            <div class="small text-muted">@L["StudentsLabel"]: @group.TotalStudents | @L["PaidStudentsLabel"]: @group.PaidStudentsCount | @L["PartiallyPaid"]: @group.PartiallyPaidStudentsCount | @L["UnpaidStudentsLabel"]: @group.UnpaidStudentsCount</div>
                             <div class="mt-2">@L["CollectedAmount"]: @group.TotalCollectedAmount.ToString("N2") | @L["RemainingAmount"]: @group.RemainingAmount.ToString("N2")</div>
                         </a>
                     </div>

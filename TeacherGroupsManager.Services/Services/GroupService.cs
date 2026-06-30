@@ -40,6 +40,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
     {
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        if (dto.MonthlyPrice is < 0) return OperationResult.Failure(localizer["MonthlyPriceCannotBeNegative"]);
         var name = dto.Name.Trim();
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Name.Trim().ToLower() == normalizedName, cancellationToken))
@@ -60,6 +61,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
             StartTime = primarySchedule.StartTime,
             EndTime = primarySchedule.EndTime,
             DefaultLessonPrice = dto.DefaultLessonPrice,
+            MonthlyPrice = dto.MonthlyPrice,
             IsActive = dto.IsActive,
             Schedules = schedules
                 .Select(x => new GroupSchedule { DayOfWeek = x.DayOfWeek, StartTime = x.StartTime, EndTime = x.EndTime })
@@ -77,6 +79,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
         if (group is null) return OperationResult.Failure(localizer["GroupNotFound"]);
         var validation = await ValidateReferencesAsync(dto.AcademicYearId, cancellationToken);
         if (!validation.Succeeded) return validation;
+        if (dto.MonthlyPrice is < 0) return OperationResult.Failure(localizer["MonthlyPriceCannotBeNegative"]);
         var name = dto.Name.Trim();
         var normalizedName = name.ToLower();
         if (await unitOfWork.Repository<Group>().AnyAsync(x => x.Id != dto.Id && x.Name.Trim().ToLower() == normalizedName, cancellationToken))
@@ -95,6 +98,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
         group.StartTime = primarySchedule.StartTime;
         group.EndTime = primarySchedule.EndTime;
         group.DefaultLessonPrice = dto.DefaultLessonPrice;
+        group.MonthlyPrice = dto.MonthlyPrice;
         group.IsActive = dto.IsActive;
         group.Schedules.Clear();
         foreach (var schedule in schedules)
@@ -152,6 +156,7 @@ public class GroupService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLocal
             "dayOfWeek" => desc ? query.OrderByDescending(x => x.DayOfWeek) : query.OrderBy(x => x.DayOfWeek),
             "startTime" => desc ? query.OrderByDescending(x => x.StartTime) : query.OrderBy(x => x.StartTime),
             "defaultLessonPrice" => desc ? query.OrderByDescending(x => x.DefaultLessonPrice) : query.OrderBy(x => x.DefaultLessonPrice),
+            "monthlyPrice" => desc ? query.OrderByDescending(x => x.MonthlyPrice) : query.OrderBy(x => x.MonthlyPrice),
             "isActive" => desc ? query.OrderByDescending(x => x.IsActive) : query.OrderBy(x => x.IsActive),
             _ => query.OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime)
         };

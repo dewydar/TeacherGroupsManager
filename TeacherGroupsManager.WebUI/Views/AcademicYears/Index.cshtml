@@ -12,7 +12,7 @@
 </div>
 <div class="panel table-responsive">
     <table id="academicYearsTable" class="table align-middle w-100">
-        <thead><tr><th>@L["Name"]</th><th>@L["StartDate"]</th><th>@L["EndDate"]</th><th>@L["Status"]</th><th></th></tr></thead>
+        <thead><tr><th>@L["Name"]</th><th>@L["StartDate"]</th><th>@L["EndDate"]</th><th>@L["MonthlyPrice"]</th><th>@L["Status"]</th><th></th></tr></thead>
         <tbody></tbody>
     </table>
 </div>
@@ -30,6 +30,7 @@
                 { data: 'name' },
                 { data: 'startDate', render: renderDate },
                 { data: 'endDate', render: renderDate },
+                { data: 'monthlyPrice', render: renderMoney },
                 { data: 'isActive', render: renderBooleanStatus },
                 { data: 'id', orderable: false, searchable: false, render: function (id) { return renderActions('AcademicYears', id); } }
             ]

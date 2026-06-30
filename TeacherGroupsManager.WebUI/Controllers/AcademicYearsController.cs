@@ -21,7 +21,7 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
         return Json(result);
     }
 
-    public IActionResult Create() => View(new CreateAcademicYearDto(string.Empty, DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(9))));
+    public IActionResult Create() => View(new CreateAcademicYearDto(string.Empty, DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddMonths(9)), 0));
 
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateAcademicYearDto dto, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ public class AcademicYearsController(IAcademicYearService service) : Controller
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var year = await service.GetByIdAsync(id, cancellationToken);
-        return year is null ? NotFound() : View(new EditAcademicYearDto(year.Id, year.Name, year.StartDate, year.EndDate, year.IsActive));
+        return year is null ? NotFound() : View(new EditAcademicYearDto(year.Id, year.Name, year.StartDate, year.EndDate, year.MonthlyPrice, year.IsActive));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
