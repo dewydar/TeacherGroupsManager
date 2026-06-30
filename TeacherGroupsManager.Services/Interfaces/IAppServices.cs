@@ -96,5 +96,6 @@ public interface IPaymentService
 
 public interface IDashboardService
 {
+    Task<DashboardSummaryDto> GetDashboardSummaryAsync(DashboardFilterDto filter, CancellationToken cancellationToken = default);
     Task<DashboardSummaryDto> GetSummaryAsync(CancellationToken cancellationToken = default);
 }

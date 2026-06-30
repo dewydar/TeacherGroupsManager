@@ -1,69 +1,260 @@
 @model TeacherGroupsManager.Dtos.DashboardSummaryDto
-@using System.Globalization
 @using System.Text.Json
 @{
-    ViewData["Title"] = L["Dashboard"];
-    var requiredAmount = Model.CurrentMonthTotalRequiredAmount.ToString(CultureInfo.InvariantCulture);
-    var paidAmount = Model.CurrentMonthTotalPaidAmount.ToString(CultureInfo.InvariantCulture);
-    var remainingAmount = Model.CurrentMonthTotalRemainingAmount.ToString(CultureInfo.InvariantCulture);
+    ViewData["Title"] = "لوحة التحكم";
+    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var paymentStatusLabels = Model.PaymentStatusSummary.Select(x => x.StatusArabic);
+    var paymentStatusData = Model.PaymentStatusSummary.Select(x => x.Count);
+    var revenueLabels = Model.MonthlyRevenueSummary.Select(x => $"{x.MonthNameArabic} {x.Year}");
+    var revenueRequired = Model.MonthlyRevenueSummary.Select(x => x.TotalRequiredAmount);
+    var revenuePaid = Model.MonthlyRevenueSummary.Select(x => x.TotalPaidAmount);
+    var revenueRemaining = Model.MonthlyRevenueSummary.Select(x => x.TotalRemainingAmount);
+    var studentsGroupLabels = Model.StudentsPerGroup.Select(x => x.GroupName);
+    var studentsGroupData = Model.StudentsPerGroup.Select(x => x.StudentsCount);
+    var groupsDayLabels = Model.GroupsByDay.Select(x => x.DayOfWeekArabic);
+    var groupsDayData = Model.GroupsByDay.Select(x => x.GroupsCount);
 }
-<div class="row g-3 mb-3">
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.StudentsUrl"><div class="stat-title">@L["TotalStudents"]</div><div class="stat-value">@Model.TotalStudents</div></a></div>
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.GroupsUrl"><div class="stat-title">@L["TotalGroups"]</div><div class="stat-value">@Model.TotalGroups</div></a></div>
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.PrivateGroupsUrl"><div class="stat-title">@L["PrivateGroups"]</div><div class="stat-value">@Model.TotalPrivateGroups</div></a></div>
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.PublicGroupsUrl"><div class="stat-title">@L["PublicGroups"]</div><div class="stat-value">@Model.TotalPublicGroups</div></a></div>
-    <div class="col-sm-6 col-xl-3"><div class="card-stat"><div class="stat-title">@L["TotalTeachers"]</div><div class="stat-value">@Model.TotalTeachers</div></div></div>
-    <div class="col-sm-6 col-xl-3"><div class="card-stat"><div class="stat-title">@L["TotalAssistants"]</div><div class="stat-value">@Model.TotalAssistantTeachers</div></div></div>
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.PaidStudentsUrl"><div class="stat-title">@L["PaidStudentsThisMonth"]</div><div class="stat-value">@Model.CurrentMonthPaidStudentsCount</div></a></div>
-    <div class="col-sm-6 col-xl-3"><a class="card-stat" href="@Model.UnpaidStudentsUrl"><div class="stat-title">@L["UnpaidStudentsThisMonth"]</div><div class="stat-value">@Model.CurrentMonthUnpaidStudentsCount</div></a></div>
-</div>
-<div class="row g-3">
-    <div class="col-lg-6">
-        <div class="panel">
-            <h2 class="h5">@L["MonthlyPaymentsSummary"]</h2>
-            <canvas id="paymentsChart" height="160"></canvas>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="panel">
-            <h2 class="h5">@L["GroupsByDay"]</h2>
-            <table class="table table-sm">
-                <thead><tr><th>@L["Day"]</th><th>@L["TotalGroups"]</th><th>@L["Groups"]</th></tr></thead>
-                <tbody>
-                    @foreach (var item in Model.GroupsByDay)
-                    {
-                        <tr><td>@item.DayName</td><td>@item.GroupsCount</td><td>@string.Join(", ", item.GroupNames)</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-12">
-        <div class="panel">
-            <h2 class="h5">@L["EachGroupSummary"]</h2>
-            <div class="row g-3">
-                @foreach (var group in Model.PaymentsPerGroup)
+
+<form method="get" class="panel dashboard-filter mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">السنة الدراسية</label>
+            <select class="form-select" name="AcademicYearId">
+                <option value="">الكل</option>
+                @foreach (var year in Model.AcademicYears)
                 {
-                    <div class="col-sm-6 col-xl-4">
-                        <a class="card-stat" href="@group.GroupDetailsUrl">
-                            <div class="fw-bold">@group.GroupName</div>
-                            <div class="small text-muted">@L["StudentsLabel"]: @group.TotalStudents | @L["PaidStudentsLabel"]: @group.PaidStudentsCount | @L["PartiallyPaid"]: @group.PartiallyPaidStudentsCount | @L["UnpaidStudentsLabel"]: @group.UnpaidStudentsCount</div>
-                            <div class="mt-2">@L["CollectedAmount"]: @group.TotalCollectedAmount.ToString("N2") | @L["RemainingAmount"]: @group.RemainingAmount.ToString("N2")</div>
-                        </a>
-                    </div>
+                    <option value="@year.Id" selected="@(year.Id == Model.Filter.AcademicYearId)">@year.Name</option>
                 }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">المجموعة</label>
+            <select class="form-select" name="GroupId">
+                <option value="">الكل</option>
+                @foreach (var group in Model.Groups.Where(x => Model.Filter.AcademicYearId is null || x.AcademicYearId == Model.Filter.AcademicYearId))
+                {
+                    <option value="@group.Id" selected="@(group.Id == Model.Filter.GroupId)">@group.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">الشهر</label>
+            <input class="form-control" type="number" min="1" max="12" name="Month" value="@Model.Filter.Month" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">السنة</label>
+            <input class="form-control" type="number" min="2000" name="Year" value="@Model.Filter.Year" />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary" type="submit">تحديث</button>
+        </div>
+    </div>
+</form>
+
+<section class="dashboard-section">
+    <div class="section-title">نظرة عامة</div>
+    <div class="row g-3">
+        @foreach (var card in Model.MainCards)
+        {
+            <div class="col-sm-6 col-xl-3">
+                <a class="card-stat dashboard-card @card.CssClass" href="@card.Url">
+                    <div class="stat-title">@card.Title</div>
+                    <div class="stat-value">@card.Value</div>
+                    <div class="stat-link">عرض التفاصيل</div>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-title">المدفوعات</div>
+    <div class="row g-3">
+        <div class="col-lg-4">
+            <div class="panel chart-panel">
+                <h2 class="h6">حالة المدفوعات هذا الشهر</h2>
+                <canvas id="paymentStatusChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="panel chart-panel">
+                <h2 class="h6">الإيرادات الشهرية</h2>
+                <canvas id="monthlyRevenueChart"></canvas>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="panel table-responsive">
+                <h2 class="h6">ملخص المدفوعات حسب المجموعة</h2>
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>المجموعة</th>
+                            <th>عدد الطلاب</th>
+                            <th>مدفوع</th>
+                            <th>غير مدفوع</th>
+                            <th>مدفوع جزئياً</th>
+                            <th>إجمالي المطلوب</th>
+                            <th>إجمالي المدفوع</th>
+                            <th>إجمالي المتبقي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @if (!Model.PaymentsPerGroup.Any())
+                    {
+                        <tr><td colspan="8" class="text-muted">لا توجد بيانات متاحة</td></tr>
+                    }
+                    @foreach (var group in Model.PaymentsPerGroup)
+                    {
+                        <tr>
+                            <td><a href="@group.GroupDetailsUrl">@group.GroupName</a></td>
+                            <td>@group.TotalStudents</td>
+                            <td>@group.PaidStudentsCount</td>
+                            <td>@group.UnpaidStudentsCount</td>
+                            <td>@group.PartiallyPaidStudentsCount</td>
+                            <td>@group.TotalRequiredAmount.ToString("N2") ج.م</td>
+                            <td>@group.TotalCollectedAmount.ToString("N2") ج.م</td>
+                            <td>@group.RemainingAmount.ToString("N2") ج.م</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-title">المجموعات والطلاب</div>
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="panel chart-panel">
+                <h2 class="h6">عدد الطلاب داخل كل مجموعة</h2>
+                <canvas id="studentsPerGroupChart"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel chart-panel">
+                <h2 class="h6">المجموعات حسب أيام الأسبوع</h2>
+                <canvas id="groupsByDayChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-title">آخر النشاطات والمواعيد</div>
+    <div class="row g-3">
+        <div class="col-xl-4">
+            <div class="panel table-responsive h-100">
+                <h2 class="h6">أحدث الطلاب المسجلين</h2>
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>الطالب</th><th>المجموعة</th><th>السنة الدراسية</th><th>تاريخ التسجيل</th></tr></thead>
+                    <tbody>
+                    @if (!Model.RecentStudents.Any())
+                    {
+                        <tr><td colspan="4" class="text-muted">لا توجد بيانات متاحة</td></tr>
+                    }
+                    @foreach (var student in Model.RecentStudents)
+                    {
+                        <tr>
+                            <td><a href="@student.Url">@student.StudentName</a></td>
+                            <td>@student.GroupName</td>
+                            <td>@student.AcademicYearName</td>
+                            <td>@(student.CreatedAt?.ToLocalTime().ToString("yyyy/MM/dd") ?? "-")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="panel table-responsive h-100">
+                <h2 class="h6">أحدث المدفوعات</h2>
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>الطالب</th><th>المجموعة</th><th>المبلغ</th><th>الشهر</th><th>الحالة</th><th>تاريخ الدفع</th></tr></thead>
+                    <tbody>
+                    @if (!Model.RecentPayments.Any())
+                    {
+                        <tr><td colspan="6" class="text-muted">لا توجد بيانات متاحة</td></tr>
+                    }
+                    @foreach (var payment in Model.RecentPayments)
+                    {
+                        <tr>
+                            <td><a href="@payment.Url">@payment.StudentName</a></td>
+                            <td>@payment.GroupName</td>
+                            <td>@payment.PaidAmount.ToString("N2") ج.م</td>
+                            <td>@payment.Month / @payment.Year</td>
+                            <td>@payment.PaymentStatusArabic</td>
+                            <td>@(payment.PaymentDate?.ToString("yyyy/MM/dd") ?? "-")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="panel table-responsive h-100">
+                <h2 class="h6">مواعيد المجموعات القادمة</h2>
+                <table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>المجموعة</th><th>السنة الدراسية</th><th>المدرس</th><th>اليوم</th><th>من</th><th>إلى</th><th>الطلاب</th></tr></thead>
+                    <tbody>
+                    @if (!Model.UpcomingGroups.Any())
+                    {
+                        <tr><td colspan="7" class="text-muted">لا توجد بيانات متاحة</td></tr>
+                    }
+                    @foreach (var group in Model.UpcomingGroups)
+                    {
+                        <tr>
+                            <td><a href="@group.Url">@group.GroupName</a></td>
+                            <td>@group.AcademicYearName</td>
+                            <td>@group.TeacherName</td>
+                            <td>@group.DayOfWeekArabic</td>
+                            <td>@group.StartTime.ToString("HH:mm")</td>
+                            <td>@group.EndTime.ToString("HH:mm")</td>
+                            <td>@group.StudentsCount</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
 @section Scripts {
     <script>
-        new Chart(document.getElementById('paymentsChart'), {
-            type: 'bar',
-            data: {
-                labels: [@Html.Raw(JsonSerializer.Serialize(L["RequiredAmount"].Value)), @Html.Raw(JsonSerializer.Serialize(L["PaidAmount"].Value)), @Html.Raw(JsonSerializer.Serialize(L["RemainingAmount"].Value))],
-                datasets: [{ label: @Html.Raw(JsonSerializer.Serialize(L["ChartAmount"].Value)), data: [@requiredAmount, @paidAmount, @remainingAmount], backgroundColor: ['#5a8dee', '#39b980', '#f05d5e'] }]
-            }
+        const chartPalette = ['#5a8dee', '#39b980', '#f2b84b', '#f05d5e', '#7f63d8', '#35a3a3', '#e077aa'];
+        const makeChart = (id, type, labels, datasets, options) => new Chart(document.getElementById(id), {
+            type,
+            data: { labels, datasets },
+            options: Object.assign({
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: type === 'doughnut' ? {} : { y: { beginAtZero: true } }
+            }, options || {})
         });
+
+        makeChart('paymentStatusChart', 'doughnut',
+            @Html.Raw(JsonSerializer.Serialize(paymentStatusLabels, jsonOptions)),
+            [{ data: @Html.Raw(JsonSerializer.Serialize(paymentStatusData, jsonOptions)), backgroundColor: ['#39b980', '#f2b84b', '#f05d5e'] }],
+            { scales: {} });
+
+        makeChart('monthlyRevenueChart', 'bar',
+            @Html.Raw(JsonSerializer.Serialize(revenueLabels, jsonOptions)),
+            [
+                { label: 'إجمالي المطلوب', data: @Html.Raw(JsonSerializer.Serialize(revenueRequired, jsonOptions)), backgroundColor: '#5a8dee' },
+                { label: 'إجمالي المدفوع', data: @Html.Raw(JsonSerializer.Serialize(revenuePaid, jsonOptions)), backgroundColor: '#39b980' },
+                { label: 'إجمالي المتبقي', data: @Html.Raw(JsonSerializer.Serialize(revenueRemaining, jsonOptions)), backgroundColor: '#f05d5e' }
+            ]);
+
+        makeChart('studentsPerGroupChart', 'bar',
+            @Html.Raw(JsonSerializer.Serialize(studentsGroupLabels, jsonOptions)),
+            [{ label: 'عدد الطلاب', data: @Html.Raw(JsonSerializer.Serialize(studentsGroupData, jsonOptions)), backgroundColor: chartPalette }],
+            { indexAxis: 'y' });
+
+        makeChart('groupsByDayChart', 'bar',
+            @Html.Raw(JsonSerializer.Serialize(groupsDayLabels, jsonOptions)),
+            [{ label: 'عدد المجموعات', data: @Html.Raw(JsonSerializer.Serialize(groupsDayData, jsonOptions)), backgroundColor: chartPalette }]);
     </script>
 }

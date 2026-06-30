@@ -141,6 +141,40 @@ body {
     margin-top: 10px;
 }
 
+.dashboard-section {
+    margin-bottom: 18px;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0 0 10px;
+}
+
+.dashboard-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-link {
+    color: #5a8dee;
+    font-size: .86rem;
+    margin-top: 12px;
+}
+
+.chart-panel {
+    min-height: 320px;
+}
+
+.chart-panel canvas {
+    min-height: 250px;
+}
+
+.dashboard-filter .form-label {
+    font-weight: 700;
+}
+
 .panel {
     background: var(--surface);
     border: 1px solid var(--border);
