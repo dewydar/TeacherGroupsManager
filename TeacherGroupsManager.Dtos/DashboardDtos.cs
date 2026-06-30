@@ -65,7 +65,8 @@ public record DashboardCardDto(
     [StringLength(AppConstants.MaxStringLength)] string Title,
     [StringLength(AppConstants.MaxStringLength)] string Value,
     [StringLength(AppConstants.MaxStringLength)] string Url,
-    [StringLength(AppConstants.MaxStringLength)] string CssClass = "");
+    [StringLength(AppConstants.MaxStringLength)] string CssClass = "",
+    [StringLength(AppConstants.MaxStringLength)] string ValueSuffix = "");
 
 public record GroupStudentsSummaryDto(
     int GroupId,

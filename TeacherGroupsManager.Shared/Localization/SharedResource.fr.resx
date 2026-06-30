@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -22,22 +22,22 @@
     <value>Tableau de bord</value>
   </data>
   <data name="RolesManagement" xml:space="preserve">
-    <value>Gestion des rÃ´les</value>
+    <value>Gestion des rôles</value>
   </data>
   <data name="EmployeesManagement" xml:space="preserve">
-    <value>Gestion des employÃ©s</value>
+    <value>Gestion des employés</value>
   </data>
   <data name="AcademicYears" xml:space="preserve">
-    <value>AnnÃ©es scolaires</value>
+    <value>Années scolaires</value>
   </data>
   <data name="Groups" xml:space="preserve">
     <value>Groupes</value>
   </data>
   <data name="Students" xml:space="preserve">
-    <value>Ã‰tudiants</value>
+    <value>Étudiants</value>
   </data>
   <data name="Lessons" xml:space="preserve">
-    <value>LeÃ§ons</value>
+    <value>Leçons</value>
   </data>
   <data name="MonthlyPayments" xml:space="preserve">
     <value>Paiements mensuels</value>
@@ -46,7 +46,7 @@
     <value>Rapports</value>
   </data>
   <data name="Logout" xml:space="preserve">
-    <value>DÃ©connexion</value>
+    <value>Déconnexion</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Connexion</value>
@@ -64,7 +64,7 @@
     <value>Langue</value>
   </data>
   <data name="Theme" xml:space="preserve">
-    <value>ThÃ¨me</value>
+    <value>Thème</value>
   </data>
   <data name="LightTheme" xml:space="preserve">
     <value>Clair</value>
@@ -79,7 +79,7 @@
     <value>Anglais</value>
   </data>
   <data name="French" xml:space="preserve">
-    <value>FranÃ§ais</value>
+    <value>Français</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Ajouter</value>
@@ -91,7 +91,7 @@
     <value>Rechercher</value>
   </data>
   <data name="Reset" xml:space="preserve">
-    <value>RÃ©initialiser</value>
+    <value>Réinitialiser</value>
   </data>
   <data name="Reload" xml:space="preserve">
     <value>Actualiser</value>
@@ -103,7 +103,7 @@
     <value>Supprimer</value>
   </data>
   <data name="Details" xml:space="preserve">
-    <value>DÃ©tails</value>
+    <value>Détails</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Nom</value>
@@ -115,13 +115,13 @@
     <value>Nom complet</value>
   </data>
   <data name="Mobile" xml:space="preserve">
-    <value>TÃ©lÃ©phone</value>
+    <value>Téléphone</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>E-mail</value>
   </data>
   <data name="Role" xml:space="preserve">
-    <value>RÃ´le</value>
+    <value>Rôle</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Statut</value>
@@ -133,13 +133,13 @@
     <value>Inactif</value>
   </data>
   <data name="AcademicYear" xml:space="preserve">
-    <value>AnnÃ©e scolaire</value>
+    <value>Année scolaire</value>
   </data>
   <data name="Group" xml:space="preserve">
     <value>Groupe</value>
   </data>
   <data name="Student" xml:space="preserve">
-    <value>Ã‰tudiant</value>
+    <value>Étudiant</value>
   </data>
   <data name="Teacher" xml:space="preserve">
     <value>Enseignant</value>
@@ -160,7 +160,7 @@
     <value>Prix mensuel</value>
   </data>
   <data name="Year" xml:space="preserve">
-    <value>AnnÃ©e</value>
+    <value>Année</value>
   </data>
   <data name="Month" xml:space="preserve">
     <value>Mois</value>
@@ -169,7 +169,7 @@
     <value>Requis</value>
   </data>
   <data name="PaidAmount" xml:space="preserve">
-    <value>PayÃ©</value>
+    <value>Payé</value>
   </data>
   <data name="RemainingAmount" xml:space="preserve">
     <value>Restant</value>
@@ -178,13 +178,13 @@
     <value>Statut du paiement</value>
   </data>
   <data name="TotalStudents" xml:space="preserve">
-    <value>Nombre d'Ã©tudiants</value>
+    <value>Nombre d'étudiants</value>
   </data>
   <data name="TotalGroups" xml:space="preserve">
     <value>Nombre de groupes</value>
   </data>
   <data name="PrivateGroups" xml:space="preserve">
-    <value>Groupes privÃ©s</value>
+    <value>Groupes privés</value>
   </data>
   <data name="PublicGroups" xml:space="preserve">
     <value>Groupes publics</value>
@@ -196,25 +196,25 @@
     <value>Nombre d'assistants</value>
   </data>
   <data name="PaidStudentsThisMonth" xml:space="preserve">
-    <value>Ã‰tudiants payÃ©s ce mois</value>
+    <value>Étudiants payés ce mois</value>
   </data>
   <data name="UnpaidStudentsThisMonth" xml:space="preserve">
-    <value>Ã‰tudiants non payÃ©s ce mois</value>
+    <value>Étudiants non payés ce mois</value>
   </data>
   <data name="MonthlyPaymentsSummary" xml:space="preserve">
-    <value>RÃ©sumÃ© des paiements mensuels</value>
+    <value>Résumé des paiements mensuels</value>
   </data>
   <data name="GroupsByDay" xml:space="preserve">
     <value>Groupes par jour</value>
   </data>
   <data name="EachGroupSummary" xml:space="preserve">
-    <value>RÃ©sumÃ© de chaque groupe</value>
+    <value>Résumé de chaque groupe</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
-    <value>AccÃ¨s refusÃ©</value>
+    <value>Accès refusé</value>
   </data>
   <data name="AccessDeniedMessage" xml:space="preserve">
-    <value>Vous n'avez pas l'autorisation d'accÃ©der Ã  cette page.</value>
+    <value>Vous n'avez pas l'autorisation d'accéder à cette page.</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>Tous</value>
@@ -729,4 +729,74 @@
   <data name="Remove" xml:space="preserve">
     <value>Retirer</value>
   </data>
+  <data name="NoDataAvailable" xml:space="preserve">
+    <value>Aucune donnée disponible</value>
+  </data>
+  <data name="TotalRequiredAmount" xml:space="preserve">
+    <value>Total requis</value>
+  </data>
+  <data name="TotalPaidAmount" xml:space="preserve">
+    <value>Total payé</value>
+  </data>
+  <data name="TotalRemainingAmount" xml:space="preserve">
+    <value>Total restant</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Vue d'ensemble</value>
+  </data>
+  <data name="PaymentStatusThisMonth" xml:space="preserve">
+    <value>Statut des paiements ce mois</value>
+  </data>
+  <data name="MonthlyRevenue" xml:space="preserve">
+    <value>Revenus mensuels</value>
+  </data>
+  <data name="PaymentsByGroupSummary" xml:space="preserve">
+    <value>Paiements par groupe</value>
+  </data>
+  <data name="StudentsAndGroups" xml:space="preserve">
+    <value>Étudiants et groupes</value>
+  </data>
+  <data name="StudentsPerGroup" xml:space="preserve">
+    <value>Étudiants par groupe</value>
+  </data>
+  <data name="GroupsByWeekday" xml:space="preserve">
+    <value>Groupes par jour de semaine</value>
+  </data>
+  <data name="RecentActivitiesAndSchedule" xml:space="preserve">
+    <value>Activité récente et planning</value>
+  </data>
+  <data name="RecentRegisteredStudents" xml:space="preserve">
+    <value>Étudiants récemment inscrits</value>
+  </data>
+  <data name="RecentPayments" xml:space="preserve">
+    <value>Paiements récents</value>
+  </data>
+  <data name="UpcomingGroups" xml:space="preserve">
+    <value>Groupes à venir</value>
+  </data>
+  <data name="RegistrationDate" xml:space="preserve">
+    <value>Date d'inscription</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Montant</value>
+  </data>
+  <data name="CurrentMonthLessons" xml:space="preserve">
+    <value>Leçons ce mois</value>
+  </data>
+  <data name="TotalRequiredThisMonth" xml:space="preserve">
+    <value>Total requis ce mois</value>
+  </data>
+  <data name="TotalPaidThisMonth" xml:space="preserve">
+    <value>Total payé ce mois</value>
+  </data>
+  <data name="TotalRemainingThisMonth" xml:space="preserve">
+    <value>Total restant ce mois</value>
+  </data>
+  <data name="PartiallyPaidStudentsThisMonth" xml:space="preserve">
+    <value>Étudiants partiellement payés ce mois</value>
+  </data>
+  <data name="EgyptianPoundAbbreviation" xml:space="preserve">
+    <value>EGP</value>
+  </data>
 </root>
+

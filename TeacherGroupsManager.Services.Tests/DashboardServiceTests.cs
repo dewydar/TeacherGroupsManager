@@ -102,6 +102,61 @@ public class DashboardServiceTests : TestBase
         Assert.Equal(600, groupOnePayments.RemainingAmount);
     }
 
+    [Fact]
+    public async Task GetDashboardSummaryAsync_ShouldLimitDashboardListsToTopFive()
+    {
+        var (context, _) = CreateContext();
+        var month = 5;
+        var year = 2026;
+        var baseDate = new DateTime(year, month, 1);
+
+        for (var i = 1; i <= 6; i++)
+        {
+            var groupId = 600 + i;
+            var studentId = 600 + i;
+            context.Groups.Add(new Group
+            {
+                Id = groupId,
+                Name = $"Dashboard Limit Group {i:D2}",
+                AcademicYearId = 1,
+                GroupType = GroupType.Public,
+                DayOfWeek = (DayOfWeek)(i % 7),
+                StartTime = new TimeOnly(8 + i, 0),
+                EndTime = new TimeOnly(9 + i, 0),
+                DefaultLessonPrice = 150,
+                IsActive = true
+            });
+            context.GroupSchedules.Add(new GroupSchedule
+            {
+                Id = groupId,
+                GroupId = groupId,
+                DayOfWeek = (DayOfWeek)(i % 7),
+                StartTime = new TimeOnly(8 + i, 0),
+                EndTime = new TimeOnly(9 + i, 0)
+            });
+            context.Students.Add(new Student
+            {
+                Id = studentId,
+                FullName = $"Dashboard Student {i}",
+                Mobile = $"0100000060{i}",
+                AcademicYearId = 1,
+                GroupId = groupId,
+                IsActive = true,
+                CreatedAt = baseDate.AddDays(i)
+            });
+            context.MonthlyPayments.Add(Payment(600 + i, studentId, groupId, 1, month, year, 300, 300, 0, PaymentStatus.Paid, baseDate.AddDays(i)));
+        }
+        await context.SaveChangesAsync();
+        var service = new DashboardService(new UnitOfWork(context));
+
+        var summary = await service.GetDashboardSummaryAsync(new DashboardFilterDto { Month = month, Year = year });
+
+        Assert.Equal(5, summary.PaymentsPerGroup.Count);
+        Assert.Equal(5, summary.RecentStudents.Count);
+        Assert.Equal(5, summary.RecentPayments.Count);
+        Assert.Equal(5, summary.UpcomingGroups.Count);
+    }
+
     private static void SeedDashboardData(TeacherGroupsManager.Data.Context.TeacherGroupsDbContext context, int month, int year)
     {
         context.Students.AddRange(
@@ -120,7 +175,7 @@ public class DashboardServiceTests : TestBase
         context.SaveChanges();
     }
 
-    private static MonthlyPayment Payment(int id, int studentId, int groupId, int academicYearId, int month, int year, decimal required, decimal paid, decimal remaining, PaymentStatus status) =>
+    private static MonthlyPayment Payment(int id, int studentId, int groupId, int academicYearId, int month, int year, decimal required, decimal paid, decimal remaining, PaymentStatus status, DateTime? paymentDate = null) =>
         new()
         {
             Id = id,
@@ -133,6 +188,6 @@ public class DashboardServiceTests : TestBase
             PaidAmount = paid,
             RemainingAmount = remaining,
             PaymentStatus = status,
-            PaymentDate = paid > 0 ? DateTime.Now : null
+            PaymentDate = paid > 0 ? paymentDate ?? DateTime.Now : null
         };
 }

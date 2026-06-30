@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using TeacherGroupsManager.Core.Constants;
 using TeacherGroupsManager.Core.Entities;
 using TeacherGroupsManager.Core.Enums;
@@ -12,6 +13,8 @@ namespace TeacherGroupsManager.Services.Services;
 
 public class DashboardService(IUnitOfWork unitOfWork, AppMapper? mapper = null) : IDashboardService
 {
+    private const int DashboardListLimit = 5;
+
     public Task<DashboardSummaryDto> GetSummaryAsync(CancellationToken cancellationToken = default) =>
         GetDashboardSummaryAsync(new DashboardFilterDto(), cancellationToken);
 
@@ -121,6 +124,7 @@ public class DashboardService(IUnitOfWork unitOfWork, AppMapper? mapper = null) 
         var query = FilterGroups(unitOfWork.Repository<Group>().Query().AsNoTracking(), filter);
         return await query
             .OrderBy(x => x.Name)
+            .Take(DashboardListLimit)
             .Select(group => new GroupPaymentSummaryDto(
                 group.Id,
                 group.Name,
@@ -211,7 +215,7 @@ public class DashboardService(IUnitOfWork unitOfWork, AppMapper? mapper = null) 
             .Include(x => x.AcademicYear)
             .OrderByDescending(x => x.CreatedAt ?? DateTime.MinValue)
             .ThenByDescending(x => x.Id)
-            .Take(6)
+            .Take(DashboardListLimit)
             .Select(x => new RecentStudentDto(x.Id, x.FullName, x.Group.Name, x.AcademicYear.Name, x.CreatedAt, $"/Students/Edit/{x.Id}"))
             .ToListAsync(cancellationToken);
     }
@@ -224,7 +228,7 @@ public class DashboardService(IUnitOfWork unitOfWork, AppMapper? mapper = null) 
             .Include(x => x.Group)
             .OrderByDescending(x => x.PaymentDate ?? x.CreatedAt ?? DateTime.MinValue)
             .ThenByDescending(x => x.Id)
-            .Take(6)
+            .Take(DashboardListLimit)
             .Select(x => new
             {
                 x.Id,
@@ -268,48 +272,35 @@ public class DashboardService(IUnitOfWork unitOfWork, AppMapper? mapper = null) 
         return schedules
             .OrderBy(x => DaysUntil(today, x.DayOfWeek))
             .ThenBy(x => x.StartTime)
-            .Take(8)
+            .Take(DashboardListLimit)
             .Select(x => new UpcomingGroupDto(x.GroupId, x.GroupName, x.AcademicYearName, "-", x.DayOfWeek, x.DayOfWeek.DayToArabic(), x.StartTime, x.EndTime, x.StudentsCount, $"/Groups/Details/{x.GroupId}"))
             .ToList();
     }
 
     private static IReadOnlyList<DashboardCardDto> BuildMainCards(DashboardSummaryDto summary) =>
     [
-        new("عدد الطلاب", summary.TotalStudents.ToString("N0"), "/Students"),
-        new("عدد المجموعات", summary.TotalGroups.ToString("N0"), "/Groups"),
-        new("عدد المجموعات العامة", summary.TotalPublicGroups.ToString("N0"), "/Groups?type=Public"),
-        new("عدد المجموعات الخاصة", summary.TotalPrivateGroups.ToString("N0"), "/Groups?type=Private"),
-        new("عدد السنوات الدراسية", summary.TotalAcademicYears.ToString("N0"), "/AcademicYears"),
-        new("عدد المدرسين", summary.TotalTeachers.ToString("N0"), "/Employees?role=Teacher"),
-        new("عدد المساعدين", summary.TotalAssistantTeachers.ToString("N0"), "/Employees?role=AssistantTeacher"),
-        new("عدد الدروس هذا الشهر", summary.CurrentMonthLessons.ToString("N0"), $"/Lessons?month={summary.Filter.Month}&year={summary.Filter.Year}"),
-        new("إجمالي المطلوب هذا الشهر", Money(summary.TotalRequiredAmount), "/Payments"),
-        new("إجمالي المدفوع هذا الشهر", Money(summary.TotalPaidAmount), "/Payments"),
-        new("إجمالي المتبقي هذا الشهر", Money(summary.TotalRemainingAmount), "/Payments"),
-        new("الطلاب المدفوعين هذا الشهر", summary.PaidStudentsCount.ToString("N0"), summary.PaidStudentsUrl),
-        new("الطلاب غير المدفوعين هذا الشهر", summary.UnpaidStudentsCount.ToString("N0"), summary.UnpaidStudentsUrl),
-        new("الطلاب المدفوعين جزئياً هذا الشهر", summary.PartiallyPaidStudentsCount.ToString("N0"), $"/Payments?status=PartiallyPaid&month={summary.Filter.Month}&year={summary.Filter.Year}")
+        new("TotalStudents", summary.TotalStudents.ToString("N0"), "/Students"),
+        new("TotalGroups", summary.TotalGroups.ToString("N0"), "/Groups"),
+        new("PublicGroups", summary.TotalPublicGroups.ToString("N0"), "/Groups?type=Public"),
+        new("PrivateGroups", summary.TotalPrivateGroups.ToString("N0"), "/Groups?type=Private"),
+        new("AcademicYears", summary.TotalAcademicYears.ToString("N0"), "/AcademicYears"),
+        new("TotalTeachers", summary.TotalTeachers.ToString("N0"), "/Employees?role=Teacher"),
+        new("TotalAssistants", summary.TotalAssistantTeachers.ToString("N0"), "/Employees?role=AssistantTeacher"),
+        new("CurrentMonthLessons", summary.CurrentMonthLessons.ToString("N0"), $"/Lessons?month={summary.Filter.Month}&year={summary.Filter.Year}"),
+        new("TotalRequiredThisMonth", Money(summary.TotalRequiredAmount), "/Payments", ValueSuffix: "EgyptianPoundAbbreviation"),
+        new("TotalPaidThisMonth", Money(summary.TotalPaidAmount), "/Payments", ValueSuffix: "EgyptianPoundAbbreviation"),
+        new("TotalRemainingThisMonth", Money(summary.TotalRemainingAmount), "/Payments", ValueSuffix: "EgyptianPoundAbbreviation"),
+        new("PaidStudentsThisMonth", summary.PaidStudentsCount.ToString("N0"), summary.PaidStudentsUrl),
+        new("UnpaidStudentsThisMonth", summary.UnpaidStudentsCount.ToString("N0"), summary.UnpaidStudentsUrl),
+        new("PartiallyPaidStudentsThisMonth", summary.PartiallyPaidStudentsCount.ToString("N0"), $"/Payments?status=PartiallyPaid&month={summary.Filter.Month}&year={summary.Filter.Year}")
     ];
 
     private static int DaysUntil(DayOfWeek today, DayOfWeek target) =>
         ((int)target - (int)today + 7) % 7;
 
     private static string Money(decimal amount) =>
-        $"{amount:N2} ج.م";
+        amount.ToString("N2");
 
-    private static string MonthNameArabic(int month) => month switch
-    {
-        1 => "يناير",
-        2 => "فبراير",
-        3 => "مارس",
-        4 => "أبريل",
-        5 => "مايو",
-        6 => "يونيو",
-        7 => "يوليو",
-        8 => "أغسطس",
-        9 => "سبتمبر",
-        10 => "أكتوبر",
-        11 => "نوفمبر",
-        _ => "ديسمبر"
-    };
+    private static string MonthNameArabic(int month) =>
+        CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
 }

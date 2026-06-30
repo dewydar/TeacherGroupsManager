@@ -164,11 +164,26 @@ body {
 }
 
 .chart-panel {
+    display: flex;
+    flex-direction: column;
+    height: 320px;
     min-height: 320px;
+    overflow: hidden;
 }
 
-.chart-panel canvas {
-    min-height: 250px;
+.chart-holder {
+    position: relative;
+    flex: 1 1 auto;
+    height: 250px;
+    min-height: 0;
+}
+
+.chart-holder canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0;
+    max-height: 250px;
 }
 
 .dashboard-filter .form-label {

@@ -729,4 +729,73 @@
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="NoDataAvailable" xml:space="preserve">
+    <value>No data available</value>
+  </data>
+  <data name="TotalRequiredAmount" xml:space="preserve">
+    <value>Total Required</value>
+  </data>
+  <data name="TotalPaidAmount" xml:space="preserve">
+    <value>Total Paid</value>
+  </data>
+  <data name="TotalRemainingAmount" xml:space="preserve">
+    <value>Total Remaining</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="PaymentStatusThisMonth" xml:space="preserve">
+    <value>Payment Status This Month</value>
+  </data>
+  <data name="MonthlyRevenue" xml:space="preserve">
+    <value>Monthly Revenue</value>
+  </data>
+  <data name="PaymentsByGroupSummary" xml:space="preserve">
+    <value>Payments by Group</value>
+  </data>
+  <data name="StudentsAndGroups" xml:space="preserve">
+    <value>Students and Groups</value>
+  </data>
+  <data name="StudentsPerGroup" xml:space="preserve">
+    <value>Students per Group</value>
+  </data>
+  <data name="GroupsByWeekday" xml:space="preserve">
+    <value>Groups by Weekday</value>
+  </data>
+  <data name="RecentActivitiesAndSchedule" xml:space="preserve">
+    <value>Recent Activity and Schedule</value>
+  </data>
+  <data name="RecentRegisteredStudents" xml:space="preserve">
+    <value>Recent Registered Students</value>
+  </data>
+  <data name="RecentPayments" xml:space="preserve">
+    <value>Recent Payments</value>
+  </data>
+  <data name="UpcomingGroups" xml:space="preserve">
+    <value>Upcoming Groups</value>
+  </data>
+  <data name="RegistrationDate" xml:space="preserve">
+    <value>Registration Date</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="CurrentMonthLessons" xml:space="preserve">
+    <value>Lessons This Month</value>
+  </data>
+  <data name="TotalRequiredThisMonth" xml:space="preserve">
+    <value>Total Required This Month</value>
+  </data>
+  <data name="TotalPaidThisMonth" xml:space="preserve">
+    <value>Total Paid This Month</value>
+  </data>
+  <data name="TotalRemainingThisMonth" xml:space="preserve">
+    <value>Total Remaining This Month</value>
+  </data>
+  <data name="PartiallyPaidStudentsThisMonth" xml:space="preserve">
+    <value>Partially Paid Students This Month</value>
+  </data>
+  <data name="EgyptianPoundAbbreviation" xml:space="preserve">
+    <value>EGP</value>
+  </data>
 </root>
