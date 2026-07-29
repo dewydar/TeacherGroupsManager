@@ -1,0 +1,30 @@
+@model TeacherGroupsManager.Dtos.TestDataSeedSummaryDto?
+@{
+    ViewData["Title"] = "البيانات التجريبية";
+}
+
+<section class="panel">
+    <form asp-action="GenerateTestData" method="post" class="mb-3">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-primary">توليد بيانات تجريبية</button>
+    </form>
+
+    @if (Model is not null)
+    {
+        <div class="alert alert-success">@Model.Message</div>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <tbody>
+                    <tr><th>المدرسون المضافون</th><td>@Model.TeachersAdded</td></tr>
+                    <tr><th>المدرسون المساعدون المضافون</th><td>@Model.AssistantTeachersAdded</td></tr>
+                    <tr><th>السنوات الدراسية المضافة</th><td>@Model.AcademicYearsAdded</td></tr>
+                    <tr><th>المجموعات المضافة</th><td>@Model.GroupsAdded</td></tr>
+                    <tr><th>الطلاب المضافون</th><td>@Model.StudentsAdded</td></tr>
+                    <tr><th>الدروس المضافة</th><td>@Model.LessonsAdded</td></tr>
+                    <tr><th>المدفوعات الشهرية المضافة</th><td>@Model.MonthlyPaymentsAdded</td></tr>
+                    <tr><th>السجلات المتكررة التي تم تخطيها</th><td>@Model.SkippedDuplicates</td></tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

@@ -99,3 +99,8 @@ public interface IDashboardService
     Task<DashboardSummaryDto> GetDashboardSummaryAsync(DashboardFilterDto filter, CancellationToken cancellationToken = default);
     Task<DashboardSummaryDto> GetSummaryAsync(CancellationToken cancellationToken = default);
 }
+
+public interface ITestDataSeeder
+{
+    Task<TestDataSeedSummaryDto> SeedAsync(CancellationToken cancellationToken = default);
+}

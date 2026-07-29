@@ -38,6 +38,7 @@
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.LessonsManage)) { <a class="@NavClass("Lessons")" aria-current="@NavCurrent("Lessons")" asp-controller="Lessons" asp-action="Index">@L["Lessons"]</a> }
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.PaymentsManage)) { <a class="@NavClass("Payments")" aria-current="@NavCurrent("Payments")" asp-controller="Payments" asp-action="Index">@L["MonthlyPayments"]</a> }
                 @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.ReportsView)) { <a class="@NavClass("Reports")" aria-current="@NavCurrent("Reports")" asp-controller="Reports" asp-action="Index">@L["Reports"]</a> }
+                @if (User.IsInRole(TeacherGroupsManager.Core.Constants.AppConstants.AdminRole)) { <a class="@NavClass("Settings")" aria-current="@NavCurrent("Settings")" asp-controller="Settings" asp-action="TestData">البيانات التجريبية</a> }
                 <a class="@NavClass("Account")" aria-current="@NavCurrent("Account")" asp-controller="Account" asp-action="ResetPassword">@L["ChangePassword"]</a>
                 <a class="nav-link" asp-controller="Account" asp-action="Logout">@L["Logout"]</a>
             </nav>

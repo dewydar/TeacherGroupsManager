@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<ILessonService, LessonService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<ITestDataSeeder, TestDataSeeder>();
         return services;
     }
 }
