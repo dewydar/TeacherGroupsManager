@@ -4,8 +4,13 @@
     var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
-<div class="panel mb-3">
+<div class="em-page-header">
+    <h1>@ViewData["Title"]</h1>
+    <div class="em-add-btn-wrap">
+        <a class="btn btn-primary" asp-action="Create">@L["Add"]</a>
+    </div>
+</div>
+<div class="em-toolbar panel mb-3">
     <div class="row g-2 align-items-end">
         <div class="col-md-2"><label class="form-label">@L["LessonTitle"]</label><input id="Title" class="form-control" /></div>
         <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
@@ -18,7 +23,7 @@
         <div class="col-12 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
-<div class="panel table-responsive">
+<div class="panel table-responsive app-table-shell">
     <table id="lessonsTable" class="table align-middle w-100">
         <thead><tr><th>@L["Title"]</th><th>@L["Group"]</th><th>@L["LessonType"]</th><th>@L["LessonDate"]</th><th>@L["Price"]</th><th>@L["Month"]</th><th>@L["Year"]</th><th></th></tr></thead>
         <tbody></tbody>

@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 @{
     var culture = CultureInfo.CurrentUICulture.Name;
     var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
@@ -8,8 +8,11 @@
         : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
     var returnUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var userName = User?.Identity?.Name ?? L["AppName"].Value;
     string NavClass(string controller) => string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) ? "nav-link active" : "nav-link";
     string? NavCurrent(string controller) => string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) ? "page" : null;
+    bool HasPermission(string permission) => User?.HasClaim("Permission", permission) == true;
+    bool IsAdmin() => User?.IsInRole(TeacherGroupsManager.Core.Constants.AppConstants.AdminRole) == true;
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@direction">
@@ -18,38 +21,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - @L["AppName"]</title>
     <script>
-        document.documentElement.dataset.theme = localStorage.getItem('tgm-theme') || 'light';
+        (function () {
+            const theme = localStorage.getItem('tgm-theme') || 'light';
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="@bootstrapCss" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body data-sidebar-size="default">
+    <div class="teacher-loader" data-page-loader>
+        <div class="teacher-loader-mark" aria-hidden="true">
+            <i class="fa-solid fa-book-open-reader"></i>
+        </div>
+        <div class="teacher-loader-text">@L["AppName"]</div>
+    </div>
+
     <div class="app-shell">
-        <aside class="sidebar">
-            <div class="brand">@L["AppName"]</div>
-            <nav class="nav flex-column gap-1">
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.DashboardView)) { <a class="@NavClass("Dashboard")" aria-current="@NavCurrent("Dashboard")" asp-controller="Dashboard" asp-action="Index">@L["Dashboard"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.RolesManage)) { <a class="@NavClass("Roles")" aria-current="@NavCurrent("Roles")" asp-controller="Roles" asp-action="Index">@L["RolesManagement"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.EmployeesManage)) { <a class="@NavClass("Employees")" aria-current="@NavCurrent("Employees")" asp-controller="Employees" asp-action="Index">@L["EmployeesManagement"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.AcademicYearsManage)) { <a class="@NavClass("AcademicYears")" aria-current="@NavCurrent("AcademicYears")" asp-controller="AcademicYears" asp-action="Index">@L["AcademicYears"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.GroupsManage)) { <a class="@NavClass("Groups")" aria-current="@NavCurrent("Groups")" asp-controller="Groups" asp-action="Index">@L["Groups"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.StudentsManage)) { <a class="@NavClass("Students")" aria-current="@NavCurrent("Students")" asp-controller="Students" asp-action="Index">@L["Students"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.LessonsManage)) { <a class="@NavClass("Lessons")" aria-current="@NavCurrent("Lessons")" asp-controller="Lessons" asp-action="Index">@L["Lessons"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.PaymentsManage)) { <a class="@NavClass("Payments")" aria-current="@NavCurrent("Payments")" asp-controller="Payments" asp-action="Index">@L["MonthlyPayments"]</a> }
-                @if (User.HasClaim("Permission", TeacherGroupsManager.Core.Constants.PermissionCodes.ReportsView)) { <a class="@NavClass("Reports")" aria-current="@NavCurrent("Reports")" asp-controller="Reports" asp-action="Index">@L["Reports"]</a> }
-                @if (User.IsInRole(TeacherGroupsManager.Core.Constants.AppConstants.AdminRole)) { <a class="@NavClass("Settings")" aria-current="@NavCurrent("Settings")" asp-controller="Settings" asp-action="TestData">البيانات التجريبية</a> }
-                <a class="@NavClass("Account")" aria-current="@NavCurrent("Account")" asp-controller="Account" asp-action="ResetPassword">@L["ChangePassword"]</a>
-                <a class="nav-link" asp-controller="Account" asp-action="Logout">@L["Logout"]</a>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a class="brand-logo" asp-controller="Dashboard" asp-action="Index" aria-label="@L["AppName"]">
+                    <span class="brand-icon"><i class="fa-solid fa-chalkboard-user"></i></span>
+                    <span class="brand-text">@L["AppName"]</span>
+                </a>
+            </div>
+            <div class="sidebar-tagline">
+                <span>Teach</span>
+                <span>Track</span>
+                <span>Grow</span>
+            </div>
+            <nav class="nav flex-column sidebar-menu" aria-label="Main navigation">
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.DashboardView)) { <a class="@NavClass("Dashboard")" aria-current="@NavCurrent("Dashboard")" data-route="Dashboard" asp-controller="Dashboard" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-chart-pie"></i></span><span class="menu-label-text">@L["Dashboard"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.RolesManage)) { <a class="@NavClass("Roles")" aria-current="@NavCurrent("Roles")" data-route="Roles" asp-controller="Roles" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-user-shield"></i></span><span class="menu-label-text">@L["RolesManagement"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.EmployeesManage)) { <a class="@NavClass("Employees")" aria-current="@NavCurrent("Employees")" data-route="Employees" asp-controller="Employees" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-chalkboard-user"></i></span><span class="menu-label-text">@L["EmployeesManagement"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.AcademicYearsManage)) { <a class="@NavClass("AcademicYears")" aria-current="@NavCurrent("AcademicYears")" data-route="AcademicYears" asp-controller="AcademicYears" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-calendar-days"></i></span><span class="menu-label-text">@L["AcademicYears"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.GroupsManage)) { <a class="@NavClass("Groups")" aria-current="@NavCurrent("Groups")" data-route="Groups" asp-controller="Groups" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-users-rectangle"></i></span><span class="menu-label-text">@L["Groups"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.StudentsManage)) { <a class="@NavClass("Students")" aria-current="@NavCurrent("Students")" data-route="Students" asp-controller="Students" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-graduation-cap"></i></span><span class="menu-label-text">@L["Students"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.LessonsManage)) { <a class="@NavClass("Lessons")" aria-current="@NavCurrent("Lessons")" data-route="Lessons" asp-controller="Lessons" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-book-open"></i></span><span class="menu-label-text">@L["Lessons"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.PaymentsManage)) { <a class="@NavClass("Payments")" aria-current="@NavCurrent("Payments")" data-route="Payments" asp-controller="Payments" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-receipt"></i></span><span class="menu-label-text">@L["MonthlyPayments"]</span></a> }
+                @if (HasPermission(TeacherGroupsManager.Core.Constants.PermissionCodes.ReportsView)) { <a class="@NavClass("Reports")" aria-current="@NavCurrent("Reports")" data-route="Reports" asp-controller="Reports" asp-action="Index"><span class="menu-icon"><i class="fa-solid fa-file-lines"></i></span><span class="menu-label-text">@L["Reports"]</span></a> }
+                @if (IsAdmin()) { <a class="@NavClass("Settings")" aria-current="@NavCurrent("Settings")" data-route="Settings" asp-controller="Settings" asp-action="TestData"><span class="menu-icon"><i class="fa-solid fa-flask-vial"></i></span><span class="menu-label-text">البيانات التجريبية</span></a> }
             </nav>
+            <div class="sidebar-footer">
+                <span class="footer-mark"><i class="fa-solid fa-school"></i></span>
+                <span class="footer-text">@L["AppName"]</span>
+            </div>
         </aside>
-        <main class="content">
-            <header class="topbar">
-                <div>
-                    <div class="breadcrumb-ar">@L["Home"] / @ViewData["Title"]</div>
-                    <h1>@ViewData["Title"]</h1>
+
+        <div class="startbar-overlay d-print-none" data-sidebar-overlay aria-hidden="true"></div>
+
+        <div class="page-wrapper">
+            <header class="topbar d-print-none">
+                <div class="topbar-left">
+                    <button class="nav-icon sidebar-toggle" id="togglemenu" type="button" aria-label="Toggle menu" aria-controls="sidebar">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="welcome-text">
+                        <h1>@ViewData["Title"]</h1>
+                        <div class="breadcrumb-ar">@L["Home"] / @ViewData["Title"]</div>
+                    </div>
                 </div>
-                <div class="topbar-actions">
+                <div class="topbar-right">
+                    <div class="typewriter-text" id="typewriter" aria-live="polite"></div>
+                    <div class="utc-clock-item" aria-label="UTC time">
+                        <strong id="utcTime"></strong>
+                        <small id="utcDate"></small>
+                    </div>
                     <form asp-controller="Culture" asp-action="Set" method="post" class="culture-form">
                         <input type="hidden" name="returnUrl" value="@returnUrl" />
                         <label class="visually-hidden" for="cultureSelector">@L["Language"]</label>
@@ -59,23 +103,47 @@
                             <option value="fr-FR" selected="@(culture.StartsWith("fr"))">@L["French"]</option>
                         </select>
                     </form>
-                    <button class="btn btn-sm btn-outline-secondary theme-toggle" type="button" data-theme-toggle>
-                        <span data-theme-label-light>@L["DarkTheme"]</span>
-                        <span data-theme-label-dark>@L["LightTheme"]</span>
+                    <button class="nav-icon theme-toggle" type="button" data-theme-toggle aria-label="Toggle theme">
+                        <i class="fa-solid fa-moon" data-theme-icon-light></i>
+                        <i class="fa-solid fa-sun" data-theme-icon-dark></i>
                     </button>
+                    <div class="dropdown">
+                        <button class="avatar dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-name="@userName"></button>
+                        <div class="dropdown-menu dropdown-menu-end user-menu">
+                            <div class="dropdown-header">
+                                <div class="avatar avatar-sm" data-name="@userName"></div>
+                                <div>
+                                    <strong>@userName</strong>
+                                    <small>@L["AppName"]</small>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="ResetPassword">
+                                <i class="fa-solid fa-lock"></i>
+                                @L["ChangePassword"]
+                            </a>
+                            <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">
+                                <i class="fa-solid fa-power-off"></i>
+                                @L["Logout"]
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </header>
-            @if (TempData["Success"] is not null)
-            {
-                <div class="alert alert-success">@TempData["Success"]</div>
-            }
-            @if (TempData["Error"] is not null)
-            {
-                <div class="alert alert-danger">@TempData["Error"]</div>
-            }
-            @RenderBody()
-        </main>
+
+            <main class="page-content">
+                @if (TempData["Success"] is not null)
+                {
+                    <div class="alert alert-success">@TempData["Success"]</div>
+                }
+                @if (TempData["Error"] is not null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
@@ -85,8 +153,6 @@
     <script src="~/js/theme.js" asp-append-version="true"></script>
     <script src="~/js/password-toggle.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("ViewScripts", required: false)
 </body>
 </html>
-
-
-

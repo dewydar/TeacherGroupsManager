@@ -114,14 +114,178 @@
         }
     };
 
+    function text(key, fallback) {
+        return t[key] || fallback;
+    }
+
+    function enhanceTableFilters(options) {
+        const $searchButton = $(options.searchButtonSelector);
+        const $filterPanel = $searchButton.closest('.panel');
+
+        if (!$filterPanel.length || $filterPanel.data('tableFiltersEnhanced')) {
+            return;
+        }
+
+        const $row = $filterPanel.children('.row').first();
+        if (!$row.length) {
+            return;
+        }
+
+        $filterPanel.data('tableFiltersEnhanced', true);
+
+        const tableId = String(options.tableSelector || 'table').replace(/^[#.]*/, '') || 'table';
+        const drawerId = `${tableId}-filters-drawer`;
+        const $columns = $row.children().detach();
+        const $textColumns = $columns.filter(function () {
+            return $(this).find('input:not([type="hidden"]):not([type="date"]):not([type="number"])').length > 0;
+        });
+        const $primaryColumn = $textColumns.first();
+        const textFilterSelectors = $textColumns
+            .map(function () {
+                const input = $(this).find('input, select').first();
+                return input.length ? `#${input.attr('id')}` : null;
+            })
+            .get()
+            .filter(Boolean);
+        const textFilterLabels = $textColumns
+            .map(function () {
+                return $.trim($(this).find('.form-label').first().text());
+            })
+            .get()
+            .filter(Boolean);
+
+        const $drawerColumns = $columns.filter(function () {
+            return !textFilterSelectors.includes(`#${$(this).find('input, select').first().attr('id')}`);
+        });
+        const $buttonColumn = $drawerColumns.filter(function () {
+            return $(this).find(`${options.searchButtonSelector}, ${options.resetButtonSelector}, ${options.reloadButtonSelector}`).length > 0;
+        }).first();
+        const $filterColumns = $drawerColumns.filter(function () {
+            return this !== $buttonColumn.get(0);
+        });
+
+        const $toolbar = $('<div class="app-table-toolbar"></div>');
+        const $toolbarLeft = $('<div class="app-table-toolbar-left"></div>');
+        const $toolbarRight = $('<div class="app-table-toolbar-right"></div>');
+        const $drawer = $(`
+            <aside class="app-filter-drawer" id="${drawerId}" aria-hidden="true">
+                <div class="app-filter-drawer-header">
+                    <h2>${text('filters', 'Filters')}</h2>
+                    <button type="button" class="app-filter-close-btn" aria-label="${text('close', 'Close')}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="app-filter-drawer-body"></div>
+                <div class="app-filter-drawer-footer"></div>
+            </aside>
+        `);
+        const $backdrop = $('<div class="app-filter-backdrop" aria-hidden="true"></div>');
+        const $filterButton = $(`
+            <button type="button" class="app-filter-open-btn" aria-controls="${drawerId}" aria-expanded="false">
+                <i class="fa-solid fa-sliders"></i>
+                <span>${text('filters', 'Filter')}</span>
+            </button>
+        `);
+
+        if ($primaryColumn.length) {
+            $primaryColumn.addClass('app-search-input-wrap');
+            const $label = $primaryColumn.find('.form-label').first();
+            const $input = $primaryColumn.find('input').first();
+            const searchPrefix = current === 'en' ? 'Search by' : text('search', 'Search');
+            const placeholder = textFilterLabels.length
+                ? `${searchPrefix} ${textFilterLabels.join(', ')}`
+                : text('search', 'Search');
+            $label.addClass('visually-hidden');
+            $input
+                .addClass('app-search-input')
+                .attr('placeholder', placeholder)
+                .attr('title', placeholder)
+                .val('');
+            $toolbarLeft.append($primaryColumn);
+            options.globalSearchInput = $input;
+            options.textFilterSelectors = textFilterSelectors;
+            options.filters = Object.fromEntries(Object.entries(options.filters || {}).filter(([, selector]) => !textFilterSelectors.includes(selector)));
+        }
+
+        $toolbarLeft.append($filterButton);
+        $toolbar.append($toolbarLeft, $toolbarRight);
+        $filterPanel.empty().append($toolbar);
+
+        $drawer.find('.app-filter-drawer-body').append($filterColumns);
+
+        if ($buttonColumn.length) {
+            const $buttons = $buttonColumn.find('button').detach();
+            const resetText = $.trim($buttons.filter(options.resetButtonSelector).text()) || 'Reset';
+            const reloadText = $.trim($buttons.filter(options.reloadButtonSelector).text()) || 'Reload';
+            $buttons.filter(options.searchButtonSelector).removeClass().addClass('app-filter-apply-btn').text(text('apply', 'Apply'));
+            $buttons.filter(options.resetButtonSelector)
+                .removeClass()
+                .addClass('app-filter-secondary-btn')
+                .attr({ title: resetText, 'aria-label': resetText })
+                .html(`<i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span class="visually-hidden">${resetText}</span>`);
+            $buttons.filter(options.reloadButtonSelector)
+                .removeClass()
+                .addClass('app-filter-icon-btn')
+                .attr({ title: reloadText, 'aria-label': reloadText })
+                .html(`<i class="fa-solid fa-rotate" aria-hidden="true"></i><span class="visually-hidden">${reloadText}</span>`);
+            $drawer.find('.app-filter-drawer-footer').append($buttons);
+        }
+
+        $filterPanel.after($backdrop, $drawer);
+
+        function openDrawer() {
+            $filterButton.attr('aria-expanded', 'true');
+            $drawer.addClass('is-open').attr('aria-hidden', 'false');
+            $backdrop.addClass('is-open');
+            document.body.classList.add('app-filter-drawer-open');
+        }
+
+        function closeDrawer() {
+            $filterButton.attr('aria-expanded', 'false');
+            $drawer.removeClass('is-open').attr('aria-hidden', 'true');
+            $backdrop.removeClass('is-open');
+            document.body.classList.remove('app-filter-drawer-open');
+        }
+
+        $filterButton.on('click', openDrawer);
+        $drawer.find('.app-filter-close-btn').on('click', closeDrawer);
+        $backdrop.on('click', closeDrawer);
+        $drawer.find(options.searchButtonSelector).on('click', closeDrawer);
+
+        $primaryColumn.find('input').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                $searchButton.trigger('click');
+            }
+        });
+
+        $(document).on(`keydown.${tableId}Filters`, function (event) {
+            if (event.key === 'Escape' && $drawer.hasClass('is-open')) {
+                closeDrawer();
+            }
+        });
+    }
+
     window.initServerDataTable = function (options) {
+        const $tableElement = $(options.tableSelector);
+        $tableElement.addClass('app-table');
+        $tableElement.closest('.table-responsive').addClass('app-table-shell');
+        enhanceTableFilters(options);
+
         const table = $(options.tableSelector).DataTable({
             processing: true,
             serverSide: true,
             searching: true,
             ordering: true,
             pageLength: 10,
+            lengthChange: false,
             lengthMenu: [10, 25, 50, 100],
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            },
             ajax: {
                 url: options.url,
                 type: 'POST',
@@ -136,17 +300,25 @@
             columns: options.columns,
             language: window.arabicDataTablesLanguage,
             direction: document.documentElement.dir || 'rtl',
-            autoWidth: false
+            autoWidth: false,
+            createdRow: function (row) {
+                $(row).addClass('app-table-row').find('td').addClass('app-table-cell');
+            },
+            drawCallback: function () {
+                $tableElement.find('tbody tr').addClass('app-table-row');
+                $tableElement.find('tbody td').addClass('app-table-cell');
+            }
         });
 
         $(options.searchButtonSelector).on('click', function () {
-            table.ajax.reload();
+            table.search(options.globalSearchInput?.val() || '').draw();
         });
 
         $(options.resetButtonSelector).on('click', function () {
             Object.values(options.filters || {}).forEach(function (selector) {
                 $(selector).val('');
             });
+            options.globalSearchInput?.val('');
             table.search('');
             table.ajax.reload();
         });
@@ -154,6 +326,16 @@
         $(options.reloadButtonSelector).on('click', function () {
             table.ajax.reload(null, false);
         });
+
+        if (options.globalSearchInput?.length) {
+            let searchTimer = null;
+            options.globalSearchInput.on('input', function () {
+                window.clearTimeout(searchTimer);
+                searchTimer = window.setTimeout(function () {
+                    table.search(options.globalSearchInput.val() || '').draw();
+                }, 450);
+            });
+        }
 
         return table;
     };
@@ -167,7 +349,9 @@
     };
 
     window.renderBooleanStatus = function (value) {
-        return value ? t.active : t.inactive;
+        return value
+            ? `<span class="status-chip status-chip-success">${t.active}</span>`
+            : `<span class="status-chip status-chip-muted">${t.inactive}</span>`;
     };
 
     window.renderDate = function (value) {
@@ -189,9 +373,9 @@
 
     window.renderPaymentStatus = function (value) {
         switch (Number(value)) {
-            case 3: return t.paid;
-            case 2: return t.partiallyPaid;
-            default: return t.unpaid;
+            case 3: return `<span class="status-chip status-chip-success">${t.paid}</span>`;
+            case 2: return `<span class="status-chip status-chip-warning">${t.partiallyPaid}</span>`;
+            default: return `<span class="status-chip status-chip-danger">${t.unpaid}</span>`;
         }
     };
 
@@ -258,13 +442,13 @@
     };
 
     window.renderActions = function (controller, id, includeDetails, permissionsUrl) {
-        const details = includeDetails ? `<a class="btn btn-sm btn-outline-secondary" href="/${controller}/Details/${id}">${t.details}</a> ` : '';
-        const permissions = permissionsUrl ? `<a class="btn btn-sm btn-outline-secondary" href="${permissionsUrl}/${id}">${t.permissions}</a> ` : '';
+        const details = includeDetails ? `<a class="app-table-action-btn" href="/${controller}/Details/${id}" title="${t.details}" aria-label="${t.details}"><i class="fa-solid fa-eye"></i></a> ` : '';
+        const permissions = permissionsUrl ? `<a class="app-table-action-btn" href="${permissionsUrl}/${id}" title="${t.permissions}" aria-label="${t.permissions}"><i class="fa-solid fa-key"></i></a> ` : '';
         return `<div class="table-actions">
-            ${details}<a class="btn btn-sm btn-outline-primary" href="/${controller}/Edit/${id}">${t.edit}</a>
+            ${details}<a class="app-table-action-btn" href="/${controller}/Edit/${id}" title="${t.edit}" aria-label="${t.edit}"><i class="fa-solid fa-pen"></i></a>
             ${permissions}<form action="/${controller}/Delete/${id}" method="post" class="d-inline">
                 <input name="__RequestVerificationToken" type="hidden" value="${$('input[name="__RequestVerificationToken"]').first().val() || ''}" />
-                <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('${t.confirmDelete}')">${t.delete}</button>
+                <button class="app-table-action-btn app-table-action-danger" type="submit" title="${t.delete}" aria-label="${t.delete}" onclick="return confirm('${t.confirmDelete}')"><i class="fa-solid fa-trash-can"></i></button>
             </form>
         </div>`;
     };

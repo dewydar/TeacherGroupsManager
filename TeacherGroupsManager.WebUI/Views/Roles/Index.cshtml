@@ -4,8 +4,13 @@
     var permissionsUrl = User.IsInRole(TeacherGroupsManager.Core.Constants.AppConstants.AdminRole) ? "'/Roles/Permissions'" : "null";
 }
 @Html.AntiForgeryToken()
-<p><a class="btn btn-primary" asp-action="Create">@L["Add"]</a></p>
-<div class="panel mb-3">
+<div class="em-page-header">
+    <h1>@ViewData["Title"]</h1>
+    <div class="em-add-btn-wrap">
+        <a class="btn btn-primary" asp-action="Create">@L["Add"]</a>
+    </div>
+</div>
+<div class="em-toolbar panel mb-3">
     <div class="row g-2 align-items-end">
         <div class="col-md-4"><label class="form-label">@L["Role"]</label><input id="Name" class="form-control" /></div>
         <div class="col-md-4"><label class="form-label">@L["ArabicName"]</label><input id="ArabicName" class="form-control" /></div>
@@ -14,7 +19,7 @@
     </div>
 </div>
 <div class="panel">
-    <div class="table-responsive">
+    <div class="table-responsive app-table-shell">
         <table id="rolesTable" class="table align-middle w-100">
             <thead><tr><th>@L["Name"]</th><th>@L["ArabicName"]</th><th>@L["Status"]</th><th></th></tr></thead>
             <tbody></tbody>

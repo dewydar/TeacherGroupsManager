@@ -4,7 +4,10 @@
     var groups = (IReadOnlyList<TeacherGroupsManager.Dtos.GroupDto>)ViewBag.Groups;
 }
 @Html.AntiForgeryToken()
-<div class="panel mb-3">
+<div class="em-page-header">
+    <h1>@ViewData["Title"]</h1>
+</div>
+<div class="em-toolbar panel mb-3">
     <div class="row g-2 align-items-end">
         <div class="col-md-2"><label class="form-label">@L["LessonTitle"]</label><input id="Title" class="form-control" /></div>
         <div class="col-md-2"><label class="form-label">@L["AcademicYear"]</label><select id="AcademicYearId" class="form-select"><option value="">@L["All"]</option>@foreach (var item in academicYears){<option value="@item.Id">@item.Name</option>}</select></div>
@@ -14,7 +17,7 @@
         <div class="col-md-2 d-flex gap-2"><button id="SearchFilters" class="btn btn-outline-primary" type="button">@L["Search"]</button><button id="ResetFilters" class="btn btn-outline-secondary" type="button">@L["Reset"]</button><button id="ReloadTable" class="btn btn-outline-dark" type="button">@L["Reload"]</button></div>
     </div>
 </div>
-<div class="panel table-responsive"><table id="reportLessonsTable" class="table w-100"><thead><tr><th>@L["LessonTitle"]</th><th>@L["Group"]</th><th>@L["LessonType"]</th><th>@L["LessonDate"]</th><th>@L["Price"]</th></tr></thead><tbody></tbody></table></div>
+<div class="panel table-responsive app-table-shell"><table id="reportLessonsTable" class="table w-100"><thead><tr><th>@L["LessonTitle"]</th><th>@L["Group"]</th><th>@L["LessonType"]</th><th>@L["LessonDate"]</th><th>@L["Price"]</th></tr></thead><tbody></tbody></table></div>
 @section Scripts {
     <script>
         initServerDataTable({
