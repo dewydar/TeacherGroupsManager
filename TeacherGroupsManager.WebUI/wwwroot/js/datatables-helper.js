@@ -3,6 +3,13 @@
     const current = lang.startsWith('fr') ? 'fr' : lang.startsWith('en') ? 'en' : 'ar';
     const messages = {
         ar: {
+            filters: '\u0627\u0644\u0641\u0644\u0627\u062a\u0631',
+            filter: '\u062a\u0635\u0641\u064a\u0629',
+            close: '\u0625\u063a\u0644\u0627\u0642',
+            apply: '\u062a\u0637\u0628\u064a\u0642',
+            searchBy: '\u0627\u0628\u062d\u062b \u0628\u0648\u0627\u0633\u0637\u0629',
+            reset: '\u0625\u0639\u0627\u062f\u0629 \u062a\u0639\u064a\u064a\u0646',
+            reload: '\u0625\u0639\u0627\u062f\u0629 \u062a\u062d\u0645\u064a\u0644',
             processing: 'جاري التحميل',
             search: 'بحث',
             lengthMenu: 'عرض _MENU_ سجل',
@@ -33,6 +40,13 @@
             days: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
         },
         en: {
+            filters: 'Filters',
+            filter: 'Filter',
+            close: 'Close',
+            apply: 'Apply',
+            searchBy: 'Search by',
+            reset: 'Reset',
+            reload: 'Reload',
             processing: 'Loading',
             search: 'Search',
             lengthMenu: 'Show _MENU_ records',
@@ -63,6 +77,13 @@
             days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         },
         fr: {
+            filters: 'Filtres',
+            filter: 'Filtrer',
+            close: 'Fermer',
+            apply: 'Appliquer',
+            searchBy: 'Rechercher par',
+            reset: 'Réinitialiser',
+            reload: 'Recharger',
             processing: 'Chargement',
             search: 'Rechercher',
             lengthMenu: 'Afficher _MENU_ enregistrements',
@@ -191,7 +212,7 @@
             $primaryColumn.addClass('app-search-input-wrap');
             const $label = $primaryColumn.find('.form-label').first();
             const $input = $primaryColumn.find('input').first();
-            const searchPrefix = current === 'en' ? 'Search by' : text('search', 'Search');
+            const searchPrefix = text('searchBy', text('search', 'Search'));
             const placeholder = textFilterLabels.length
                 ? `${searchPrefix} ${textFilterLabels.join(', ')}`
                 : text('search', 'Search');
@@ -215,8 +236,8 @@
 
         if ($buttonColumn.length) {
             const $buttons = $buttonColumn.find('button').detach();
-            const resetText = $.trim($buttons.filter(options.resetButtonSelector).text()) || 'Reset';
-            const reloadText = $.trim($buttons.filter(options.reloadButtonSelector).text()) || 'Reload';
+            const resetText = $.trim($buttons.filter(options.resetButtonSelector).text()) || text('reset', 'Reset');
+            const reloadText = $.trim($buttons.filter(options.reloadButtonSelector).text()) || text('reload', 'Reload');
             $buttons.filter(options.searchButtonSelector).removeClass().addClass('app-filter-apply-btn').text(text('apply', 'Apply'));
             $buttons.filter(options.resetButtonSelector)
                 .removeClass()
@@ -266,6 +287,21 @@
         });
     }
 
+    function setTableCellTitles($table) {
+        $table.find('th, td').each(function () {
+            const fullText = $(this).text().replace(/\s+/g, ' ').trim();
+            if (fullText) {
+                this.title = fullText;
+            }
+        });
+    }
+
+    $(function () {
+        $('table').each(function () {
+            setTableCellTitles($(this));
+        });
+    });
+
     window.initServerDataTable = function (options) {
         const $tableElement = $(options.tableSelector);
         $tableElement.addClass('app-table');
@@ -303,10 +339,12 @@
             autoWidth: false,
             createdRow: function (row) {
                 $(row).addClass('app-table-row').find('td').addClass('app-table-cell');
+                setTableCellTitles($(row));
             },
             drawCallback: function () {
                 $tableElement.find('tbody tr').addClass('app-table-row');
                 $tableElement.find('tbody td').addClass('app-table-cell');
+                setTableCellTitles($tableElement);
             }
         });
 
