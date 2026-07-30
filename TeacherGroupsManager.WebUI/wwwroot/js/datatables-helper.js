@@ -289,7 +289,9 @@
 
     function setTableCellTitles($table) {
         $table.find('th, td').each(function () {
-            const fullText = $(this).text().replace(/\s+/g, ' ').trim();
+            const $cell = $(this);
+            const fullText = $cell.text().replace(/\s+/g, ' ').trim()
+                || $cell.find('input, select, textarea').map(function () { return $(this).val(); }).get().join(' ').trim();
             if (fullText) {
                 this.title = fullText;
             }
