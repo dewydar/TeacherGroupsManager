@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<ILessonService, LessonService>();
+        services.AddScoped<IGroupSessionService, GroupSessionService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<ITestDataSeeder, TestDataSeeder>();

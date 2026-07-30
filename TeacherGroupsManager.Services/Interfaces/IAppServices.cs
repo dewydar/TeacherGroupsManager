@@ -1,4 +1,5 @@
 using TeacherGroupsManager.Dtos;
+using TeacherGroupsManager.Core.Enums;
 using TeacherGroupsManager.Shared.Results;
 
 namespace TeacherGroupsManager.Services.Interfaces;
@@ -78,6 +79,19 @@ public interface ILessonService
     Task<OperationResult> UpdateAsync(EditLessonDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> UpdateAttendanceAsync(UpdateLessonAttendanceDto dto, CancellationToken cancellationToken = default);
     Task<OperationResult> DeleteAsync(int id, CancellationToken cancellationToken = default);
+}
+
+public interface IGroupSessionService
+{
+    Task<IReadOnlyList<GroupSessionDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<GroupSessionDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<SessionAttendanceDto?> GetAttendanceAsync(int id, CancellationToken cancellationToken = default);
+    Task<OperationResult> CreateAsync(CreateGroupSessionDto dto, CancellationToken cancellationToken = default);
+    Task<OperationResult> StartAsync(int id, CancellationToken cancellationToken = default);
+    Task<OperationResult> CheckInAsync(int attendanceId, DateTime checkInTime, CancellationToken cancellationToken = default);
+    Task<OperationResult> CheckOutAsync(int attendanceId, DateTime checkOutTime, CancellationToken cancellationToken = default);
+    Task<OperationResult> MarkAsync(int sessionId, int[] studentIds, SessionAttendanceStatus status, string? excuseReason = null, CancellationToken cancellationToken = default);
+    Task<OperationResult> CompleteAsync(int id, CancellationToken cancellationToken = default);
 }
 
 public interface IPaymentService

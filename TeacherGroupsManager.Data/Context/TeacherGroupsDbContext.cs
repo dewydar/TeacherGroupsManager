@@ -19,6 +19,8 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<LessonStudent> LessonStudents => Set<LessonStudent>();
     public DbSet<MonthlyPayment> MonthlyPayments => Set<MonthlyPayment>();
+    public DbSet<GroupSession> GroupSessions => Set<GroupSession>();
+    public DbSet<StudentSessionAttendance> StudentSessionAttendances => Set<StudentSessionAttendance>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,6 +38,11 @@ public class TeacherGroupsDbContext(DbContextOptions<TeacherGroupsDbContext> opt
         modelBuilder.Entity<MonthlyPayment>().Property(x => x.RemainingAmount).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<MonthlyPayment>().HasIndex(x => new { x.StudentId, x.Month, x.Year }).IsUnique();
         modelBuilder.Entity<Employee>().HasIndex(x => x.Username).IsUnique();
+        modelBuilder.Entity<GroupSession>().HasIndex(x => new { x.GroupId, x.SessionDate, x.PlannedStartTime }).IsUnique();
+        modelBuilder.Entity<StudentSessionAttendance>().HasIndex(x => new { x.GroupSessionId, x.StudentId }).IsUnique();
+        modelBuilder.Entity<GroupSession>().HasOne(x => x.Group).WithMany(x => x.Sessions).HasForeignKey(x => x.GroupId).OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<StudentSessionAttendance>().HasOne(x => x.GroupSession).WithMany(x => x.Attendances).HasForeignKey(x => x.GroupSessionId).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<StudentSessionAttendance>().HasOne(x => x.Student).WithMany(x => x.SessionAttendances).HasForeignKey(x => x.StudentId).OnDelete(DeleteBehavior.Restrict);
 
         foreach (var property in modelBuilder.Model.GetEntityTypes()
             .SelectMany(entityType => entityType.GetProperties())

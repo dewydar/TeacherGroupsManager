@@ -15,4 +15,5 @@ public class Student : AuditableEntity
     public bool IsActive { get; set; } = true;
     public ICollection<LessonStudent> LessonStudents { get; set; } = new List<LessonStudent>();
     public ICollection<MonthlyPayment> MonthlyPayments { get; set; } = new List<MonthlyPayment>();
+    public ICollection<StudentSessionAttendance> SessionAttendances { get; set; } = new List<StudentSessionAttendance>();
 }
