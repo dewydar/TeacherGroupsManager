@@ -88,9 +88,13 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-        return lesson is null
-            ? null
-            : new LessonAttendanceDto(
+        if (lesson is null) return null;
+        var studentIds = lesson.LessonStudents.Select(x => x.StudentId).ToArray();
+        var paymentStatuses = await unitOfWork.Repository<MonthlyPayment>().Query()
+            .Where(x => studentIds.Contains(x.StudentId) && x.GroupId == lesson.GroupId && x.AcademicYearId == lesson.Group.AcademicYearId && x.Month == lesson.Month && x.Year == lesson.Year)
+            .ToDictionaryAsync(x => x.StudentId, x => (PaymentStatus?)x.PaymentStatus, cancellationToken);
+
+        return new LessonAttendanceDto(
                 lesson.Id,
                 lesson.Title,
                 lesson.Group.Name,
@@ -102,6 +106,7 @@ public class LessonService(IUnitOfWork unitOfWork, AppMapper mapper, IStringLoca
                         x.Student.FullName,
                         x.Student.Mobile,
                         x.AttendanceStatus,
+                        paymentStatuses.GetValueOrDefault(x.StudentId),
                         x.AttendanceNotes))
                     .ToList());
     }

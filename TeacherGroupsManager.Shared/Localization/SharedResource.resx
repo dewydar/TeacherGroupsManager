@@ -798,4 +798,6 @@
   <data name="EgyptianPoundAbbreviation" xml:space="preserve">
     <value>EGP</value>
   </data>
+  <data name="SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="ClearAll" xml:space="preserve"><value>Clear all</value></data>
 </root>

@@ -58,6 +58,7 @@ public record LessonAttendanceStudentDto(
     [StringLength(AppConstants.MaxStringLength)] string StudentName,
     [StringLength(AppConstants.MobileMaxLength)] string Mobile,
     AttendanceStatus AttendanceStatus,
+    PaymentStatus? PaymentStatus,
     [StringLength(AppConstants.MaxStringLength)] string? AttendanceNotes);
 
 public record LessonAttendanceDto(

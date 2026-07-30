@@ -131,3 +131,58 @@ The existing responsive table wrapper keeps wide tables horizontally scrollable 
 - Concurrency token and explicit transactional session start/completion are not implemented yet.
 - Migration application against SQL Server and browser verification remain outstanding.
 - Existing localization resources have not yet been extended with session-specific labels and messages.
+
+## Lesson Attendance
+
+### Applied
+
+- Reused the existing `Lesson`, `LessonStudent`, `LessonService`, `LessonsController`, and `Lessons/Attendance.cshtml` workflow.
+- Reused the existing `AttendanceStatus` enum and composite lesson/student attendance relationship.
+- Existing attendance saves update all submitted lesson students in one service operation and reject student IDs outside the lesson roster.
+- Added lesson-month payment status lookup to the attendance view model.
+- Added paid, partially paid, and unpaid status display beside each attendance row.
+- Added localized Select All and Clear All controls that set attendance to Present or Absent.
+- Preserved the existing shared table styling and localization behavior.
+
+### Business rules implemented
+
+- Attendance is recorded against an existing lesson and its assigned `LessonStudent` roster.
+- Each student appears once because the existing `(LessonId, StudentId)` composite key is preserved.
+- Attendance updates reject incomplete or unrelated student submissions.
+- Attendance notes are trimmed and empty notes are stored as null.
+- Payment status is read for the lesson group, academic year, month, and year.
+- Unpaid students remain eligible for attendance; saving attendance does not create or modify payment records.
+- Select All marks all displayed students Present; Clear All marks all displayed students Absent.
+
+### Main files
+
+- `TeacherGroupsManager.Services/Services/LessonService.cs`
+- `TeacherGroupsManager.Dtos/LessonDtos.cs`
+- `TeacherGroupsManager.WebUI/Views/Lessons/Attendance.cshtml`
+- `TeacherGroupsManager.Shared/Localization/SharedResource.resx`
+- `TeacherGroupsManager.Shared/Localization/SharedResource.ar.resx`
+- `TeacherGroupsManager.Shared/Localization/SharedResource.fr.resx`
+- `TeacherGroupsManager.Services.Tests/LessonServiceTests.cs`
+- `work around.md`
+
+### Database changes
+
+- No new lesson-attendance table was required.
+- Existing `LessonStudents` table and its composite primary key `(LessonId, StudentId)` were reused.
+- Existing monthly payment table and uniqueness rules were reused.
+- No new migration was created for this lesson-attendance enhancement.
+
+### Tests and verification
+
+- Existing `LessonServiceTests` continue to cover group roster creation, duplicate lesson protection, attendance loading, invalid student rejection, status updates, and note trimming.
+- Total test result: 83 passed, 0 failed, 0 skipped.
+- Build result: `dotnet build TeacherGroupsManager.sln --no-restore` succeeded with 0 warnings and 0 errors.
+- Browser-level attendance verification was not performed.
+- Migration application against SQL Server was not performed for this enhancement because no database migration was needed.
+
+### Still missing or recommended
+
+- A student-code column/display is not present in the existing student model; the attendance page currently displays the existing mobile field.
+- Fine-grained teacher-to-group ownership enforcement for lessons was not added; the existing `LessonsManage` policy remains the authorization boundary.
+- Explicit database transaction and concurrency-token handling for attendance saves were not added.
+- Browser verification at desktop/mobile widths and RTL rendering remains outstanding.

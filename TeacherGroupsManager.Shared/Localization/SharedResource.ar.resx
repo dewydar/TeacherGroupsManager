@@ -798,4 +798,6 @@
   <data name="EgyptianPoundAbbreviation" xml:space="preserve">
     <value>&#x062C;.&#x0645;</value>
   </data>
+  <data name="SelectAll" xml:space="preserve"><value>&#x062A;&#x062D;&#x062F;&#x064A;&#x062F; &#x0627;&#x0644;&#x0643;&#x0644;</value></data>
+  <data name="ClearAll" xml:space="preserve"><value>&#x0625;&#x0644;&#x063A;&#x0627;&#x0621; &#x0627;&#x0644;&#x0643;&#x0644;</value></data>
 </root>

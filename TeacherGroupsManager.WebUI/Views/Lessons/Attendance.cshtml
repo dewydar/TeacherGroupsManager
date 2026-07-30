@@ -17,6 +17,7 @@
                 <tr>
                     <th>@L["StudentName"]</th>
                     <th>@L["Mobile"]</th>
+                    <th>@L["PaymentStatus"]</th>
                     <th>@L["AttendanceStatus"]</th>
                     <th>@L["Notes"]</th>
                 </tr>
@@ -32,6 +33,16 @@
                         </td>
                         <td>@student.Mobile</td>
                         <td>
+                            @if (student.PaymentStatus is { } paymentStatus)
+                            {
+                                <span class="status-chip status-chip-@paymentStatus.ToString().ToLowerInvariant()">@L[paymentStatus.ToString()]</span>
+                            }
+                            else
+                            {
+                                <span class="status-chip status-chip-muted">@L["Unpaid"]</span>
+                            }
+                        </td>
+                        <td>
                             <select class="form-select" name="Students[@i].AttendanceStatus">
                                 <option value="@((int)AttendanceStatus.Present)" selected="@(student.AttendanceStatus == AttendanceStatus.Present)">@L["Present"]</option>
                                 <option value="@((int)AttendanceStatus.Absent)" selected="@(student.AttendanceStatus == AttendanceStatus.Absent)">@L["Absent"]</option>
@@ -44,6 +55,23 @@
             </tbody>
         </table>
     </div>
-    <button class="btn btn-primary mt-3">@L["Save"]</button>
+    <div class="d-flex gap-2 mt-3 flex-wrap">
+        <button type="button" class="btn btn-outline-primary" id="selectAllAttendance">@L["SelectAll"]</button>
+        <button type="button" class="btn btn-outline-secondary" id="clearAllAttendance">@L["ClearAll"]</button>
+        <button class="btn btn-primary">@L["Save"]</button>
+    </div>
     <a class="btn btn-outline-secondary mt-3" asp-action="Index">@L["Back"]</a>
 </form>
+
+<script>
+    document.getElementById('selectAllAttendance')?.addEventListener('click', function () {
+        document.querySelectorAll('select[name$=".AttendanceStatus"]').forEach(function (select) {
+            select.value = '@((int)AttendanceStatus.Present)';
+        });
+    });
+    document.getElementById('clearAllAttendance')?.addEventListener('click', function () {
+        document.querySelectorAll('select[name$=".AttendanceStatus"]').forEach(function (select) {
+            select.value = '@((int)AttendanceStatus.Absent)';
+        });
+    });
+</script>
